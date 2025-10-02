@@ -1,9 +1,8 @@
-import { Badge } from '@/components/ui/badge'
-
 export default function Home() {
   return (
     <main>
-      <Badge>hello</Badge>
+      <h1 className="font-ubuntu font-bold">Artbase</h1>
+      <p>test</p>
     </main>
   )
 }

@@ -14,9 +14,6 @@ importers:
       class-variance-authority:
         specifier: ^0.7.1
         version: 0.7.1
-      clsx:
-        specifier: ^2.1.1
-        version: 2.1.1
       lucide-react:
         specifier: ^0.544.0
         version: 0.544.0(react@19.1.0)
@@ -48,6 +45,9 @@ importers:
       '@types/react-dom':
         specifier: ^19
         version: 19.2.0(@types/react@19.2.0)
+      clsx:
+        specifier: ^2.1.1
+        version: 2.1.1
       eslint:
         specifier: ^9
         version: 9.36.0(jiti@2.6.1)
