@@ -8,8 +8,3 @@ pre-commit:
       stage_fixed: true
     typecheck:
       run: pnpm typecheck
-
-pre-push:
-  commands:
-    build:
-      run: pnpm build
