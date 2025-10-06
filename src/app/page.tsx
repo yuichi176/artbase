@@ -1,52 +1,53 @@
 import { Badge } from '@/components/ui/badge'
-import { Card, CardContent } from '@/components/ui/card'
 import { CalendarDays } from 'lucide-react'
 
 export default function Home() {
   return (
     <main className="py-15 px-15">
       <h1 className="font-ubuntu font-bold text-5xl mb-10">Artbase Tokyo</h1>
-      <div className="flex flex-col gap-5">
+      <div className="flex flex-col gap-8">
         {artMuseums.map((museum) => (
           <section className="px-5" key={museum.name}>
             <div className="flex items-center gap-3 mb-5">
               <h2 className="text-xl font-bold">{museum.name}</h2>
               <Badge>{`${museum.exhibitions.length}件`}</Badge>
             </div>
-            <ul className="flex gap-5 flex-wrap">
+            <ul
+              className="grid grid-cols-3 gap-5"
+              style={{
+                gridTemplateColumns: 'repeat(auto-fit, 280px);',
+              }}
+            >
               {museum.exhibitions.map((exhibition) => (
-                <li key={exhibition.id} className="mb-5">
-                  <Card className="w-full max-w-sm h-[420px] hover:shadow-lg transition-shadow flex relative">
-                    <CardContent className="flex flex-col items-center gap-3 h-full">
-                      <div className="w-[200px] h-[282px] overflow-hidden rounded-t-md">
-                        <img
-                          src={exhibition.imageUrl}
-                          alt={`${exhibition.title}のポスター画像`}
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
-                      <div className="flex-1 flex flex-col justify-between p-3 w-full">
-                        <a href={exhibition.officialUrl} target="_blank" rel="noopener noreferrer">
-                          <span
-                            aria-hidden="true"
-                            style={{
-                              position: 'absolute',
-                              inset: 0,
-                            }}
-                          />
-                          <h3 className="text-sm font-semibold mb-2 line-clamp-3">
-                            {exhibition.title}
-                          </h3>
-                        </a>
-                        <div className="text-sm text-gray-600 flex gap-2 items-center mt-auto">
-                          <CalendarDays size={18} />
-                          <p>
-                            {exhibition.startDate} 〜 {exhibition.endDate}
-                          </p>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
+                <li
+                  key={exhibition.id}
+                  className="row-span-3 grid grid-cols-subgrid gap-3 relative border-1 rounded-md py-3 w-full"
+                >
+                  <div className="w-full h-[282px] rounded-t-md">
+                    <img
+                      src={exhibition.imageUrl}
+                      alt={`${exhibition.title}のポスター画像`}
+                      className="w-full h-full object-contain"
+                    />
+                  </div>
+                  <div className="flex flex-col justify-between px-3">
+                    <a href={exhibition.officialUrl} target="_blank" rel="noopener noreferrer">
+                      <span
+                        aria-hidden="true"
+                        style={{
+                          position: 'absolute',
+                          inset: 0,
+                        }}
+                      />
+                      <h3 className="text-sm font-semibold line-clamp-3">{exhibition.title}</h3>
+                    </a>
+                  </div>
+                  <div className="text-xs text-gray-600 flex gap-2 items-center px-3">
+                    <CalendarDays size={15} />
+                    <p>
+                      {exhibition.startDate} 〜 {exhibition.endDate}
+                    </p>
+                  </div>
                 </li>
               ))}
             </ul>
