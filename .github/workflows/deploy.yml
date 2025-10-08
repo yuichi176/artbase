@@ -53,4 +53,5 @@ jobs:
           --region ${{ vars.GCP_REGION }} \
           --port=3000 \
           --service-account=${{ vars.APP_SERVICE_ACCOUNT }} \
-          --memory=512Mi
+          --memory=512Mi \
+          --allow-unauthenticated
