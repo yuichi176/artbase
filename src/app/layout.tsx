@@ -29,7 +29,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ja" className={clsx(ubuntu.className, notoSansJp.className)}>
-      <body>{children}</body>
+      <body>
+        <main className="py-15 px-15">{children}</main>
+      </body>
     </html>
   )
 }
