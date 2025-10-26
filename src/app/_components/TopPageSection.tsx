@@ -1,8 +1,9 @@
 import db from '@/lib/firestore'
-import { Exhibition, Museum, RawExhibition } from '@/schema/exhibition'
+import { Exhibition, RawExhibition } from '@/schema/exhibition'
 import { Timestamp } from '@google-cloud/firestore'
 import { TZDate } from '@date-fns/tz'
 import MuseumCard from '@/app/_components/MuseumCard'
+import { Museum } from '@/schema/museum'
 
 const now = new Date()
 

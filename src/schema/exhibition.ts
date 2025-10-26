@@ -27,12 +27,3 @@ export const exhibitionSchema = z.object({
   status: statusSchema,
 })
 export type Exhibition = z.infer<typeof exhibitionSchema>
-
-export type Museum = {
-  name: string
-  address: string
-  access: string
-  openingInformation: string
-  officialUrl: string
-  exhibitions: Exhibition[]
-}
