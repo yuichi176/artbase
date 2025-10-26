@@ -54,6 +54,11 @@ const convertToMuseum = (exhibitions: Exhibition[]): Museum[] => {
 
   return Array.from(museumMap.entries()).map(([name, exhibitions]) => ({
     name,
+    address: '東京都港区六本木7-22-2',
+    access:
+      '東京メトロ千代田線乃木坂駅6番出口より直結、東京メトロ日比谷線・都営大江戸線六本木駅7番出口より徒歩4分',
+    openingInformation: '10:00 ~ 18:00・金曜日、土曜日は20:00まで・火曜休館',
+    officialUrl: 'https://www.nact.jp/',
     exhibitions,
   }))
 }

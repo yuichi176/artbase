@@ -10,21 +10,29 @@ export default function MuseumCard({ museum }: MuseumCardProps) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="flex items-center gap-3 mb-2">
-          <span className="text-lg">{museum.name}</span>
-          <SquareArrowOutUpRight size={18} />
+        <CardTitle className="mb-2">
+          <a
+            className="flex items-center gap-3 hover:underline"
+            href={museum.officialUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <span className="text-lg">{museum.name}</span>
+            <SquareArrowOutUpRight size={18} />
+          </a>
         </CardTitle>
         <CardDescription className="flex flex-col gap-2">
           <p>
-            <span className="font-bold">住所：</span>東京都港区六本木7-22-2
+            <span className="font-bold">住所：</span>
+            {museum.address}
           </p>
           <p>
             <span className="font-bold">開館情報：</span>
-            10:00 ~ 18:00・金曜日、土曜日は20:00まで・火曜休館
+            {museum.openingInformation}
           </p>
           <p>
             <span className="font-bold">アクセス：</span>
-            東京メトロ千代田線乃木坂駅6番出口より直結、東京メトロ日比谷線・都営大江戸線六本木駅7番出口より徒歩4分
+            {museum.access}
           </p>
         </CardDescription>
       </CardHeader>
