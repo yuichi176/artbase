@@ -1,9 +1,8 @@
-import { Badge } from '@/components/ui/badge'
-import { CalendarDays } from 'lucide-react'
 import db from '@/lib/firestore'
 import { Exhibition, Museum, RawExhibition } from '@/schema/exhibition'
 import { Timestamp } from '@google-cloud/firestore'
 import { TZDate } from '@date-fns/tz'
+import MuseumCard from '@/app/_components/MuseumCard'
 
 const now = new Date()
 
@@ -36,51 +35,7 @@ export default async function TopPageSection() {
   return (
     <div className="flex flex-col gap-8">
       {museums.map((museum) => (
-        <section className="px-5" key={museum.name}>
-          <div className="flex items-center gap-3 mb-5">
-            <h2 className="text-xl font-bold">{museum.name}</h2>
-            <Badge>{`${museum.exhibitions.length}件`}</Badge>
-          </div>
-          <ul
-            className="grid grid-cols-3 gap-5"
-            style={{
-              gridTemplateColumns: 'repeat(auto-fit, 280px);',
-            }}
-          >
-            {museum.exhibitions.map((exhibition) => (
-              <li
-                key={exhibition.id}
-                className="row-span-3 grid grid-cols-subgrid gap-3 relative border-1 rounded-md py-3 w-full"
-              >
-                <div className="w-full h-[282px] rounded-t-md">
-                  <img
-                    src={exhibition.imageUrl}
-                    alt={`${exhibition.title}のポスター画像`}
-                    className="w-full h-full object-contain"
-                  />
-                </div>
-                <div className="flex flex-col justify-between px-3">
-                  <a href={exhibition.officialUrl} target="_blank" rel="noopener noreferrer">
-                    <span
-                      aria-hidden="true"
-                      style={{
-                        position: 'absolute',
-                        inset: 0,
-                      }}
-                    />
-                    <h3 className="text-sm font-semibold line-clamp-3">{exhibition.title}</h3>
-                  </a>
-                </div>
-                <div className="text-xs text-gray-600 flex gap-2 items-center px-3">
-                  <CalendarDays size={15} />
-                  <p>
-                    {exhibition.startDate} 〜 {exhibition.endDate}
-                  </p>
-                </div>
-              </li>
-            ))}
-          </ul>
-        </section>
+        <MuseumCard key={museum.name} museum={museum} />
       ))}
     </div>
   )
