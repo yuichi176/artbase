@@ -36,7 +36,7 @@ export default function MuseumCard({ museum }: MuseumCardProps) {
           </p>
         </CardDescription>
       </CardHeader>
-      <CardContent className="border-t border-gray-200 pt-5 px-0 mx-5">
+      <CardContent className="border-gray-200 px-0 mx-5">
         <ul
           className="grid grid-cols-3 gap-5"
           style={{
