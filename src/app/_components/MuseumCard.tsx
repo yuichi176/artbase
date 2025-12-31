@@ -1,5 +1,11 @@
 import { CalendarDays, SquareArrowOutUpRight } from 'lucide-react'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/shadcn-ui/card'
 import { Museum } from '@/schema/museum'
 
 interface MuseumCardProps {
