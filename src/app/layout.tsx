@@ -4,8 +4,8 @@ import { Ubuntu, Noto_Sans_JP } from 'next/font/google'
 import { clsx } from 'clsx'
 
 export const metadata: Metadata = {
-  title: 'Artbase Tokyo',
-  description: '東京で開催中の展覧会情報をまとめてチェックできるサービス',
+  title: 'Evently',
+  description: '開催中の展覧会情報をまとめてチェックできるサービス',
 }
 
 const ubuntu = Ubuntu({
@@ -30,7 +30,7 @@ export default function RootLayout({
   return (
     <html lang="ja" className={clsx(ubuntu.className, notoSansJp.className)}>
       <body>
-        <main className="py-15 px-15">{children}</main>
+        <main className="p-3">{children}</main>
       </body>
     </html>
   )
