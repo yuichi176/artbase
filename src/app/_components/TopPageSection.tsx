@@ -2,8 +2,8 @@ import db from '@/lib/firestore'
 import { Exhibition, RawExhibition } from '@/schema/exhibition'
 import { Timestamp } from '@google-cloud/firestore'
 import { TZDate } from '@date-fns/tz'
-import MuseumCard from '@/app/_components/MuseumCard'
 import { Museum, RawMuseum } from '@/schema/museum'
+import { TopPagePresentation } from '@/app/_components/TopPagePresentation'
 
 const now = new Date()
 
@@ -46,11 +46,5 @@ export default async function TopPageSection() {
     } satisfies Museum
   })
 
-  return (
-    <div className="flex flex-col gap-8">
-      {museums.map((museum) => (
-        <MuseumCard key={museum.name} museum={museum} />
-      ))}
-    </div>
-  )
+  return <TopPagePresentation museums={museums} />
 }

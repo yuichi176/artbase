@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import './globals.css'
 import { Ubuntu, Noto_Sans_JP } from 'next/font/google'
 import { clsx } from 'clsx'
+import { Header } from '@/components'
 
 export const metadata: Metadata = {
   title: 'Evently',
@@ -30,7 +31,8 @@ export default function RootLayout({
   return (
     <html lang="ja" className={clsx(ubuntu.className, notoSansJp.className)}>
       <body>
-        <main className="p-3">{children}</main>
+        <Header />
+        <main className="p-4">{children}</main>
       </body>
     </html>
   )
