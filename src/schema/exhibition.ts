@@ -25,5 +25,6 @@ export const exhibitionSchema = z.object({
   officialUrl: z.string().optional(),
   imageUrl: z.string().optional(),
   status: statusSchema,
+  isOngoing: z.boolean(),
 })
 export type Exhibition = z.infer<typeof exhibitionSchema>

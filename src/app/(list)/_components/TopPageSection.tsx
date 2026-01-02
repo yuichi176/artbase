@@ -8,15 +8,21 @@ import { TopPagePresentation } from '@/app/(list)/_components/TopPagePresentatio
 const now = new Date()
 
 export default async function TopPageSection() {
-  const exhibitionCollectionRef = db.collection('exhibition')
-  const exhibitionDocumentsSnapshot = await exhibitionCollectionRef
+  const nowJst = new TZDate(now, 'Asia/Tokyo')
+  const exhibitionDocumentsSnapshot = await db
+    .collection('exhibition')
     .where('status', '==', 'active')
     .where('endDate', '>=', Timestamp.fromDate(new TZDate(now, 'Asia/Tokyo')))
-    .orderBy('status')
     .orderBy('endDate')
     .get()
+
   const exhibitions = exhibitionDocumentsSnapshot.docs.map((doc) => {
     const data = doc.data() as RawExhibition
+
+    const start = data.startDate?.toDate()
+    const end = data.endDate?.toDate()
+
+    const isOngoing = !!start && start <= nowJst && (!!end ? nowJst <= end : true)
 
     return {
       id: doc.id,
@@ -27,24 +33,26 @@ export default async function TopPageSection() {
       officialUrl: data.officialUrl ? data.officialUrl : '',
       imageUrl: data.imageUrl ? data.imageUrl : '',
       status: data.status,
+      isOngoing,
     } satisfies Exhibition
   })
 
-  const museumCollectionRef = db.collection('museum')
-  const museumDocumentsSnapshot = await museumCollectionRef.get()
-  const museums = museumDocumentsSnapshot.docs.map((doc) => {
-    const data = doc.data() as RawMuseum
-    const relatedExhibitions = exhibitions.filter((exhibition) => exhibition.venue === data.name)
+  const museumDocumentsSnapshot = await db.collection('museum').get()
+  const museums = museumDocumentsSnapshot.docs
+    .map((doc) => {
+      const data = doc.data() as RawMuseum
+      const relatedExhibitions = exhibitions.filter((exhibition) => exhibition.venue === data.name)
 
-    return {
-      name: data.name,
-      address: data.address,
-      access: data.access,
-      openingInformation: data.openingInformation,
-      officialUrl: data.officialUrl,
-      exhibitions: relatedExhibitions,
-    } satisfies Museum
-  })
+      return {
+        name: data.name,
+        address: data.address,
+        access: data.access,
+        openingInformation: data.openingInformation,
+        officialUrl: data.officialUrl,
+        exhibitions: relatedExhibitions,
+      } satisfies Museum
+    })
+    .filter((museum) => museum.exhibitions.length > 0)
 
   return <TopPagePresentation museums={museums} />
 }

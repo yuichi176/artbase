@@ -1,12 +1,6 @@
-import { CalendarDays, SquareArrowOutUpRight } from 'lucide-react'
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/shadcn-ui/card'
+import { Calendar, ExternalLink, Train } from 'lucide-react'
 import { Museum } from '@/schema/museum'
+import { Badge } from '@/components/shadcn-ui/badge'
 
 interface MuseumCardProps {
   museum: Museum
@@ -14,75 +8,75 @@ interface MuseumCardProps {
 
 export default function MuseumCard({ museum }: MuseumCardProps) {
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="mb-2">
+    <div className="border border-gray-200 rounded-xl overflow-hidden bg-white shadow-sm">
+      <div className="bg-gray-50 border-b-2 border-gray-200 py-3 px-5 flex flex-col gap-3">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2.5">
+            <h2 className="text-gray-900">{museum.name}</h2>
+            <Badge variant="outline" className="px-3 py-1 rounded-full text-gray-800">
+              {/*TODO: implement tag feature*/}
+              美術館
+            </Badge>
+          </div>
           <a
-            className="flex items-center gap-3 hover:underline"
             href={museum.officialUrl}
             target="_blank"
             rel="noopener noreferrer"
+            className="text-blue-600 hover:text-blue-700 flex-shrink-0 transition-colors"
+            title="会場公式ページ"
           >
-            <span className="text-lg">{museum.name}</span>
-            <SquareArrowOutUpRight size={18} />
+            <ExternalLink className="w-4.5 h-4.5" />
           </a>
-        </CardTitle>
-        <CardDescription className="flex flex-col gap-2">
-          <p>
-            <span className="font-bold">住所：</span>
-            {museum.address}
-          </p>
-          <p>
-            <span className="font-bold">開館情報：</span>
-            {museum.openingInformation}
-          </p>
-          <p>
-            <span className="font-bold">アクセス：</span>
-            {museum.access}
-          </p>
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="border-gray-200 px-0 mx-5">
-        <ul
-          className="grid grid-cols-3 gap-5"
-          style={{
-            gridTemplateColumns: 'repeat(auto-fit, 250px);',
-          }}
-        >
-          {museum.exhibitions.map((exhibition) => (
-            <li
-              key={exhibition.id}
-              className="row-span-3 grid grid-cols-subgrid gap-3 relative border-1 rounded-md py-3 w-full"
-            >
-              <div className="w-full h-[282px] rounded-t-md">
-                <img
-                  src={exhibition.imageUrl}
-                  alt={`${exhibition.title}のポスター画像`}
-                  className="w-full h-full object-contain"
-                />
-              </div>
-              <div className="flex flex-col justify-between px-3">
-                <a href={exhibition.officialUrl} target="_blank" rel="noopener noreferrer">
-                  <span
-                    aria-hidden="true"
-                    style={{
-                      position: 'absolute',
-                      inset: 0,
-                    }}
-                  />
-                  <h3 className="text-sm font-semibold line-clamp-3">{exhibition.title}</h3>
+        </div>
+
+        <div className="text-sm text-gray-500 flex items-center">
+          <div className="flex items-center gap-1">
+            <Train className="w-4 h-4 mt-0.5" />
+            <span>アクセス：</span>
+          </div>
+          <p>{museum.access}</p>
+        </div>
+      </div>
+
+      <div className="divide-y divide-gray-100">
+        {museum.exhibitions.map((exhibition) => {
+          return (
+            <div key={exhibition.id} className="py-3 px-5 hover:bg-gray-50 transition-colors group">
+              <div className="flex items-start justify-between gap-4">
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2.5 mb-2">
+                    <h3 className="text-gray-900 truncate">{exhibition.title}</h3>
+                    {exhibition.isOngoing && (
+                      <Badge
+                        variant="secondary"
+                        className="bg-emerald-50 border-emerald-200 text-emerald-700"
+                      >
+                        開催中
+                      </Badge>
+                    )}
+                  </div>
+
+                  <div className="text-sm text-gray-500 flex items-center gap-1">
+                    <Calendar className="w-4 h-4 mt-0.5 flex-shrink-0" />
+                    <p>
+                      {exhibition.startDate} ~ {exhibition.endDate}
+                    </p>
+                  </div>
+                </div>
+                <a
+                  href={exhibition.officialUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-600 hover:text-blue-700 flex-shrink-0 transition-colors"
+                  title="展覧会公式ページ"
+                >
+                  <ExternalLink className="w-4.5 h-4.5" />
                 </a>
               </div>
-              <div className="text-sm text-gray-600 flex gap-2 items-center px-3">
-                <CalendarDays size={15} />
-                <p>
-                  {exhibition.startDate} 〜 {exhibition.endDate}
-                </p>
-              </div>
-            </li>
-          ))}
-        </ul>
-      </CardContent>
-    </Card>
+            </div>
+          )
+        })}
+      </div>
+    </div>
   )
 }
