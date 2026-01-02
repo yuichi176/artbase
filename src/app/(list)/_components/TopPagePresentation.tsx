@@ -1,6 +1,6 @@
 import { Card } from '@/components/shadcn-ui/card'
 import { Museum } from '@/schema/museum'
-import MuseumCard from '@/app/_components/MuseumCard'
+import MuseumCard from '@/app/(list)/_components/MuseumCard'
 
 interface TopPagePresentationProps {
   museums: Museum[]

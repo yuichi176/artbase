@@ -1,4 +1,4 @@
-import TopPageSection from '@/app/_components/TopPageSection'
+import TopPageSection from '@/app/(list)/_components/TopPageSection'
 import { Suspense } from 'react'
 
 export const dynamic = 'force-dynamic'
