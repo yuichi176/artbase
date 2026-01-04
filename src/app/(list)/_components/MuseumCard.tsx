@@ -1,18 +1,13 @@
-'use client'
-
-import { Calendar, ExternalLink, Train } from 'lucide-react'
+import { Calendar, ExternalLink } from 'lucide-react'
 import { Museum } from '@/schema/museum'
 import { Badge } from '@/components/shadcn-ui/badge'
-import { useExpandableClamp } from '@/hooks/useExpandableClamp'
+import { MuseumAccess } from '@/app/(list)/_components/MuseumAccess'
 
 interface MuseumCardProps {
   museum: Museum
 }
 
 export default function MuseumCard({ museum }: MuseumCardProps) {
-  const { getTextProps, getToggleButtonProps, isClamped, isExpanded } =
-    useExpandableClamp<HTMLParagraphElement>()
-
   return (
     <div className="border border-gray-200 rounded-xl overflow-hidden bg-white">
       <div className="bg-gray-50 border-b-1 border-gray-200 py-2 px-3 md:py-3 md:px-5 flex flex-col gap-2 md:gap-3">
@@ -38,24 +33,7 @@ export default function MuseumCard({ museum }: MuseumCardProps) {
           </a>
         </div>
 
-        <div className="text-sm text-gray-500 flex">
-          <Train
-            className="w-4 h-4 mt-0.5 mr-1 shrink-0"
-            aria-label={`${museum.name}のアクセス情報`}
-          />
-          <div className="flex-1 min-w-0 text-xs md:text-sm">
-            <p {...getTextProps()}>{museum.access}</p>
-
-            {isClamped && (
-              <button
-                className="mt-1 text-xs text-blue-600 hover:text-blue-700 underline"
-                {...getToggleButtonProps()}
-              >
-                {isExpanded ? '閉じる' : 'もっと見る'}
-              </button>
-            )}
-          </div>
-        </div>
+        <MuseumAccess museumName={museum.name} access={museum.access} />
       </div>
 
       <div className="divide-y divide-gray-100">
