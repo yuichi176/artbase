@@ -15,7 +15,7 @@ export default function MuseumCard({ museum }: MuseumCardProps) {
 
   return (
     <div className="border border-gray-200 rounded-xl overflow-hidden bg-white">
-      <div className="bg-gray-50 border-b-1 border-gray-200 py-3 px-5 flex flex-col gap-2 md:gap-3">
+      <div className="bg-gray-50 border-b-1 border-gray-200 py-2 px-3 md:py-3 md:px-5 flex flex-col gap-2 md:gap-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2.5">
             <h2 className="text-sm md:text-base text-gray-900">{museum.name}</h2>
@@ -34,16 +34,16 @@ export default function MuseumCard({ museum }: MuseumCardProps) {
             className="text-blue-600 hover:text-blue-700 flex-shrink-0 transition-colors"
             title="会場公式ページ"
           >
-            <ExternalLink className="w-4.5 h-4.5" />
+            <ExternalLink className="w-4 h-4" />
           </a>
         </div>
 
         <div className="text-sm text-gray-500 flex">
           <Train
-            className="w-4 h-4 mt-1 mr-1 shrink-0"
+            className="w-4 h-4 mt-0.5 mr-1 shrink-0"
             aria-label={`${museum.name}のアクセス情報`}
           />
-          <div className="flex-1 min-w-0">
+          <div className="flex-1 min-w-0 text-xs md:text-sm">
             <p {...getTextProps()}>{museum.access}</p>
 
             {isClamped && (
@@ -61,7 +61,10 @@ export default function MuseumCard({ museum }: MuseumCardProps) {
       <div className="divide-y divide-gray-100">
         {museum.exhibitions.map((exhibition) => {
           return (
-            <div key={exhibition.id} className="py-3 px-5 hover:bg-gray-50 transition-colors group">
+            <div
+              key={exhibition.id}
+              className="px-3 py-3 md:px-5 hover:bg-gray-50 transition-colors group"
+            >
               <div className="flex items-start justify-between gap-4">
                 <div className="flex-1 min-w-0">
                   <h3 className="text-gray-900 text-sm md:text-base mb-1 md:mb-2">
@@ -90,7 +93,7 @@ export default function MuseumCard({ museum }: MuseumCardProps) {
                   className="text-blue-600 hover:text-blue-700 flex-shrink-0 transition-colors"
                   title="展覧会公式ページ"
                 >
-                  <ExternalLink className="w-4.5 h-4.5" />
+                  <ExternalLink className="w-4 h-4" />
                 </a>
               </div>
             </div>
