@@ -27,7 +27,7 @@ export const useExpandableClamp = <T extends HTMLElement = HTMLElement>({
     // 実際に表示されている高さ（line-clamp による制限後）
     const visibleHeight = el.clientHeight
 
-    const clamped = fullHeight > visibleHeight
+    const clamped = fullHeight > visibleHeight + 1
 
     setIsClamped(clamped)
     setIsExpanded(false)
