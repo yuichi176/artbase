@@ -33,60 +33,55 @@ export const FilterSection = ({
         <Filter className="size-5" />
         <h2 className="text-sm md:text-base">フィルター</h2>
       </div>
-      <div className="flex flex-wrap items-center gap-y-3 px-1">
-        <div className="flex items-center gap-2 flex-wrap">
-          <span className="text-sm md:text-base">施設タイプ</span>:
-          <div className="flex flex-wrap gap-2">
-            {venueCategories.map((category) => {
-              const isSelected = selectedVenueCategories.includes(category.value)
-              return (
-                <button
-                  key={category.value}
-                  type="button"
-                  onClick={() => handleClickVenueCategory(category.value)}
-                >
-                  <Badge
-                    variant="outline"
-                    className={cn(
-                      'rounded-full px-3 py-1',
-                      isSelected && 'bg-secondary border-[#8f8f8f]',
-                    )}
-                  >
-                    {category.label}
-                  </Badge>
-                </button>
-              )
-            })}
-          </div>
-        </div>
-      </div>
-      <div className="flex flex-wrap items-center gap-y-3 px-1">
-        <div className="flex items-center gap-2 flex-wrap">
-          <span className="text-sm md:text-base">開催状況</span>:
-          <div className="flex flex-wrap gap-2">
-            {openStatuses.map((status) => {
-              const isSelected = selectedOpenStatus.includes(status.value)
-              return (
-                <button
-                  key={status.value}
-                  type="button"
-                  onClick={() => handleClickOpenStatus(status.value)}
-                >
-                  <Badge
-                    variant="outline"
-                    className={cn(
-                      'rounded-full px-3 py-1',
-                      isSelected && 'bg-secondary border-[#8f8f8f]',
-                    )}
-                  >
-                    {status.label}
-                  </Badge>
-                </button>
-              )
-            })}
-          </div>
-        </div>
-      </div>
+
+      <FilterItem
+        label="施設タイプ"
+        options={venueCategories}
+        selected={selectedVenueCategories}
+        onClick={handleClickVenueCategory}
+      />
+
+      <FilterItem
+        label="開催状況"
+        options={openStatuses}
+        selected={selectedOpenStatus}
+        onClick={handleClickOpenStatus}
+      />
     </Card>
   )
 }
+
+type Option = { value: string; label: string }
+
+interface FilterItemProps {
+  label: string
+  options: Option[]
+  selected: string[]
+  onClick: (value: string) => void
+}
+
+const FilterItem = ({ label, options, selected, onClick }: FilterItemProps) => (
+  <div className="flex flex-wrap items-center gap-y-3 px-1">
+    <div className="flex items-center gap-2 flex-wrap">
+      <span className="text-sm md:text-base">{label}</span>:
+      <div className="flex flex-wrap gap-2">
+        {options.map((option) => {
+          const isSelected = selected.includes(option.value)
+          return (
+            <button key={option.value} type="button" onClick={() => onClick(option.value)}>
+              <Badge
+                variant="outline"
+                className={cn(
+                  'rounded-md px-3 py-1',
+                  isSelected && 'bg-secondary border-[#8f8f8f]',
+                )}
+              >
+                {option.label}
+              </Badge>
+            </button>
+          )
+        })}
+      </div>
+    </div>
+  </div>
+)

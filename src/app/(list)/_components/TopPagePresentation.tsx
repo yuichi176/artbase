@@ -42,6 +42,7 @@ export const TopPagePresentation = ({ museums }: TopPagePresentationProps) => {
         selectedOpenStatus={selectedOpenStatuses}
         handleClickOpenStatus={handleClickOpenStatus}
       />
+
       <Card className="p-2 md:p-4 gap-3">
         <p className="text-sm pl-1">{count}件の展覧会が見つかりました</p>
         <div className="space-y-4 md:columns-2 xl:columns-3 md:gap-4">
