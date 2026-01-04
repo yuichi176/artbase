@@ -9,7 +9,7 @@ interface MuseumCardProps {
 export default function MuseumCard({ museum }: MuseumCardProps) {
   return (
     <div className="border border-gray-200 rounded-xl overflow-hidden bg-white shadow-sm">
-      <div className="bg-gray-50 border-b-2 border-gray-200 py-3 px-5 flex flex-col gap-3">
+      <div className="bg-gray-50 border-b-1 border-gray-200 py-3 px-5 flex flex-col gap-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2.5">
             <h2 className="text-gray-900">{museum.name}</h2>
