@@ -6,6 +6,9 @@ import MuseumCard from '@/app/(list)/_components/MuseumCard'
 import { useMemo, useState } from 'react'
 import { FilterSection } from '@/app/(list)/_components/FilterSection'
 import { OngoingStatusType } from '@/schema/exhibition'
+import { Label } from '@/components/shadcn-ui/label'
+import { Input } from '@/components/shadcn-ui/input'
+import { Search } from 'lucide-react'
 
 interface TopPagePresentationProps {
   museums: Museum[]
@@ -61,6 +64,18 @@ export const TopPagePresentation = ({ museums }: TopPagePresentationProps) => {
 
   return (
     <div className="space-y-3">
+      <div className="relative">
+        <Label htmlFor="search" className="sr-only">
+          Search
+        </Label>
+        <Input
+          id="search"
+          placeholder="会場名、展覧会名で検索..."
+          className="pl-8 bg-background h-8 w-full shadow-none"
+        />
+        <Search className="pointer-events-none absolute top-1/2 left-2 size-4 -translate-y-1/2 opacity-50 select-none" />
+      </div>
+
       <FilterSection
         selectedVenueTypes={selectedVenueTypes}
         handleClickVenueType={handleClickVenueType}
@@ -68,7 +83,7 @@ export const TopPagePresentation = ({ museums }: TopPagePresentationProps) => {
         handleClickOngoingStatus={handleClickOngoingStatus}
       />
 
-      <Card className="p-2 md:p-4 gap-3">
+      <Card className="p-2 md:p-4 gap-3 rounded-lg">
         <p className="text-sm pl-1">{count}件の展覧会が見つかりました</p>
         <div className="space-y-4 md:columns-2 xl:columns-3 md:gap-4">
           {filteredMuseums.map((museum) => (

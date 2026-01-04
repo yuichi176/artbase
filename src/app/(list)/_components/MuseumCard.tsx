@@ -14,12 +14,8 @@ export default function MuseumCard({ museum }: MuseumCardProps) {
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2.5">
             <h2 className="text-sm md:text-base text-gray-900">{museum.name}</h2>
-            <Badge
-              variant="outline"
-              className="py-1 rounded-full text-gray-800 text-[0.625rem] px-2"
-            >
-              {/*TODO: implement tag feature*/}
-              美術館
+            <Badge variant="outline" className="py-1 rounded-lg text-gray-500 text-[0.625rem] px-2">
+              {museum.venueType}
             </Badge>
           </div>
           <a

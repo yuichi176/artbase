@@ -38,12 +38,12 @@ export const FilterSection = ({
   handleClickOngoingStatus,
 }: FilterSectionProps) => {
   return (
-    <Accordion type="single" collapsible className="rounded-xl border px-3 md:px-4">
+    <Accordion type="single" collapsible className="rounded-lg border px-3 md:px-4">
       <AccordionItem value="item-1">
         <AccordionTrigger className="hover:no-underline hover:cursor-pointer py-3">
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-1 text-muted-foreground">
             <Filter className="size-5" />
-            <p className="text-sm md:text-base">フィルター</p>
+            <p>フィルター</p>
           </div>
         </AccordionTrigger>
         <AccordionContent>
@@ -79,7 +79,7 @@ interface FilterItemProps {
 const FilterItem = ({ label, options, selected, onClick }: FilterItemProps) => (
   <div className="flex flex-wrap items-center gap-y-3 md:px-4 first:md:pl-0">
     <div className="flex items-center gap-2 flex-wrap">
-      <span className="text-sm md:text-base">{label}</span>:
+      <span className="text-muted-foreground">{label}</span>:
       <div className="flex flex-wrap gap-2">
         {options.map((option) => {
           const isSelected = selected.includes(option.value)
@@ -88,7 +88,7 @@ const FilterItem = ({ label, options, selected, onClick }: FilterItemProps) => (
               <Badge
                 variant="outline"
                 className={cn(
-                  'rounded-md px-3 py-1',
+                  'rounded-lg px-3 py-1 text-gray-500',
                   isSelected && 'bg-secondary border-[#8f8f8f]',
                 )}
               >
