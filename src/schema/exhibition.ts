@@ -28,3 +28,5 @@ export const exhibitionSchema = z.object({
   isOngoing: z.boolean(),
 })
 export type Exhibition = z.infer<typeof exhibitionSchema>
+
+export type OngoingStatusType = 'ongoing' | 'upcoming'

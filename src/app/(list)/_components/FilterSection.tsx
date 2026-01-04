@@ -7,30 +7,35 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/components/shadcn-ui/accordion'
+import { VenueType } from '@/schema/museum'
+import { OngoingStatusType } from '@/schema/exhibition'
 
-const venueCategories = [
+const venueTypes = [
   { value: '美術館', label: '美術館' },
   { value: '博物館', label: '博物館' },
   { value: 'ギャラリー', label: 'ギャラリー' },
-]
+] satisfies {
+  value: VenueType
+  label: string
+}[]
 
-const openStatuses = [
+const ongoingStatuses = [
   { value: 'ongoing', label: '開催中' },
   { value: 'upcoming', label: '開催予定' },
-]
+] satisfies { value: OngoingStatusType; label: string }[]
 
 interface FilterSectionProps {
-  selectedVenueCategories: string[]
-  handleClickVenueCategory: (category: string) => void
-  selectedOpenStatus: string[]
-  handleClickOpenStatus: (status: string) => void
+  selectedVenueTypes: string[]
+  handleClickVenueType: (type: VenueType) => void
+  selectedOngoingStatus: string[]
+  handleClickOngoingStatus: (status: OngoingStatusType) => void
 }
 
 export const FilterSection = ({
-  selectedVenueCategories,
-  handleClickVenueCategory,
-  selectedOpenStatus,
-  handleClickOpenStatus,
+  selectedVenueTypes,
+  handleClickVenueType,
+  selectedOngoingStatus,
+  handleClickOngoingStatus,
 }: FilterSectionProps) => {
   return (
     <Accordion type="single" collapsible className="rounded-xl border px-3 md:px-4">
@@ -45,15 +50,15 @@ export const FilterSection = ({
           <div className="space-y-3 md:flex md:items-center md:space-y-0 md:divide-x md:divide-gray-200 px-1">
             <FilterItem
               label="施設タイプ"
-              options={venueCategories}
-              selected={selectedVenueCategories}
-              onClick={handleClickVenueCategory}
+              options={venueTypes}
+              selected={selectedVenueTypes}
+              onClick={(value) => handleClickVenueType(value as VenueType)}
             />
             <FilterItem
               label="開催状況"
-              options={openStatuses}
-              selected={selectedOpenStatus}
-              onClick={handleClickOpenStatus}
+              options={ongoingStatuses}
+              selected={selectedOngoingStatus}
+              onClick={(value) => handleClickOngoingStatus(value as OngoingStatusType)}
             />
           </div>
         </AccordionContent>

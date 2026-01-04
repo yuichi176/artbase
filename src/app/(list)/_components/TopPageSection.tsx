@@ -49,6 +49,7 @@ export default async function TopPageSection() {
         access: data.access,
         openingInformation: data.openingInformation,
         officialUrl: data.officialUrl,
+        venueType: data.venueType,
         exhibitions: relatedExhibitions,
       } satisfies Museum
     })
