@@ -1,7 +1,12 @@
-import { Card } from '@/components/shadcn-ui/card'
 import { Badge } from '@/components/shadcn-ui/badge'
 import { cn } from '@/utils/shadcn'
 import { Filter } from '@/components'
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '@/components/shadcn-ui/accordion'
 
 const venueCategories = [
   { value: '美術館', label: '美術館' },
@@ -28,26 +33,32 @@ export const FilterSection = ({
   handleClickOpenStatus,
 }: FilterSectionProps) => {
   return (
-    <Card className="p-3 md:p-4 gap-3">
-      <div className="flex items-center gap-1">
-        <Filter className="size-5" />
-        <h2 className="text-sm md:text-base">フィルター</h2>
-      </div>
-
-      <FilterItem
-        label="施設タイプ"
-        options={venueCategories}
-        selected={selectedVenueCategories}
-        onClick={handleClickVenueCategory}
-      />
-
-      <FilterItem
-        label="開催状況"
-        options={openStatuses}
-        selected={selectedOpenStatus}
-        onClick={handleClickOpenStatus}
-      />
-    </Card>
+    <Accordion type="single" collapsible className="rounded-xl border px-3 md:px-4">
+      <AccordionItem value="item-1">
+        <AccordionTrigger className="hover:no-underline hover:cursor-pointer py-3">
+          <div className="flex items-center gap-1">
+            <Filter className="size-5" />
+            <p className="text-sm md:text-base">フィルター</p>
+          </div>
+        </AccordionTrigger>
+        <AccordionContent>
+          <div className="space-y-3 md:flex md:items-center md:space-y-0 md:divide-x md:divide-gray-200 px-1">
+            <FilterItem
+              label="施設タイプ"
+              options={venueCategories}
+              selected={selectedVenueCategories}
+              onClick={handleClickVenueCategory}
+            />
+            <FilterItem
+              label="開催状況"
+              options={openStatuses}
+              selected={selectedOpenStatus}
+              onClick={handleClickOpenStatus}
+            />
+          </div>
+        </AccordionContent>
+      </AccordionItem>
+    </Accordion>
   )
 }
 
@@ -61,7 +72,7 @@ interface FilterItemProps {
 }
 
 const FilterItem = ({ label, options, selected, onClick }: FilterItemProps) => (
-  <div className="flex flex-wrap items-center gap-y-3 px-1">
+  <div className="flex flex-wrap items-center gap-y-3 md:px-4 first:md:pl-0">
     <div className="flex items-center gap-2 flex-wrap">
       <span className="text-sm md:text-base">{label}</span>:
       <div className="flex flex-wrap gap-2">
