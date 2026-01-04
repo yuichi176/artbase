@@ -12,9 +12,11 @@ export const TopPagePresentation = ({ museums }: TopPagePresentationProps) => {
   return (
     <Card className="p-2 md:p-4 gap-3">
       <p className="text-sm pl-1">{count}件の展覧会が見つかりました</p>
-      <div className="flex flex-col gap-4">
+      <div className="space-y-4 md:columns-2 xl:columns-3 md:gap-4">
         {museums.map((museum) => (
-          <MuseumCard museum={museum} key={museum.name} />
+          <div key={museum.name} className="break-inside-avoid">
+            <MuseumCard museum={museum} />
+          </div>
         ))}
       </div>
     </Card>
