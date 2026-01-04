@@ -12,6 +12,7 @@ interface TopPagePresentationProps {
 
 export const TopPagePresentation = ({ museums }: TopPagePresentationProps) => {
   const [selectedVenueCategories, setSelectedVenueCategories] = useState<string[]>([])
+  const [selectedOpenStatuses, setSelectedOpenStatuses] = useState<string[]>([])
 
   const count = museums.reduce((sum, museum) => sum + museum.exhibitions.length, 0)
 
@@ -24,11 +25,22 @@ export const TopPagePresentation = ({ museums }: TopPagePresentationProps) => {
     })
   }
 
+  const handleClickOpenStatus = (value: string) => {
+    setSelectedOpenStatuses((prev) => {
+      if (prev.includes(value)) {
+        return prev.filter((v) => v !== value)
+      }
+      return [...prev, value]
+    })
+  }
+
   return (
     <div className="space-y-3">
       <FilterSection
         selectedVenueCategories={selectedVenueCategories}
         handleClickVenueCategory={handleClickVenueCategory}
+        selectedOpenStatus={selectedOpenStatuses}
+        handleClickOpenStatus={handleClickOpenStatus}
       />
       <Card className="p-2 md:p-4 gap-3">
         <p className="text-sm pl-1">{count}件の展覧会が見つかりました</p>
