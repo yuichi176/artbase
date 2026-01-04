@@ -32,7 +32,7 @@ export default function RootLayout({
     <html lang="ja" className={clsx(ubuntu.className, notoSansJp.className)}>
       <body>
         <Header />
-        <main className="p-4">{children}</main>
+        <main className="p-2 md:p-4">{children}</main>
       </body>
     </html>
   )
