@@ -28,7 +28,7 @@ export const SearchInput = ({
       <Input
         id={id}
         placeholder={placeholder}
-        className="pl-8 bg-background h-8 w-full shadow-none"
+        className="pl-8 bg-background h-8 w-full shadow-none text-sm"
         value={value}
         onChange={handleChange}
       />
