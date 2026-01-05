@@ -40,7 +40,7 @@ export default function MuseumCard({ museum }: MuseumCardProps) {
           return (
             <div
               key={exhibition.id}
-              className="border border-gray-200 rounded-lg p-3 hover:border-blue-300 hover:shadow-sm transition-all group"
+              className="border border-gray-200 rounded-lg p-3 hover:border-blue-300 hover:shadow-sm transition-all group relative"
             >
               <div className="flex items-start justify-between gap-4">
                 <div className="flex-1 min-w-0">
@@ -70,6 +70,7 @@ export default function MuseumCard({ museum }: MuseumCardProps) {
                   className="text-blue-600 hover:text-blue-500 flex-shrink-0 transition-colors"
                   title="展覧会公式ページ"
                 >
+                  <span aria-hidden="true" className="absolute inset-0" />
                   <ExternalLink className="w-4 h-4" />
                 </a>
               </div>
