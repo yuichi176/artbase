@@ -10,11 +10,14 @@ interface MuseumCardProps {
 export default function MuseumCard({ museum }: MuseumCardProps) {
   return (
     <div className="border border-gray-200 rounded-xl overflow-hidden bg-white">
-      <div className="bg-gray-50 border-b-1 border-gray-200 py-2 px-3 md:py-3 md:px-5 flex flex-col gap-2 md:gap-3">
+      <div className="bg-zinc-100 border-b-1 border-gray-200 py-2 px-3 md:py-3 md:px-5 flex flex-col gap-2 md:gap-3">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2.5">
+          <div className="flex items-center gap-2">
             <h2 className="text-sm md:text-base text-gray-900">{museum.name}</h2>
-            <Badge variant="outline" className="py-1 rounded-lg text-gray-500 text-[0.625rem] px-2">
+            <Badge
+              variant="outline"
+              className=" rounded-lg border-gray-300 text-gray-700 text-[0.625rem] px-2 bg-white"
+            >
               {museum.venueType}
             </Badge>
           </div>
@@ -22,7 +25,7 @@ export default function MuseumCard({ museum }: MuseumCardProps) {
             href={museum.officialUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-blue-600 hover:text-blue-700 flex-shrink-0 transition-colors"
+            className="text-blue-600 hover:text-blue-500 flex-shrink-0 transition-colors"
             title="会場公式ページ"
           >
             <ExternalLink className="w-4 h-4" />
@@ -64,7 +67,7 @@ export default function MuseumCard({ museum }: MuseumCardProps) {
                   href={exhibition.officialUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-blue-600 hover:text-blue-700 flex-shrink-0 transition-colors"
+                  className="text-blue-600 hover:text-blue-500 flex-shrink-0 transition-colors"
                   title="展覧会公式ページ"
                 >
                   <ExternalLink className="w-4 h-4" />
