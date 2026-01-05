@@ -6,9 +6,7 @@ import MuseumCard from '@/app/(list)/_components/MuseumCard'
 import { useMemo, useState } from 'react'
 import { FilterSection } from '@/app/(list)/_components/FilterSection'
 import { OngoingStatusType } from '@/schema/exhibition'
-import { Label } from '@/components/shadcn-ui/label'
-import { Input } from '@/components/shadcn-ui/input'
-import { Search } from 'lucide-react'
+import { SearchInput } from '@/app/(list)/_components/SearchInput'
 
 interface TopPagePresentationProps {
   museums: Museum[]
@@ -17,6 +15,7 @@ interface TopPagePresentationProps {
 export const TopPagePresentation = ({ museums }: TopPagePresentationProps) => {
   const [selectedVenueTypes, setSelectedVenueTypes] = useState<VenueType[]>([])
   const [selectedOngoingStatuses, setSelectedOngoingStatuses] = useState<OngoingStatusType[]>([])
+  const [searchQuery, setSearchQuery] = useState('')
 
   const handleClickVenueType = (value: VenueType) => {
     setSelectedVenueTypes((prev) => {
@@ -37,6 +36,8 @@ export const TopPagePresentation = ({ museums }: TopPagePresentationProps) => {
   }
 
   const filteredMuseums = useMemo(() => {
+    const q = searchQuery.trim().toLowerCase()
+
     return museums
       .filter((museum) => {
         if (selectedVenueTypes.length === 0) return true
@@ -46,35 +47,31 @@ export const TopPagePresentation = ({ museums }: TopPagePresentationProps) => {
         if (selectedOngoingStatuses.length === 0) return museum
 
         const filteredExhibitions = museum.exhibitions.filter((exhibition) => {
-          if (selectedOngoingStatuses.includes('ongoing') && exhibition.isOngoing) {
-            return true
-          }
-          return selectedOngoingStatuses.includes('upcoming') && !exhibition.isOngoing
+          if (selectedOngoingStatuses.includes('ongoing') && exhibition.isOngoing) return true
+          if (selectedOngoingStatuses.includes('upcoming') && !exhibition.isOngoing) return true
+          return false
         })
 
-        return {
-          ...museum,
-          exhibitions: filteredExhibitions,
-        }
+        return { ...museum, exhibitions: filteredExhibitions }
       })
       .filter((museum) => museum.exhibitions.length > 0)
-  }, [museums, selectedVenueTypes, selectedOngoingStatuses])
+      .filter((museum) => {
+        if (!q) return true
+
+        const matchVenueName = museum.name.toLowerCase().includes(q)
+        const matchExhibitionTitle = museum.exhibitions.some((exhibition) =>
+          exhibition.title.toLowerCase().includes(q),
+        )
+
+        return matchVenueName || matchExhibitionTitle
+      })
+  }, [museums, selectedVenueTypes, selectedOngoingStatuses, searchQuery])
 
   const count = filteredMuseums.reduce((sum, museum) => sum + museum.exhibitions.length, 0)
 
   return (
     <div className="space-y-3">
-      <div className="relative">
-        <Label htmlFor="search" className="sr-only">
-          Search
-        </Label>
-        <Input
-          id="search"
-          placeholder="会場名、展覧会名で検索..."
-          className="pl-8 bg-background h-8 w-full shadow-none"
-        />
-        <Search className="pointer-events-none absolute top-1/2 left-2 size-4 -translate-y-1/2 opacity-50 select-none" />
-      </div>
+      <SearchInput value={searchQuery} onChange={setSearchQuery} />
 
       <FilterSection
         selectedVenueTypes={selectedVenueTypes}
