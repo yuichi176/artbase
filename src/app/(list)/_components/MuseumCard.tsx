@@ -35,12 +35,12 @@ export default function MuseumCard({ museum }: MuseumCardProps) {
         <MuseumAccess museumName={museum.name} access={museum.access} />
       </div>
 
-      <div className="divide-y divide-gray-100">
+      <div className="p-2 space-y-2">
         {museum.exhibitions.map((exhibition) => {
           return (
             <div
               key={exhibition.id}
-              className="px-3 py-3 md:px-5 hover:bg-gray-50 transition-colors group"
+              className="border border-gray-200 rounded-lg p-3 hover:border-blue-300 hover:shadow-sm transition-all group"
             >
               <div className="flex items-start justify-between gap-4">
                 <div className="flex-1 min-w-0">

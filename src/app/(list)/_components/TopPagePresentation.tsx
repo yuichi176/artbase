@@ -80,8 +80,12 @@ export const TopPagePresentation = ({ museums }: TopPagePresentationProps) => {
         handleClickOngoingStatus={handleClickOngoingStatus}
       />
 
-      <Card className="p-2 md:p-4 gap-3 rounded-lg">
-        <p className="text-sm pl-1">{count}件の展覧会が見つかりました</p>
+      <Card className="p-2 md:p-4 rounded-lg gap-0">
+        {count !== 0 ? (
+          <p className="text-sm pl-1 mb-3">{count}件の展覧会が見つかりました</p>
+        ) : (
+          <p className="text-sm py-1 pl-1">条件に一致する展覧会が見つかりませんでした</p>
+        )}
         <div className="space-y-4 md:columns-2 xl:columns-3 md:gap-4">
           {filteredMuseums.map((museum) => (
             <div key={museum.name} className="break-inside-avoid">
