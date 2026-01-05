@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import './globals.css'
-import { Ubuntu, Noto_Sans_JP } from 'next/font/google'
+import { Noto_Sans_JP } from 'next/font/google'
 import { clsx } from 'clsx'
 import { Header } from '@/components'
 
@@ -8,13 +8,6 @@ export const metadata: Metadata = {
   title: 'Evently',
   description: '開催中の展覧会情報をまとめてチェックできるサービス',
 }
-
-const ubuntu = Ubuntu({
-  subsets: ['latin'],
-  style: ['normal'],
-  weight: ['400', '700'],
-  variable: '--font-ubuntu',
-})
 
 const notoSansJp = Noto_Sans_JP({
   subsets: ['latin'],
@@ -29,7 +22,7 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="ja" className={clsx(ubuntu.className, notoSansJp.className)}>
+    <html lang="ja" className={clsx(notoSansJp.className)}>
       <body>
         <Header />
         <main className="p-2 md:p-4">{children}</main>
