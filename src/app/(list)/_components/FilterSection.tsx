@@ -38,15 +38,15 @@ export const FilterSection = ({
   handleClickOngoingStatus,
 }: FilterSectionProps) => {
   return (
-    <Accordion type="single" collapsible className="rounded-lg border px-3 md:px-4">
+    <Accordion type="single" collapsible className="rounded-lg border">
       <AccordionItem value="item-1">
-        <AccordionTrigger className="hover:no-underline hover:cursor-pointer py-3">
+        <AccordionTrigger className="hover:no-underline hover:cursor-pointer py-3　px-3 md:px-4">
           <div className="flex items-center gap-1 text-muted-foreground">
             <Filter className="size-5" />
             <p>フィルター</p>
           </div>
         </AccordionTrigger>
-        <AccordionContent>
+        <AccordionContent className="px-3 md:px-4 border-t border-gray-200 py-4">
           <div className="space-y-3 md:flex md:items-center md:space-y-0 md:divide-x md:divide-gray-200 px-1">
             <FilterItem
               label="施設タイプ"
