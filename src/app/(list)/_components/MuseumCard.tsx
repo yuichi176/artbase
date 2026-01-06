@@ -63,16 +63,18 @@ export default function MuseumCard({ museum }: MuseumCardProps) {
                     )}
                   </div>
                 </div>
-                <a
-                  href={exhibition.officialUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-blue-600 hover:text-blue-500 flex-shrink-0 transition-colors"
-                  title="展覧会公式ページ"
-                >
-                  <span aria-hidden="true" className="absolute inset-0" />
-                  <ExternalLink className="w-4 h-4" />
-                </a>
+                {exhibition.officialUrl && (
+                  <a
+                    href={exhibition.officialUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-600 hover:text-blue-500 flex-shrink-0 transition-colors"
+                    title="展覧会公式ページ"
+                  >
+                    <span aria-hidden="true" className="absolute inset-0" />
+                    <ExternalLink className="w-4 h-4" />
+                  </a>
+                )}
               </div>
             </div>
           )
