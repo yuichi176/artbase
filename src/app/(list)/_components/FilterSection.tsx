@@ -40,7 +40,7 @@ export const FilterSection = ({
   return (
     <Accordion type="single" collapsible className="rounded-lg border bg-background">
       <AccordionItem value="item-1">
-        <AccordionTrigger className="hover:no-underline hover:cursor-pointer py-3　px-3 md:px-4">
+        <AccordionTrigger className="hover:no-underline hover:cursor-pointer py-3 px-3 md:px-4">
           <div className="flex items-center gap-1 text-gray-800">
             <Filter className="size-5" />
             <p>フィルター</p>
