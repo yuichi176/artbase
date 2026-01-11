@@ -8,12 +8,7 @@ import {
   AccordionTrigger,
 } from '@/components/shadcn-ui/accordion'
 import { VenueType, venueTypeOptions } from '@/schema/museum'
-import { OngoingStatusType } from '@/schema/exhibition'
-
-const ongoingStatuses = [
-  { value: 'ongoing', label: '開催中' },
-  { value: 'upcoming', label: '開催予定' },
-] satisfies { value: OngoingStatusType; label: string }[]
+import { ongoingStatusOptions, OngoingStatusType } from '@/schema/exhibition'
 
 interface FilterSectionProps {
   selectedVenueTypes: string[]
@@ -47,7 +42,7 @@ export const FilterSection = ({
             />
             <FilterItem
               label="開催状況"
-              options={ongoingStatuses}
+              options={ongoingStatusOptions}
               selected={selectedOngoingStatus}
               onClick={(value) => handleClickOngoingStatus(value as OngoingStatusType)}
             />
