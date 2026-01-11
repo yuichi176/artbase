@@ -1,6 +1,6 @@
 import { Badge } from '@/components/shadcn-ui/badge'
 import { cn } from '@/utils/shadcn'
-import { Filter } from '@/components'
+import { Filter } from '@/components/icon/filter'
 import {
   Accordion,
   AccordionContent,

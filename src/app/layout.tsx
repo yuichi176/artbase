@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import './globals.css'
 import { Noto_Sans_JP } from 'next/font/google'
 import { clsx } from 'clsx'
-import { Header } from '@/components'
+import { Header } from '@/components/layout/header'
 
 export const metadata: Metadata = {
   title: 'Evently',
