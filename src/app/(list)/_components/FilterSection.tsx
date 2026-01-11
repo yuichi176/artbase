@@ -7,17 +7,8 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/components/shadcn-ui/accordion'
-import { VenueType } from '@/schema/museum'
+import { VenueType, venueTypeOptions } from '@/schema/museum'
 import { OngoingStatusType } from '@/schema/exhibition'
-
-const venueTypes = [
-  { value: '美術館', label: '美術館' },
-  { value: '博物館', label: '博物館' },
-  { value: 'ギャラリー', label: 'ギャラリー' },
-] satisfies {
-  value: VenueType
-  label: string
-}[]
 
 const ongoingStatuses = [
   { value: 'ongoing', label: '開催中' },
@@ -50,7 +41,7 @@ export const FilterSection = ({
           <div className="space-y-3 md:flex md:items-center md:space-y-0 md:divide-x md:divide-gray-200 px-1">
             <FilterItem
               label="施設タイプ"
-              options={venueTypes}
+              options={venueTypeOptions}
               selected={selectedVenueTypes}
               onClick={(value) => handleClickVenueType(value as VenueType)}
             />
