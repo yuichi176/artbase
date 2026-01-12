@@ -22,7 +22,7 @@ export function MuseumAccess({ museumName, access }: Props) {
         <p {...textProps}>{access}</p>
 
         {isClamped && (
-          <button className="mt-1 text-blue-600 underline" {...toggleButtonProps}>
+          <button className="mt-1 text-gray-600 underline cursor-pointer" {...toggleButtonProps}>
             {isExpanded ? '閉じる' : 'もっと見る'}
           </button>
         )}
