@@ -15,6 +15,7 @@ interface TopPagePresentationProps {
 export const TopPagePresentation = ({ museums }: TopPagePresentationProps) => {
   const [selectedVenueTypes, setSelectedVenueTypes] = useState<VenueType[]>([])
   const [selectedAreas, setSelectedAreas] = useState<Area[]>([])
+  const [selectedMuseumNames, setSelectedMuseumNames] = useState<string[]>([])
   const [selectedOngoingStatus, setSelectedOngoingStatus] = useState<OngoingStatusType>('all')
   const [searchQuery, setSearchQuery] = useState('')
 
@@ -36,6 +37,15 @@ export const TopPagePresentation = ({ museums }: TopPagePresentationProps) => {
     })
   }
 
+  const handleClickMuseumName = (value: string) => {
+    setSelectedMuseumNames((prev) => {
+      if (prev.includes(value)) {
+        return prev.filter((v) => v !== value)
+      }
+      return [...prev, value]
+    })
+  }
+
   const handleClickOngoingStatus = (value: OngoingStatusType) => {
     setSelectedOngoingStatus(value)
   }
@@ -43,6 +53,11 @@ export const TopPagePresentation = ({ museums }: TopPagePresentationProps) => {
   const availableAreas = useMemo(() => {
     const uniqueAreas = [...new Set(museums.map((museum) => museum.area))]
     return uniqueAreas.sort()
+  }, [museums])
+
+  const availableMuseumNames = useMemo(() => {
+    const uniqueNames = [...new Set(museums.map((museum) => museum.name))]
+    return uniqueNames.sort()
   }, [museums])
 
   const filteredMuseums = useMemo(() => {
@@ -56,6 +71,10 @@ export const TopPagePresentation = ({ museums }: TopPagePresentationProps) => {
       .filter((museum) => {
         if (selectedAreas.length === 0) return true
         return selectedAreas.includes(museum.area)
+      })
+      .filter((museum) => {
+        if (selectedMuseumNames.length === 0) return true
+        return selectedMuseumNames.includes(museum.name)
       })
       .map((museum) => {
         const filteredExhibitions = museum.exhibitions.filter((exhibition) => {
@@ -81,7 +100,14 @@ export const TopPagePresentation = ({ museums }: TopPagePresentationProps) => {
 
         return matchVenueName || matchExhibitionTitle
       })
-  }, [museums, selectedVenueTypes, selectedAreas, selectedOngoingStatus, searchQuery])
+  }, [
+    museums,
+    selectedVenueTypes,
+    selectedAreas,
+    selectedMuseumNames,
+    selectedOngoingStatus,
+    searchQuery,
+  ])
 
   const count = filteredMuseums.reduce((sum, museum) => sum + museum.exhibitions.length, 0)
 
@@ -95,6 +121,9 @@ export const TopPagePresentation = ({ museums }: TopPagePresentationProps) => {
         selectedAreas={selectedAreas}
         availableAreas={availableAreas}
         handleClickArea={handleClickArea}
+        selectedMuseumNames={selectedMuseumNames}
+        availableMuseumNames={availableMuseumNames}
+        handleClickMuseumName={handleClickMuseumName}
         selectedOngoingStatus={selectedOngoingStatus}
         handleClickOngoingStatus={handleClickOngoingStatus}
       />

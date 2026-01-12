@@ -21,6 +21,9 @@ interface FilterSectionProps {
   selectedAreas: Area[]
   availableAreas: Area[]
   handleClickArea: (area: Area) => void
+  selectedMuseumNames: string[]
+  availableMuseumNames: string[]
+  handleClickMuseumName: (name: string) => void
   selectedOngoingStatus: OngoingStatusType
   handleClickOngoingStatus: (status: OngoingStatusType) => void
 }
@@ -31,6 +34,9 @@ export const FilterSection = ({
   selectedAreas,
   availableAreas,
   handleClickArea,
+  selectedMuseumNames,
+  availableMuseumNames,
+  handleClickMuseumName,
   selectedOngoingStatus,
   handleClickOngoingStatus,
 }: FilterSectionProps) => {
@@ -39,6 +45,11 @@ export const FilterSection = ({
   const availableAreaOptions = availableAreas.map((area) => ({
     label: area,
     value: area,
+  }))
+
+  const availableMuseumNameOptions = availableMuseumNames.map((name) => ({
+    label: name,
+    value: name,
   }))
 
   return (
@@ -79,6 +90,12 @@ export const FilterSection = ({
               options={availableAreaOptions}
               selected={selectedAreas}
               onValueChange={(value) => handleClickArea(value as Area)}
+            />
+            <FilterFieldCheckbox
+              label="会場名"
+              options={availableMuseumNameOptions}
+              selected={selectedMuseumNames}
+              onValueChange={(value) => handleClickMuseumName(value)}
             />
           </div>
         </div>
