@@ -120,11 +120,13 @@ const FilterFieldRadio = ({
 }) => (
   <div className="py-5">
     <p className="mb-5">{label}</p>
-    <RadioGroup onValueChange={onValueChange} value={value}>
+    <RadioGroup onValueChange={onValueChange} value={value} className="space-y-4">
       {options.map((option) => (
-        <div key={option.value} className="flex items-center gap-3">
+        <div key={option.value} className="flex items-center gap-3 w-full">
           <RadioGroupItem value={option.value} id={option.value} />
-          <Label htmlFor={option.value}>{option.label}</Label>
+          <Label htmlFor={option.value} className="grow">
+            {option.label}
+          </Label>
         </div>
       ))}
     </RadioGroup>
@@ -147,17 +149,17 @@ const FilterFieldCheckbox = ({
   return (
     <div className="py-5">
       <p className="mb-5">{label}</p>
-      <div className="space-y-3">
+      <div className="space-y-4">
         {displayedOptions.map((option) => {
           const isChecked = selected.includes(option.value)
           return (
-            <div key={option.value} className="flex items-center gap-3">
+            <div key={option.value} className="flex items-center gap-3 w-full">
               <Checkbox
                 id={option.value}
                 checked={isChecked}
                 onCheckedChange={() => onValueChange(option.value)}
               />
-              <Label htmlFor={option.value} className="cursor-pointer">
+              <Label htmlFor={option.value} className="cursor-pointer grow">
                 {option.label}
               </Label>
             </div>
