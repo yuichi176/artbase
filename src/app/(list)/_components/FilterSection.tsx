@@ -9,7 +9,7 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from '@/components/shadcn-ui/drawer'
-import { VenueType, venueTypeOptions } from '@/schema/museum'
+import { VenueType, venueTypeOptions, Area } from '@/schema/museum'
 import { ongoingStatusOptions, OngoingStatusType } from '@/schema/exhibition'
 import { Label } from '@radix-ui/react-label'
 import { RadioGroup, RadioGroupItem } from '@/components/shadcn-ui/radio-group'
@@ -18,6 +18,9 @@ import { Checkbox } from '@/components/shadcn-ui/checkbox'
 interface FilterSectionProps {
   selectedVenueTypes: string[]
   handleClickVenueType: (type: VenueType) => void
+  selectedAreas: Area[]
+  availableAreas: Area[]
+  handleClickArea: (area: Area) => void
   selectedOngoingStatus: OngoingStatusType
   handleClickOngoingStatus: (status: OngoingStatusType) => void
 }
@@ -25,10 +28,18 @@ interface FilterSectionProps {
 export const FilterSection = ({
   selectedVenueTypes,
   handleClickVenueType,
+  selectedAreas,
+  availableAreas,
+  handleClickArea,
   selectedOngoingStatus,
   handleClickOngoingStatus,
 }: FilterSectionProps) => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false)
+
+  const availableAreaOptions = availableAreas.map((area) => ({
+    label: area,
+    value: area,
+  }))
 
   return (
     <Drawer direction="bottom" open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
@@ -62,6 +73,12 @@ export const FilterSection = ({
               options={venueTypeOptions}
               selected={selectedVenueTypes}
               onValueChange={(value) => handleClickVenueType(value as VenueType)}
+            />
+            <FilterFieldCheckbox
+              label="エリア"
+              options={availableAreaOptions}
+              selected={selectedAreas}
+              onValueChange={(value) => handleClickArea(value as Area)}
             />
           </div>
         </div>

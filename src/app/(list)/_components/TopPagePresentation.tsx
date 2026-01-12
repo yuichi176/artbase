@@ -1,7 +1,7 @@
 'use client'
 
 import { Card } from '@/components/shadcn-ui/card'
-import { Museum, VenueType } from '@/schema/museum'
+import { Museum, VenueType, Area } from '@/schema/museum'
 import MuseumCard from '@/app/(list)/_components/MuseumCard'
 import { useMemo, useState } from 'react'
 import { FilterSection } from '@/app/(list)/_components/FilterSection'
@@ -14,6 +14,7 @@ interface TopPagePresentationProps {
 
 export const TopPagePresentation = ({ museums }: TopPagePresentationProps) => {
   const [selectedVenueTypes, setSelectedVenueTypes] = useState<VenueType[]>([])
+  const [selectedAreas, setSelectedAreas] = useState<Area[]>([])
   const [selectedOngoingStatus, setSelectedOngoingStatus] = useState<OngoingStatusType>('all')
   const [searchQuery, setSearchQuery] = useState('')
 
@@ -26,9 +27,23 @@ export const TopPagePresentation = ({ museums }: TopPagePresentationProps) => {
     })
   }
 
+  const handleClickArea = (value: Area) => {
+    setSelectedAreas((prev) => {
+      if (prev.includes(value)) {
+        return prev.filter((v) => v !== value)
+      }
+      return [...prev, value]
+    })
+  }
+
   const handleClickOngoingStatus = (value: OngoingStatusType) => {
     setSelectedOngoingStatus(value)
   }
+
+  const availableAreas = useMemo(() => {
+    const uniqueAreas = [...new Set(museums.map((museum) => museum.area))]
+    return uniqueAreas.sort()
+  }, [museums])
 
   const filteredMuseums = useMemo(() => {
     const q = searchQuery.trim().toLowerCase()
@@ -37,6 +52,10 @@ export const TopPagePresentation = ({ museums }: TopPagePresentationProps) => {
       .filter((museum) => {
         if (selectedVenueTypes.length === 0) return true
         return selectedVenueTypes.includes(museum.venueType)
+      })
+      .filter((museum) => {
+        if (selectedAreas.length === 0) return true
+        return selectedAreas.includes(museum.area)
       })
       .map((museum) => {
         const filteredExhibitions = museum.exhibitions.filter((exhibition) => {
@@ -62,7 +81,7 @@ export const TopPagePresentation = ({ museums }: TopPagePresentationProps) => {
 
         return matchVenueName || matchExhibitionTitle
       })
-  }, [museums, selectedVenueTypes, selectedOngoingStatus, searchQuery])
+  }, [museums, selectedVenueTypes, selectedAreas, selectedOngoingStatus, searchQuery])
 
   const count = filteredMuseums.reduce((sum, museum) => sum + museum.exhibitions.length, 0)
 
@@ -73,6 +92,9 @@ export const TopPagePresentation = ({ museums }: TopPagePresentationProps) => {
       <FilterSection
         selectedVenueTypes={selectedVenueTypes}
         handleClickVenueType={handleClickVenueType}
+        selectedAreas={selectedAreas}
+        availableAreas={availableAreas}
+        handleClickArea={handleClickArea}
         selectedOngoingStatus={selectedOngoingStatus}
         handleClickOngoingStatus={handleClickOngoingStatus}
       />
