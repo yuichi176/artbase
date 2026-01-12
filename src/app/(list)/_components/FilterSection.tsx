@@ -1,12 +1,16 @@
+'use client'
+
+import { useState } from 'react'
 import { Badge } from '@/components/shadcn-ui/badge'
 import { cn } from '@/utils/shadcn'
 import { Filter } from '@/components/icon/filter'
 import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from '@/components/shadcn-ui/accordion'
+  Drawer,
+  DrawerContent,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from '@/components/shadcn-ui/drawer'
 import { VenueType, venueTypeOptions } from '@/schema/museum'
 import { ongoingStatusOptions, OngoingStatusType } from '@/schema/exhibition'
 
@@ -23,17 +27,29 @@ export const FilterSection = ({
   selectedOngoingStatus,
   handleClickOngoingStatus,
 }: FilterSectionProps) => {
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false)
+
   return (
-    <Accordion type="single" collapsible className="rounded-lg border bg-background">
-      <AccordionItem value="item-1">
-        <AccordionTrigger className="hover:no-underline hover:cursor-pointer py-3 px-3 md:px-4">
+    <Drawer direction="bottom" open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
+      <DrawerTrigger asChild>
+        <button
+          type="button"
+          className="w-full rounded-lg border bg-background py-3 px-3 md:px-4 hover:bg-accent hover:text-accent-foreground transition-colors text-left"
+        >
           <div className="flex items-center gap-1 text-gray-800">
             <Filter className="size-5" />
             <p>フィルター</p>
           </div>
-        </AccordionTrigger>
-        <AccordionContent className="px-3 md:px-4 border-t border-gray-200 py-4">
-          <div className="space-y-3 md:flex md:items-center md:space-y-0 md:divide-x md:divide-gray-200 px-1">
+        </button>
+      </DrawerTrigger>
+
+      <DrawerContent>
+        <DrawerHeader className="border-b border-gray-200">
+          <DrawerTitle className="text-left">フィルター</DrawerTitle>
+        </DrawerHeader>
+
+        <div className="px-4 py-4 overflow-y-auto max-h-[80vh]">
+          <div className="space-y-3 md:flex md:items-center md:space-y-0 md:divide-x md:divide-gray-200">
             <FilterItem
               label="施設タイプ"
               options={venueTypeOptions}
@@ -47,9 +63,9 @@ export const FilterSection = ({
               onClick={(value) => handleClickOngoingStatus(value as OngoingStatusType)}
             />
           </div>
-        </AccordionContent>
-      </AccordionItem>
-    </Accordion>
+        </div>
+      </DrawerContent>
+    </Drawer>
   )
 }
 
@@ -65,7 +81,7 @@ interface FilterItemProps {
 const FilterItem = ({ label, options, selected, onClick }: FilterItemProps) => (
   <div className="flex flex-wrap items-center gap-y-3 md:px-4 first:md:pl-0">
     <div className="flex items-center gap-2 flex-wrap">
-      <span className="text-gray-800">{label}</span>:
+      <span className="text-gray-800">{label}</span>
       <div className="flex flex-wrap gap-2">
         {options.map((option) => {
           const isSelected = selected.includes(option.value)
