@@ -1,4 +1,4 @@
-import { Calendar, ExternalLink } from 'lucide-react'
+import { Calendar, ExternalLink, MapPin } from 'lucide-react'
 import { Museum } from '@/schema/museum'
 import { Badge } from '@/components/shadcn-ui/badge'
 import { MuseumAccess } from '@/app/(list)/_components/MuseumAccess'
@@ -30,6 +30,11 @@ export default function MuseumCard({ museum }: MuseumCardProps) {
           >
             <ExternalLink className="w-4 h-4" />
           </a>
+        </div>
+
+        <div className="flex items-center gap-1.5 text-gray-600 text-xs md:text-sm">
+          <MapPin className="w-3.5 h-3.5 md:w-4 md:h-4 flex-shrink-0" />
+          <span>{museum.area}</span>
         </div>
 
         <MuseumAccess museumName={museum.name} access={museum.access} />
