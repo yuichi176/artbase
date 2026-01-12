@@ -137,11 +137,18 @@ const FilterFieldCheckbox = ({
   onValueChange,
   selected,
 }: FilterFieldProps & { selected: string[] }) => {
+  const [isExpanded, setIsExpanded] = useState(false)
+  const INITIAL_DISPLAY_COUNT = 5
+  const shouldShowExpandButton = options.length > INITIAL_DISPLAY_COUNT
+
+  const displayedOptions =
+    shouldShowExpandButton && !isExpanded ? options.slice(0, INITIAL_DISPLAY_COUNT) : options
+
   return (
     <div className="py-5">
       <p className="mb-5">{label}</p>
       <div className="space-y-3">
-        {options.map((option) => {
+        {displayedOptions.map((option) => {
           const isChecked = selected.includes(option.value)
           return (
             <div key={option.value} className="flex items-center gap-3">
@@ -157,6 +164,16 @@ const FilterFieldCheckbox = ({
           )
         })}
       </div>
+
+      {shouldShowExpandButton && (
+        <button
+          type="button"
+          onClick={() => setIsExpanded(!isExpanded)}
+          className="mt-3 text-sm text-gray-600 hover:text-gray-700 flex items-center gap-1"
+        >
+          {isExpanded ? '- 閉じる' : `+ もっとみる (${options.length - INITIAL_DISPLAY_COUNT})`}
+        </button>
+      )}
     </div>
   )
 }
