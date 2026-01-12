@@ -10,7 +10,27 @@ export const useExpandableClamp = <T extends HTMLElement = HTMLElement>({
 }: UseExpandableClampOptions = {}) => {
   const id = useId()
 
-  const clampClass = `line-clamp-${maxLine}`
+  // Tailwind CSS の動的クラス名問題を回避するため、完全なクラス名を使用
+  const getClampClass = (lines: number): string => {
+    switch (lines) {
+      case 1:
+        return 'line-clamp-1'
+      case 2:
+        return 'line-clamp-2'
+      case 3:
+        return 'line-clamp-3'
+      case 4:
+        return 'line-clamp-4'
+      case 5:
+        return 'line-clamp-5'
+      case 6:
+        return 'line-clamp-6'
+      default:
+        return 'line-clamp-2'
+    }
+  }
+
+  const clampClass = getClampClass(maxLine)
 
   const [isExpanded, setIsExpanded] = useState(false)
   const [isClamped, setIsClamped] = useState(false)
