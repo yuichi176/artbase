@@ -1,8 +1,6 @@
 'use client'
 
 import { useState } from 'react'
-import { Badge } from '@/components/shadcn-ui/badge'
-import { cn } from '@/utils/shadcn'
 import { Filter } from '@/components/icon/filter'
 import {
   Drawer,
@@ -13,11 +11,13 @@ import {
 } from '@/components/shadcn-ui/drawer'
 import { VenueType, venueTypeOptions } from '@/schema/museum'
 import { ongoingStatusOptions, OngoingStatusType } from '@/schema/exhibition'
+import { Label } from '@radix-ui/react-label'
+import { RadioGroup, RadioGroupItem } from '@/components/shadcn-ui/radio-group'
 
 interface FilterSectionProps {
   selectedVenueTypes: string[]
   handleClickVenueType: (type: VenueType) => void
-  selectedOngoingStatus: string[]
+  selectedOngoingStatus: OngoingStatusType
   handleClickOngoingStatus: (status: OngoingStatusType) => void
 }
 
@@ -49,18 +49,18 @@ export const FilterSection = ({
         </DrawerHeader>
 
         <div className="px-4 py-4 overflow-y-auto max-h-[80vh]">
-          <div className="space-y-3 md:flex md:items-center md:space-y-0 md:divide-x md:divide-gray-200">
-            <FilterItem
+          <div className="divide-y divide-gray-200">
+            <FilterFieldRadio
+              label="開催状況"
+              options={ongoingStatusOptions}
+              onValueChange={(value) => handleClickOngoingStatus(value as OngoingStatusType)}
+              value={selectedOngoingStatus}
+            />
+            <FilterFieldCheckbox
               label="施設タイプ"
               options={venueTypeOptions}
               selected={selectedVenueTypes}
-              onClick={(value) => handleClickVenueType(value as VenueType)}
-            />
-            <FilterItem
-              label="開催状況"
-              options={ongoingStatusOptions}
-              selected={selectedOngoingStatus}
-              onClick={(value) => handleClickOngoingStatus(value as OngoingStatusType)}
+              onValueChange={(value) => handleClickVenueType(value as VenueType)}
             />
           </div>
         </div>
@@ -69,37 +69,38 @@ export const FilterSection = ({
   )
 }
 
-type Option = { value: string; label: string }
-
-interface FilterItemProps {
+interface FilterFieldProps {
   label: string
-  options: Option[]
-  selected: string[]
-  onClick: (value: string) => void
+  options: { value: string; label: string }[]
+  onValueChange: (value: string) => void
 }
 
-const FilterItem = ({ label, options, selected, onClick }: FilterItemProps) => (
-  <div className="flex flex-wrap items-center gap-y-3 md:px-4 first:md:pl-0">
-    <div className="flex items-center gap-2 flex-wrap">
-      <span className="text-gray-800">{label}</span>
-      <div className="flex flex-wrap gap-2">
-        {options.map((option) => {
-          const isSelected = selected.includes(option.value)
-          return (
-            <button key={option.value} type="button" onClick={() => onClick(option.value)}>
-              <Badge
-                variant="outline"
-                className={cn(
-                  'rounded-lg px-3 py-1 text-gray-700',
-                  isSelected && 'bg-gray-100 border-gray-500',
-                )}
-              >
-                {option.label}
-              </Badge>
-            </button>
-          )
-        })}
-      </div>
-    </div>
+const FilterFieldRadio = ({
+  label,
+  options,
+  onValueChange,
+  value,
+}: FilterFieldProps & {
+  value: string
+}) => (
+  <div>
+    <p className="font-bold mb-5">{label}</p>
+    <RadioGroup onValueChange={onValueChange} value={value}>
+      {options.map((option) => (
+        <div key={option.value} className="flex items-center gap-3">
+          <RadioGroupItem value={option.value} id={option.value} />
+          <Label htmlFor={option.value}>{option.label}</Label>
+        </div>
+      ))}
+    </RadioGroup>
   </div>
 )
+
+const FilterFieldCheckbox = ({
+  label,
+  options,
+  onValueChange,
+  selected,
+}: FilterFieldProps & { selected: string[] }) => {
+  return <></>
+}

@@ -29,8 +29,9 @@ export const exhibitionSchema = z.object({
 })
 export type Exhibition = z.infer<typeof exhibitionSchema>
 
-export type OngoingStatusType = 'ongoing' | 'upcoming'
+export type OngoingStatusType = 'all' | 'ongoing' | 'upcoming'
 export const ongoingStatusOptions = [
+  { label: 'すべて', value: 'all' },
   { label: '開催中', value: 'ongoing' },
   { label: '開催予定', value: 'upcoming' },
 ] satisfies { label: string; value: OngoingStatusType }[]

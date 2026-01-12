@@ -14,7 +14,7 @@ interface TopPagePresentationProps {
 
 export const TopPagePresentation = ({ museums }: TopPagePresentationProps) => {
   const [selectedVenueTypes, setSelectedVenueTypes] = useState<VenueType[]>([])
-  const [selectedOngoingStatuses, setSelectedOngoingStatuses] = useState<OngoingStatusType[]>([])
+  const [selectedOngoingStatus, setSelectedOngoingStatus] = useState<OngoingStatusType>('all')
   const [searchQuery, setSearchQuery] = useState('')
 
   const handleClickVenueType = (value: VenueType) => {
@@ -27,12 +27,7 @@ export const TopPagePresentation = ({ museums }: TopPagePresentationProps) => {
   }
 
   const handleClickOngoingStatus = (value: OngoingStatusType) => {
-    setSelectedOngoingStatuses((prev) => {
-      if (prev.includes(value)) {
-        return prev.filter((v) => v !== value)
-      }
-      return [...prev, value]
-    })
+    setSelectedOngoingStatus(value)
   }
 
   const filteredMuseums = useMemo(() => {
@@ -44,15 +39,17 @@ export const TopPagePresentation = ({ museums }: TopPagePresentationProps) => {
         return selectedVenueTypes.includes(museum.venueType)
       })
       .map((museum) => {
-        if (selectedOngoingStatuses.length === 0) return museum
-
         const filteredExhibitions = museum.exhibitions.filter((exhibition) => {
-          if (selectedOngoingStatuses.includes('ongoing') && exhibition.isOngoing) return true
-          if (selectedOngoingStatuses.includes('upcoming') && !exhibition.isOngoing) return true
-          return false
+          if (selectedOngoingStatus === 'all') return true
+          if (selectedOngoingStatus === 'ongoing') return exhibition.isOngoing
+          if (selectedOngoingStatus === 'upcoming') return !exhibition.isOngoing
+          return true
         })
 
-        return { ...museum, exhibitions: filteredExhibitions }
+        return {
+          ...museum,
+          exhibitions: filteredExhibitions,
+        }
       })
       .filter((museum) => museum.exhibitions.length > 0)
       .filter((museum) => {
@@ -65,7 +62,7 @@ export const TopPagePresentation = ({ museums }: TopPagePresentationProps) => {
 
         return matchVenueName || matchExhibitionTitle
       })
-  }, [museums, selectedVenueTypes, selectedOngoingStatuses, searchQuery])
+  }, [museums, selectedVenueTypes, selectedOngoingStatus, searchQuery])
 
   const count = filteredMuseums.reduce((sum, museum) => sum + museum.exhibitions.length, 0)
 
@@ -76,7 +73,7 @@ export const TopPagePresentation = ({ museums }: TopPagePresentationProps) => {
       <FilterSection
         selectedVenueTypes={selectedVenueTypes}
         handleClickVenueType={handleClickVenueType}
-        selectedOngoingStatus={selectedOngoingStatuses}
+        selectedOngoingStatus={selectedOngoingStatus}
         handleClickOngoingStatus={handleClickOngoingStatus}
       />
 
