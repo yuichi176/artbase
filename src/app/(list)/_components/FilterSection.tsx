@@ -13,6 +13,7 @@ import { VenueType, venueTypeOptions } from '@/schema/museum'
 import { ongoingStatusOptions, OngoingStatusType } from '@/schema/exhibition'
 import { Label } from '@radix-ui/react-label'
 import { RadioGroup, RadioGroupItem } from '@/components/shadcn-ui/radio-group'
+import { Checkbox } from '@/components/shadcn-ui/checkbox'
 
 interface FilterSectionProps {
   selectedVenueTypes: string[]
@@ -48,7 +49,7 @@ export const FilterSection = ({
           <DrawerTitle className="text-left">フィルター</DrawerTitle>
         </DrawerHeader>
 
-        <div className="px-4 py-4 overflow-y-auto max-h-[80vh]">
+        <div className="px-4 overflow-y-auto max-h-[80vh]">
           <div className="divide-y divide-gray-200">
             <FilterFieldRadio
               label="開催状況"
@@ -83,7 +84,7 @@ const FilterFieldRadio = ({
 }: FilterFieldProps & {
   value: string
 }) => (
-  <div>
+  <div className="py-5">
     <p className="font-bold mb-5">{label}</p>
     <RadioGroup onValueChange={onValueChange} value={value}>
       {options.map((option) => (
@@ -102,5 +103,26 @@ const FilterFieldCheckbox = ({
   onValueChange,
   selected,
 }: FilterFieldProps & { selected: string[] }) => {
-  return <></>
+  return (
+    <div className="py-5">
+      <p className="font-bold mb-5">{label}</p>
+      <div className="space-y-3">
+        {options.map((option) => {
+          const isChecked = selected.includes(option.value)
+          return (
+            <div key={option.value} className="flex items-center gap-3">
+              <Checkbox
+                id={option.value}
+                checked={isChecked}
+                onCheckedChange={() => onValueChange(option.value)}
+              />
+              <Label htmlFor={option.value} className="cursor-pointer">
+                {option.label}
+              </Label>
+            </div>
+          )
+        })}
+      </div>
+    </div>
+  )
 }
