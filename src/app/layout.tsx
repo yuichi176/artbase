@@ -23,9 +23,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ja" className={clsx(notoSansJp.className)}>
-      <body className="bg-gray-50">
+      <body>
         <Header />
-        <main className="p-2 md:p-4">{children}</main>
+        <main className="p-2 md:p-4 bg-gray-50">{children}</main>
       </body>
     </html>
   )
