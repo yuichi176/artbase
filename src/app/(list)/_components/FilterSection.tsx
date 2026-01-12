@@ -46,11 +46,11 @@ export const FilterSection = ({
       <DrawerTrigger asChild>
         <button
           type="button"
-          className="w-full rounded-lg border bg-background py-3 px-3 md:px-4 hover:bg-accent hover:text-accent-foreground transition-colors text-left"
+          className="w-full rounded-lg border bg-background py-3 px-2 md:px-4 text-left cursor-pointer"
         >
-          <div className="flex items-center gap-1 text-gray-800">
+          <div className="flex items-center gap-2 text-gray-800">
             <Filter className="size-5" />
-            <p>フィルター</p>
+            <p className="text-sm">フィルター</p>
           </div>
         </button>
       </DrawerTrigger>
@@ -102,7 +102,7 @@ const FilterFieldRadio = ({
   value: string
 }) => (
   <div className="py-5">
-    <p className="font-bold mb-5">{label}</p>
+    <p className="mb-5">{label}</p>
     <RadioGroup onValueChange={onValueChange} value={value}>
       {options.map((option) => (
         <div key={option.value} className="flex items-center gap-3">
@@ -122,7 +122,7 @@ const FilterFieldCheckbox = ({
 }: FilterFieldProps & { selected: string[] }) => {
   return (
     <div className="py-5">
-      <p className="font-bold mb-5">{label}</p>
+      <p className="mb-5">{label}</p>
       <div className="space-y-3">
         {options.map((option) => {
           const isChecked = selected.includes(option.value)
