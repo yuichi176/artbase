@@ -50,6 +50,13 @@ export const TopPagePresentation = ({ museums }: TopPagePresentationProps) => {
     setSelectedOngoingStatus(value)
   }
 
+  const handleResetFilters = () => {
+    setSelectedVenueTypes([])
+    setSelectedAreas([])
+    setSelectedMuseumNames([])
+    setSelectedOngoingStatus('all')
+  }
+
   const availableAreas = useMemo(() => {
     const uniqueAreas = [...new Set(museums.map((museum) => museum.area))]
     return uniqueAreas.sort()
@@ -126,6 +133,7 @@ export const TopPagePresentation = ({ museums }: TopPagePresentationProps) => {
         handleClickMuseumName={handleClickMuseumName}
         selectedOngoingStatus={selectedOngoingStatus}
         handleClickOngoingStatus={handleClickOngoingStatus}
+        onReset={handleResetFilters}
       />
 
       <Card className="p-2 md:p-4 rounded-lg gap-0">

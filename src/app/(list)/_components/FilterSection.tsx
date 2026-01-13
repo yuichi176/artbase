@@ -36,6 +36,7 @@ interface FilterSectionProps {
   handleClickMuseumName: (name: string) => void
   selectedOngoingStatus: OngoingStatusType
   handleClickOngoingStatus: (status: OngoingStatusType) => void
+  onReset: () => void
 }
 
 export const FilterSection = (props: FilterSectionProps) => {
@@ -111,6 +112,7 @@ const FilterContent = ({
   handleClickMuseumName,
   selectedOngoingStatus,
   handleClickOngoingStatus,
+  onReset,
 }: FilterSectionProps) => {
   const availableAreaOptions = availableAreas.map((area) => ({
     label: area,
@@ -149,6 +151,15 @@ const FilterContent = ({
           selected={selectedMuseumNames}
           onValueChange={(value) => handleClickMuseumName(value)}
         />
+      </div>
+      <div className="py-4">
+        <button
+          type="button"
+          onClick={onReset}
+          className="w-full rounded-md bg-secondary text-secondary-foreground hover:bg-secondary/80 h-10 px-4 py-2 font-medium transition-colors cursor-pointer"
+        >
+          すべてリセット
+        </button>
       </div>
     </div>
   )
