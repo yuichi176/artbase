@@ -3,6 +3,7 @@ import './globals.css'
 import { Noto_Sans_JP } from 'next/font/google'
 import { clsx } from 'clsx'
 import { Header } from '@/components/layout/header'
+import { ThemeProvider } from '@/components/theme-provider'
 
 export const metadata: Metadata = {
   title: 'Evently',
@@ -22,10 +23,17 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="ja" className={clsx(notoSansJp.className)}>
+    <html lang="ja" className={clsx(notoSansJp.className)} suppressHydrationWarning>
       <body>
-        <Header />
-        <main className="p-2 md:p-4 bg-gray-50">{children}</main>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <Header />
+          <main className="p-2 md:p-4 bg-gray-50">{children}</main>
+        </ThemeProvider>
       </body>
     </html>
   )
