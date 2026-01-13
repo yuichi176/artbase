@@ -2,8 +2,10 @@
 
 import { useState } from 'react'
 import { Filter } from '@/components/icon/filter'
+import { X } from '@/components/icon/x'
 import {
   Drawer,
+  DrawerClose,
   DrawerContent,
   DrawerHeader,
   DrawerTitle,
@@ -79,7 +81,18 @@ export const FilterSection = (props: FilterSectionProps) => {
       </DrawerTrigger>
       <DrawerContent>
         <DrawerHeader className="border-b border-gray-200">
-          <DrawerTitle className="text-left">フィルター</DrawerTitle>
+          <div className="flex items-center justify-between">
+            <DrawerTitle className="text-left">フィルター</DrawerTitle>
+            <DrawerClose asChild>
+              <button
+                type="button"
+                className="rounded-sm opacity-70 transition-opacity hover:opacity-100 focus:outline-none"
+                aria-label="閉じる"
+              >
+                <X className="size-5" />
+              </button>
+            </DrawerClose>
+          </div>
         </DrawerHeader>
         <FilterContent {...props} />
       </DrawerContent>
