@@ -32,7 +32,7 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <Header />
-          <main className="p-2 md:p-4 bg-gray-50">{children}</main>
+          <main className="p-2 md:p-4">{children}</main>
         </ThemeProvider>
       </body>
     </html>

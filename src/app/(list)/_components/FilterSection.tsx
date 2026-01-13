@@ -50,7 +50,7 @@ export const FilterSection = (props: FilterSectionProps) => {
             type="button"
             className="w-full rounded-lg border bg-background py-3 px-2 md:px-4 text-left cursor-pointer"
           >
-            <div className="flex items-center gap-2 text-gray-800">
+            <div className="flex items-center gap-2 text-foreground">
               <Filter className="size-5" />
               <p className="text-sm">フィルター</p>
             </div>
@@ -73,14 +73,14 @@ export const FilterSection = (props: FilterSectionProps) => {
           type="button"
           className="w-full rounded-lg border bg-background py-3 px-2 md:px-4 text-left cursor-pointer"
         >
-          <div className="flex items-center gap-2 text-gray-800">
+          <div className="flex items-center gap-2 text-foreground">
             <Filter className="size-5" />
             <p className="text-sm">フィルター</p>
           </div>
         </button>
       </DrawerTrigger>
       <DrawerContent>
-        <DrawerHeader className="border-b border-gray-200">
+        <DrawerHeader className="border-b border-border">
           <div className="flex items-center justify-between">
             <DrawerTitle className="text-left">フィルター</DrawerTitle>
             <DrawerClose asChild>
@@ -124,7 +124,7 @@ const FilterContent = ({
 
   return (
     <div className="px-4 overflow-y-auto max-h-[80vh]">
-      <div className="divide-y divide-gray-200">
+      <div className="divide-y divide-border">
         <FilterFieldRadio
           label="開催状況"
           options={ongoingStatusOptions}
@@ -221,7 +221,7 @@ const FilterFieldCheckbox = ({
         <button
           type="button"
           onClick={() => setIsExpanded(!isExpanded)}
-          className="mt-3 text-sm text-gray-600 hover:text-gray-700 flex items-center gap-1 cursor-pointer"
+          className="mt-3 text-sm text-foreground  flex items-center gap-1 cursor-pointer"
         >
           {isExpanded ? '- 閉じる' : `+ もっとみる (${options.length - INITIAL_DISPLAY_COUNT})`}
         </button>
