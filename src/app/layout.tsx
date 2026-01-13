@@ -6,7 +6,7 @@ import { Header } from '@/components/layout/header'
 import { ThemeProvider } from '@/components/theme-provider'
 
 export const metadata: Metadata = {
-  title: 'Evently',
+  title: 'Artlyst',
   description: '開催中の展覧会情報をまとめてチェックできるサービス',
 }
 
