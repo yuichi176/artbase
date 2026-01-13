@@ -14,6 +14,14 @@ import { ongoingStatusOptions, OngoingStatusType } from '@/schema/exhibition'
 import { Label } from '@radix-ui/react-label'
 import { RadioGroup, RadioGroupItem } from '@/components/shadcn-ui/radio-group'
 import { Checkbox } from '@/components/shadcn-ui/checkbox'
+import {
+  Dialog,
+  DialogTrigger,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/shadcn-ui/dialog'
+import { useMediaQuery } from '@/hooks/useMediaQuery'
 
 interface FilterSectionProps {
   selectedVenueTypes: string[]
@@ -40,7 +48,8 @@ export const FilterSection = ({
   selectedOngoingStatus,
   handleClickOngoingStatus,
 }: FilterSectionProps) => {
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false)
+  const [isOpen, setIsOpen] = useState(false)
+  const isDesktop = useMediaQuery('(min-width: 48rem)')
 
   const availableAreaOptions = availableAreas.map((area) => ({
     label: area,
@@ -52,8 +61,59 @@ export const FilterSection = ({
     value: name,
   }))
 
+  if (isDesktop) {
+    return (
+      <Dialog open={isOpen} onOpenChange={setIsOpen}>
+        <DialogTrigger asChild>
+          <button
+            type="button"
+            className="w-full rounded-lg border bg-background py-3 px-2 md:px-4 text-left cursor-pointer"
+          >
+            <div className="flex items-center gap-2 text-gray-800">
+              <Filter className="size-5" />
+              <p className="text-sm">フィルター</p>
+            </div>
+          </button>
+        </DialogTrigger>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle className="text-left">フィルター</DialogTitle>
+            <div className="px-4 overflow-y-auto max-h-[80vh]">
+              <div className="divide-y divide-gray-200">
+                <FilterFieldRadio
+                  label="開催状況"
+                  options={ongoingStatusOptions}
+                  onValueChange={(value) => handleClickOngoingStatus(value as OngoingStatusType)}
+                  value={selectedOngoingStatus}
+                />
+                <FilterFieldCheckbox
+                  label="施設タイプ"
+                  options={venueTypeOptions}
+                  selected={selectedVenueTypes}
+                  onValueChange={(value) => handleClickVenueType(value as VenueType)}
+                />
+                <FilterFieldCheckbox
+                  label="エリア"
+                  options={availableAreaOptions}
+                  selected={selectedAreas}
+                  onValueChange={(value) => handleClickArea(value as Area)}
+                />
+                <FilterFieldCheckbox
+                  label="会場名"
+                  options={availableMuseumNameOptions}
+                  selected={selectedMuseumNames}
+                  onValueChange={(value) => handleClickMuseumName(value)}
+                />
+              </div>
+            </div>
+          </DialogHeader>
+        </DialogContent>
+      </Dialog>
+    )
+  }
+
   return (
-    <Drawer direction="bottom" open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
+    <Drawer direction="bottom" open={isOpen} onOpenChange={setIsOpen}>
       <DrawerTrigger asChild>
         <button
           type="button"
@@ -124,7 +184,7 @@ const FilterFieldRadio = ({
       {options.map((option) => (
         <div key={option.value} className="flex items-center gap-3 w-full">
           <RadioGroupItem value={option.value} id={option.value} />
-          <Label htmlFor={option.value} className="grow">
+          <Label htmlFor={option.value} className="grow cursor-pointer">
             {option.label}
           </Label>
         </div>
@@ -171,7 +231,7 @@ const FilterFieldCheckbox = ({
         <button
           type="button"
           onClick={() => setIsExpanded(!isExpanded)}
-          className="mt-3 text-sm text-gray-600 hover:text-gray-700 flex items-center gap-1"
+          className="mt-3 text-sm text-gray-600 hover:text-gray-700 flex items-center gap-1 cursor-pointer"
         >
           {isExpanded ? '- 閉じる' : `+ もっとみる (${options.length - INITIAL_DISPLAY_COUNT})`}
         </button>
