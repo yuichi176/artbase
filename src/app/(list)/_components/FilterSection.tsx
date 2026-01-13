@@ -36,30 +36,9 @@ interface FilterSectionProps {
   handleClickOngoingStatus: (status: OngoingStatusType) => void
 }
 
-export const FilterSection = ({
-  selectedVenueTypes,
-  handleClickVenueType,
-  selectedAreas,
-  availableAreas,
-  handleClickArea,
-  selectedMuseumNames,
-  availableMuseumNames,
-  handleClickMuseumName,
-  selectedOngoingStatus,
-  handleClickOngoingStatus,
-}: FilterSectionProps) => {
+export const FilterSection = (props: FilterSectionProps) => {
   const [isOpen, setIsOpen] = useState(false)
   const isDesktop = useMediaQuery('(min-width: 48rem)')
-
-  const availableAreaOptions = availableAreas.map((area) => ({
-    label: area,
-    value: area,
-  }))
-
-  const availableMuseumNameOptions = availableMuseumNames.map((name) => ({
-    label: name,
-    value: name,
-  }))
 
   if (isDesktop) {
     return (
@@ -78,34 +57,7 @@ export const FilterSection = ({
         <DialogContent>
           <DialogHeader>
             <DialogTitle className="text-left">フィルター</DialogTitle>
-            <div className="px-4 overflow-y-auto max-h-[80vh]">
-              <div className="divide-y divide-gray-200">
-                <FilterFieldRadio
-                  label="開催状況"
-                  options={ongoingStatusOptions}
-                  onValueChange={(value) => handleClickOngoingStatus(value as OngoingStatusType)}
-                  value={selectedOngoingStatus}
-                />
-                <FilterFieldCheckbox
-                  label="施設タイプ"
-                  options={venueTypeOptions}
-                  selected={selectedVenueTypes}
-                  onValueChange={(value) => handleClickVenueType(value as VenueType)}
-                />
-                <FilterFieldCheckbox
-                  label="エリア"
-                  options={availableAreaOptions}
-                  selected={selectedAreas}
-                  onValueChange={(value) => handleClickArea(value as Area)}
-                />
-                <FilterFieldCheckbox
-                  label="会場名"
-                  options={availableMuseumNameOptions}
-                  selected={selectedMuseumNames}
-                  onValueChange={(value) => handleClickMuseumName(value)}
-                />
-              </div>
-            </div>
+            <FilterContent {...props} />
           </DialogHeader>
         </DialogContent>
       </Dialog>
@@ -125,42 +77,67 @@ export const FilterSection = ({
           </div>
         </button>
       </DrawerTrigger>
-
       <DrawerContent>
         <DrawerHeader className="border-b border-gray-200">
           <DrawerTitle className="text-left">フィルター</DrawerTitle>
         </DrawerHeader>
-
-        <div className="px-4 overflow-y-auto max-h-[80vh]">
-          <div className="divide-y divide-gray-200">
-            <FilterFieldRadio
-              label="開催状況"
-              options={ongoingStatusOptions}
-              onValueChange={(value) => handleClickOngoingStatus(value as OngoingStatusType)}
-              value={selectedOngoingStatus}
-            />
-            <FilterFieldCheckbox
-              label="施設タイプ"
-              options={venueTypeOptions}
-              selected={selectedVenueTypes}
-              onValueChange={(value) => handleClickVenueType(value as VenueType)}
-            />
-            <FilterFieldCheckbox
-              label="エリア"
-              options={availableAreaOptions}
-              selected={selectedAreas}
-              onValueChange={(value) => handleClickArea(value as Area)}
-            />
-            <FilterFieldCheckbox
-              label="会場名"
-              options={availableMuseumNameOptions}
-              selected={selectedMuseumNames}
-              onValueChange={(value) => handleClickMuseumName(value)}
-            />
-          </div>
-        </div>
+        <FilterContent {...props} />
       </DrawerContent>
     </Drawer>
+  )
+}
+
+const FilterContent = ({
+  selectedVenueTypes,
+  handleClickVenueType,
+  selectedAreas,
+  availableAreas,
+  handleClickArea,
+  selectedMuseumNames,
+  availableMuseumNames,
+  handleClickMuseumName,
+  selectedOngoingStatus,
+  handleClickOngoingStatus,
+}: FilterSectionProps) => {
+  const availableAreaOptions = availableAreas.map((area) => ({
+    label: area,
+    value: area,
+  }))
+
+  const availableMuseumNameOptions = availableMuseumNames.map((name) => ({
+    label: name,
+    value: name,
+  }))
+
+  return (
+    <div className="px-4 overflow-y-auto max-h-[80vh]">
+      <div className="divide-y divide-gray-200">
+        <FilterFieldRadio
+          label="開催状況"
+          options={ongoingStatusOptions}
+          onValueChange={(value) => handleClickOngoingStatus(value as OngoingStatusType)}
+          value={selectedOngoingStatus}
+        />
+        <FilterFieldCheckbox
+          label="施設タイプ"
+          options={venueTypeOptions}
+          selected={selectedVenueTypes}
+          onValueChange={(value) => handleClickVenueType(value as VenueType)}
+        />
+        <FilterFieldCheckbox
+          label="エリア"
+          options={availableAreaOptions}
+          selected={selectedAreas}
+          onValueChange={(value) => handleClickArea(value as Area)}
+        />
+        <FilterFieldCheckbox
+          label="会場名"
+          options={availableMuseumNameOptions}
+          selected={selectedMuseumNames}
+          onValueChange={(value) => handleClickMuseumName(value)}
+        />
+      </div>
+    </div>
   )
 }
 
