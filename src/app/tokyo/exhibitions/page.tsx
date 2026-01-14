@@ -1,4 +1,4 @@
-import TopPageSection from '@/app/(list)/_components/TopPageSection'
+import TopPageSection from '@/app/tokyo/exhibitions/_components/TopPageSection'
 
 export const dynamic = 'force-dynamic'
 

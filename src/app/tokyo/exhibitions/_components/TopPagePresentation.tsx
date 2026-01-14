@@ -2,11 +2,11 @@
 
 import { Card } from '@/components/shadcn-ui/card'
 import { Museum, VenueType, Area } from '@/schema/museum'
-import MuseumCard from '@/app/(list)/_components/MuseumCard'
+import MuseumCard from '@/app/tokyo/exhibitions/_components/MuseumCard'
 import { useMemo, useState } from 'react'
-import { FilterSection } from '@/app/(list)/_components/FilterSection'
+import { FilterSection } from '@/app/tokyo/exhibitions/_components/FilterSection'
 import { OngoingStatusType } from '@/schema/exhibition'
-import { SearchInput } from '@/app/(list)/_components/SearchInput'
+import { SearchInput } from '@/app/tokyo/exhibitions/_components/SearchInput'
 
 interface TopPagePresentationProps {
   museums: Museum[]

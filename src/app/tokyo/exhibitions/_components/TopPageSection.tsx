@@ -3,7 +3,7 @@ import { Exhibition, RawExhibition } from '@/schema/exhibition'
 import { Timestamp } from '@google-cloud/firestore'
 import { TZDate } from '@date-fns/tz'
 import { Museum, RawMuseum } from '@/schema/museum'
-import { TopPagePresentation } from '@/app/(list)/_components/TopPagePresentation'
+import { TopPagePresentation } from '@/app/tokyo/exhibitions/_components/TopPagePresentation'
 
 const now = new Date()
 
