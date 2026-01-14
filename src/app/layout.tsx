@@ -1,4 +1,4 @@
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import './globals.css'
 import { Noto_Sans_JP } from 'next/font/google'
 import { clsx } from 'clsx'
@@ -16,6 +16,13 @@ const notoSansJp = Noto_Sans_JP({
   weight: ['400', '700'],
   variable: '--font-noto-sans-jp',
 })
+
+export const viewport: Viewport = {
+  themeColor: [
+    { media: '(prefers-color-scheme: light)', color: 'white' },
+    { media: '(prefers-color-scheme: dark)', color: 'black' },
+  ],
+}
 
 export default function RootLayout({
   children,
