@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Artbase Tokyo is a Next.js application that displays exhibition information for art museums in Tokyo. It fetches exhibition data from Google Cloud Firestore and displays them grouped by museum/venue.
+Artlyst Tokyo is a Next.js application that displays exhibition information for art museums in Tokyo. It fetches exhibition data from Google Cloud Firestore and displays them grouped by museum/venue.
 
 ## Development Commands
 
