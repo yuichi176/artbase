@@ -16,8 +16,8 @@ export function MuseumAccess({ museumName, access }: Props) {
   const toggleButtonProps = getToggleButtonProps()
 
   return (
-    <div className="text-xs md:text-sm text-muted-foreground flex">
-      <Train className="w-4 h-4 mt-0.5 mr-1 shrink-0" aria-label={`${museumName}のアクセス情報`} />
+    <div className="text-xs md:text-sm text-muted-foreground flex gap-2">
+      <Train className="w-4 h-4 mt-0.5 shrink-0" aria-label={`${museumName}のアクセス情報`} />
       <div className="flex-1 min-w-0">
         <p {...textProps}>{access}</p>
 

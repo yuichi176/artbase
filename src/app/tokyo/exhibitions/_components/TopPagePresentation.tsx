@@ -136,7 +136,7 @@ export const TopPagePresentation = ({ museums }: TopPagePresentationProps) => {
         onReset={handleResetFilters}
       />
 
-      <Card className="p-2 md:p-4 rounded-lg gap-0">
+      <Card className="p-2 md:p-4 rounded-lg gap-0 bg-background">
         {count !== 0 ? (
           <p className="text-sm pl-1 mb-3">{count}件の展覧会が見つかりました</p>
         ) : (

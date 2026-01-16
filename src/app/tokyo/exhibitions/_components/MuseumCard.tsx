@@ -10,7 +10,7 @@ interface MuseumCardProps {
 export default function MuseumCard({ museum }: MuseumCardProps) {
   return (
     <div className="border border-border rounded-xl overflow-hidden bg-background">
-      <div className="bg-muted border-b-1 border-border py-2 px-3 md:py-3 md:px-5 flex flex-col gap-2 md:gap-3">
+      <div className="bg-muted/65 border-b-1 border-border py-2 px-3 md:py-3 md:px-5 flex flex-col gap-2 md:gap-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <h2 className="text-sm md:text-base">{museum.name}</h2>
@@ -29,9 +29,9 @@ export default function MuseumCard({ museum }: MuseumCardProps) {
           </a>
         </div>
 
-        <div className="flex items-center gap-1.5 text-muted-foreground text-xs md:text-sm">
+        <div className="flex items-center gap-2 text-muted-foreground text-xs md:text-sm">
           <MapPin className="w-3.5 h-3.5 md:w-4 md:h-4 flex-shrink-0" />
-          <span>{museum.area}</span>
+          <span className="leading-relaxed">{museum.area}</span>
         </div>
 
         <MuseumAccess museumName={museum.name} access={museum.access} />
