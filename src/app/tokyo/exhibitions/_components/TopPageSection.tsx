@@ -1,3 +1,5 @@
+'use cache'
+
 import db from '@/lib/firestore'
 import { Exhibition, RawExhibition } from '@/schema/exhibition'
 import { Timestamp } from '@google-cloud/firestore'
