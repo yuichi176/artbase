@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useAtomValue } from 'jotai'
 import { signOut } from '@/hooks/useAuth'
-import { userDisplayNameAtom } from '@/store/auth'
+import { userAtom, userDisplayNameAtom } from '@/store/auth'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,9 +14,10 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/shadcn-ui/dropdown-menu'
-import { Button } from '@/components/shadcn-ui/button'
+import { UserAvatar } from './user-avatar'
 
 export function UserMenu() {
+  const user = useAtomValue(userAtom)
   const displayName = useAtomValue(userDisplayNameAtom)
   const router = useRouter()
   const [isSigningOut, setIsSigningOut] = useState(false)
@@ -32,14 +33,23 @@ export function UserMenu() {
     }
   }
 
+  if (!user) return null
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline" size="sm">
-          {displayName || 'ユーザー'}
-        </Button>
+        <button className="rounded-full focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2">
+          <UserAvatar
+            uid={user.uid}
+            photoURL={user.photoURL}
+            displayName={user.displayName}
+            className="h-8 w-8"
+          />
+        </button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-56">
+        <DropdownMenuLabel>{displayName || 'ユーザー'}</DropdownMenuLabel>
+        <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
           <Link href="/account">アカウント設定</Link>
         </DropdownMenuItem>

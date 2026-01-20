@@ -17,9 +17,9 @@ export const Header = ({ className }: { className?: string }) => {
           <Logo />
         </Link>
       </div>
-      <div className="flex items-center gap-2">
-        <AuthButton />
+      <div className="flex items-center gap-3">
         <ModeToggle />
+        <AuthButton />
       </div>
     </header>
   )
