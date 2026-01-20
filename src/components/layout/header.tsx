@@ -8,11 +8,11 @@ export const Header = ({ className }: { className?: string }) => {
   return (
     <header
       className={cn(
-        'w-full bg-background border-b border-border flex items-center p-4 md:px-6',
+        'w-full bg-background border-b border-border flex items-center justify-between p-4 md:px-6',
         className,
       )}
     >
-      <div className="grow pt-2">
+      <div className="pt-2">
         <Link href="/">
           <Logo />
         </Link>
