@@ -48,7 +48,7 @@ export function UserMenu() {
         </button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-56">
-        <DropdownMenuLabel>{displayName || 'ユーザー'}</DropdownMenuLabel>
+        <DropdownMenuLabel className="truncate">{displayName || 'ユーザー'}</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
           <Link href="/account">アカウント設定</Link>
