@@ -69,15 +69,17 @@ export function LinkedProvidersSection() {
           <div>
             <div className="flex justify-between items-center">
               <h3 className="text-sm font-bold">Googleログイン</h3>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => handleOpenUnlinkDialog(PROVIDER_IDS.GOOGLE, googleEmail)}
-                disabled={!canUnlink}
-                className="text-destructive hover:text-destructive"
-              >
-                連携解除
-              </Button>
+              {canUnlink && hasGoogle && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => handleOpenUnlinkDialog(PROVIDER_IDS.GOOGLE, googleEmail)}
+                  disabled={!canUnlink}
+                  className="text-destructive hover:text-destructive"
+                >
+                  連携解除
+                </Button>
+              )}
             </div>
             {hasGoogle ? (
               <div className="mt-2">
@@ -85,11 +87,6 @@ export function LinkedProvidersSection() {
                   <div className="text-sm text-muted-foreground">連携済みアカウント</div>
                   <div className="mt-1 break-words font-medium">{googleEmail}</div>
                 </div>
-                {!canUnlink && (
-                  <p className="mt-2 text-xs text-muted-foreground">
-                    ※最後のログイン方法は解除できません
-                  </p>
-                )}
               </div>
             ) : (
               <div className="mt-3">
@@ -102,17 +99,19 @@ export function LinkedProvidersSection() {
           <div>
             <div className="flex justify-between items-center">
               <h3 className="text-sm font-bold">メールアドレスログイン</h3>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() =>
-                  handleOpenUnlinkDialog(PROVIDER_IDS.EMAIL_PASSWORD, emailPasswordEmail)
-                }
-                disabled={!canUnlink}
-                className="text-destructive hover:text-destructive"
-              >
-                連携解除
-              </Button>
+              {canUnlink && hasEmailPassword && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() =>
+                    handleOpenUnlinkDialog(PROVIDER_IDS.EMAIL_PASSWORD, emailPasswordEmail)
+                  }
+                  disabled={!canUnlink}
+                  className="text-destructive hover:text-destructive"
+                >
+                  連携解除
+                </Button>
+              )}
             </div>
             {hasEmailPassword ? (
               <div className="mt-2 space-y-3">
@@ -133,12 +132,6 @@ export function LinkedProvidersSection() {
                     </Button>
                   </div>
                 </div>
-
-                {!canUnlink && (
-                  <p className="text-xs text-muted-foreground">
-                    ※最後のログイン方法は解除できません
-                  </p>
-                )}
               </div>
             ) : (
               <div className="mt-3">
