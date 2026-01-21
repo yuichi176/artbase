@@ -73,7 +73,10 @@ export function useAuth() {
     )
 
     return () => unsubscribe()
-  }, [setFirebaseUser, setUser, setAuthLoading, setAuthError])
+    // Jotai's useSetAtom returns stable references that don't change between renders
+    // The effect should only run once on mount to set up the auth listener
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   return {
     user,
