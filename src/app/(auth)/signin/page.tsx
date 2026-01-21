@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import { Suspense } from 'react'
 import { SignInForm } from '../_components/sign-in-form'
 
 export const metadata: Metadata = {
@@ -16,7 +17,9 @@ export default function SignInPage() {
           <p className="mt-2 text-sm text-muted-foreground">Artlyst へようこそ</p>
         </div>
 
-        <SignInForm />
+        <Suspense fallback={<div className="space-y-4">読み込み中...</div>}>
+          <SignInForm />
+        </Suspense>
 
         <div className="text-center text-sm">
           <span className="text-muted-foreground">アカウントをお持ちでない方は </span>

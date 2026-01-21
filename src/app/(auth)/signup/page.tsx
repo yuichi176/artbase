@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import { Suspense } from 'react'
 import { SignUpForm } from '../_components/sign-up-form'
 
 export const metadata: Metadata = {
@@ -16,7 +17,9 @@ export default function SignUpPage() {
           <p className="mt-2 text-sm text-muted-foreground">Artlyst アカウントを作成</p>
         </div>
 
-        <SignUpForm />
+        <Suspense fallback={<div className="space-y-4">読み込み中...</div>}>
+          <SignUpForm />
+        </Suspense>
 
         <div className="text-center text-sm">
           <span className="text-muted-foreground">既にアカウントをお持ちの方は </span>
