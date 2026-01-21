@@ -53,7 +53,7 @@ export function LinkEmailPasswordDialog({ open, onOpenChange }: LinkEmailPasswor
       return
     }
 
-    if (!auth.currentUser) {
+    if (!auth?.currentUser) {
       setError('ログインしていません')
       return
     }

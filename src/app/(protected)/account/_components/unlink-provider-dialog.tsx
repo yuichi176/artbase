@@ -33,7 +33,7 @@ export function UnlinkProviderDialog({
   const handleUnlink = async () => {
     setError(null)
 
-    if (!auth.currentUser) {
+    if (!auth?.currentUser) {
       setError('ログインしていません')
       return
     }

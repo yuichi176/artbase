@@ -53,7 +53,7 @@ export function ChangePasswordDialog({ open, onOpenChange, userEmail }: ChangePa
       return
     }
 
-    if (!auth.currentUser) {
+    if (!auth?.currentUser) {
       setError('ログインしていません')
       return
     }

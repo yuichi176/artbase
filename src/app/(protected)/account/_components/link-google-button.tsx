@@ -18,7 +18,7 @@ export function LinkGoogleButton({ onSuccess, onError }: LinkGoogleButtonProps) 
   const handleLinkGoogle = async () => {
     setError(null)
 
-    if (!auth.currentUser) {
+    if (!auth?.currentUser) {
       const errorMsg = 'ログインしていません'
       setError(errorMsg)
       onError?.(errorMsg)

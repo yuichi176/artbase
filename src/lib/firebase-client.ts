@@ -11,8 +11,8 @@ const firebaseConfig = {
 }
 
 // Initialize Firebase only once (client-side)
-let app: FirebaseApp
-let auth: Auth
+let app: FirebaseApp | undefined
+let auth: Auth | undefined
 
 if (typeof window !== 'undefined') {
   app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0]
