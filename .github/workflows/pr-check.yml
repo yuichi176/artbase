@@ -1,0 +1,28 @@
+name: PR Check
+on:
+  pull_request:
+    branches:
+      - main
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test-and-build:
+    uses: ./.github/workflows/test-and-build.yml
+    with:
+      RUNNER: ubuntu-latest
+      NODE_VERSION: "22"
+      PNPM_VERSION: "10"
+
+  claude-code-review:
+    needs: test-and-build
+    uses: ./.github/workflows/claude-code-review.yml
+    with:
+      RUNNER: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: read
+      issues: read
+      id-token: write
