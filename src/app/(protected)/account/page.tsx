@@ -59,7 +59,9 @@ export default function AccountPage() {
 
               <div>
                 <div className="text-sm text-muted-foreground">ユーザーID</div>
-                <div className="mt-1 font-mono text-sm text-muted-foreground">{user.uid}</div>
+                <div className="mt-1 break-all font-mono text-sm text-muted-foreground">
+                  {user.uid}
+                </div>
               </div>
             </div>
           )}
