@@ -79,7 +79,7 @@ export function UnlinkProviderDialog({
         <div className="rounded-md bg-muted p-4">
           <div className="text-sm font-medium">{getProviderDisplayName(providerId)}</div>
           {providerEmail && (
-            <div className="mt-1 text-sm text-muted-foreground">{providerEmail}</div>
+            <div className="mt-1 break-words text-sm text-muted-foreground">{providerEmail}</div>
           )}
         </div>
 

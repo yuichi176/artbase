@@ -65,23 +65,23 @@ export function LinkedProvidersSection() {
         <div className="space-y-6">
           {/* Google Login Section */}
           <div>
-            <h3 className="text-sm font-bold">Googleログイン</h3>
+            <div className="flex justify-between items-center">
+              <h3 className="text-sm font-bold">Googleログイン</h3>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => handleOpenUnlinkDialog(PROVIDER_IDS.GOOGLE, googleEmail)}
+                disabled={!canUnlink}
+                className="text-destructive hover:text-destructive"
+              >
+                連携解除
+              </Button>
+            </div>
             {hasGoogle ? (
               <div className="mt-2">
-                <div className="flex items-start justify-between gap-4">
-                  <div className="flex-1">
-                    <div className="text-sm text-muted-foreground">連携済みアカウント</div>
-                    <div className="mt-1 font-medium">{googleEmail}</div>
-                  </div>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => handleOpenUnlinkDialog(PROVIDER_IDS.GOOGLE, googleEmail)}
-                    disabled={!canUnlink}
-                    className="text-destructive hover:text-destructive"
-                  >
-                    連携解除
-                  </Button>
+                <div className="flex-1 min-w-0">
+                  <div className="text-sm text-muted-foreground">連携済みアカウント</div>
+                  <div className="mt-1 break-words font-medium">{googleEmail}</div>
                 </div>
                 {!canUnlink && (
                   <p className="mt-2 text-xs text-muted-foreground">
@@ -98,25 +98,25 @@ export function LinkedProvidersSection() {
 
           {/* Email/Password Login Section */}
           <div>
-            <h3 className="text-sm font-bold">メールアドレスログイン</h3>
+            <div className="flex justify-between items-center">
+              <h3 className="text-sm font-bold">メールアドレスログイン</h3>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() =>
+                  handleOpenUnlinkDialog(PROVIDER_IDS.EMAIL_PASSWORD, emailPasswordEmail)
+                }
+                disabled={!canUnlink}
+                className="text-destructive hover:text-destructive"
+              >
+                連携解除
+              </Button>
+            </div>
             {hasEmailPassword ? (
               <div className="mt-2">
-                <div className="flex items-start justify-between gap-4">
-                  <div className="flex-1">
-                    <div className="text-sm text-muted-foreground">連携済みメールアドレス</div>
-                    <div className="mt-1 font-medium">{emailPasswordEmail}</div>
-                  </div>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() =>
-                      handleOpenUnlinkDialog(PROVIDER_IDS.EMAIL_PASSWORD, emailPasswordEmail)
-                    }
-                    disabled={!canUnlink}
-                    className="text-destructive hover:text-destructive"
-                  >
-                    連携解除
-                  </Button>
+                <div className="flex-1 min-w-0">
+                  <div className="text-sm text-muted-foreground">連携済みメールアドレス</div>
+                  <div className="mt-1 break-words font-medium">{emailPasswordEmail}</div>
                 </div>
                 {!canUnlink && (
                   <p className="mt-2 text-xs text-muted-foreground">
