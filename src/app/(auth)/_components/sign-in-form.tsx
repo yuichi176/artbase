@@ -7,6 +7,7 @@ import { auth } from '@/lib/firebase-client'
 import { Button } from '@/components/shadcn-ui/button'
 import { Input } from '@/components/shadcn-ui/input'
 import { Label } from '@/components/shadcn-ui/label'
+import { ForgotPasswordDialog } from './forgot-password-dialog'
 
 export function SignInForm() {
   const router = useRouter()
@@ -17,6 +18,7 @@ export function SignInForm() {
   const [password, setPassword] = useState('')
   const [error, setError] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
+  const [isForgotPasswordDialogOpen, setIsForgotPasswordDialogOpen] = useState(false)
 
   async function handleEmailSignIn(e: FormEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -91,7 +93,17 @@ export function SignInForm() {
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="password">パスワード</Label>
+          <div className="flex items-center justify-between">
+            <Label htmlFor="password">パスワード</Label>
+            {/*<button*/}
+            {/*  type="button"*/}
+            {/*  onClick={() => setIsForgotPasswordDialogOpen(true)}*/}
+            {/*  className="text-xs text-primary hover:underline"*/}
+            {/*  disabled={isLoading}*/}
+            {/*>*/}
+            {/*  パスワードをお忘れの場合*/}
+            {/*</button>*/}
+          </div>
           <Input
             id="password"
             type="password"
@@ -130,6 +142,13 @@ export function SignInForm() {
       >
         Googleでログイン
       </Button>
+
+      {/* Forgot Password Dialog */}
+      <ForgotPasswordDialog
+        open={isForgotPasswordDialogOpen}
+        onOpenChange={setIsForgotPasswordDialogOpen}
+        defaultEmail={email}
+      />
     </div>
   )
 }
