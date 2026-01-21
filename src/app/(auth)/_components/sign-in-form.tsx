@@ -95,14 +95,14 @@ export function SignInForm() {
         <div className="space-y-2">
           <div className="flex items-center justify-between">
             <Label htmlFor="password">パスワード</Label>
-            {/*<button*/}
-            {/*  type="button"*/}
-            {/*  onClick={() => setIsForgotPasswordDialogOpen(true)}*/}
-            {/*  className="text-xs text-primary hover:underline"*/}
-            {/*  disabled={isLoading}*/}
-            {/*>*/}
-            {/*  パスワードをお忘れの場合*/}
-            {/*</button>*/}
+            <button
+              type="button"
+              onClick={() => setIsForgotPasswordDialogOpen(true)}
+              className="text-xs text-primary hover:underline"
+              disabled={isLoading}
+            >
+              パスワードをお忘れの場合
+            </button>
           </div>
           <Input
             id="password"
