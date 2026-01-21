@@ -76,25 +76,23 @@ export default function AccountPage() {
         {/* Subscription Info */}
         <Card className="p-6">
           <h2 className="text-xl font-semibold">プラン</h2>
-          <div className="mt-4">
-            <div className="flex items-center gap-3">
-              <Badge variant={subscriptionTier === 'pro' ? 'default' : 'outline'}>
-                {subscriptionTier === 'pro' ? 'PRO' : 'FREE'}
-              </Badge>
-              <span className="text-sm text-muted-foreground">現在のプラン</span>
-            </div>
-
-            {subscriptionTier === 'free' && (
-              <div className="mt-4 rounded-lg border border-dashed p-4">
-                <p className="text-sm text-muted-foreground">
-                  Proプランにアップグレードすると、お気に入り機能などの追加機能をご利用いただけます。
-                </p>
-                <p className="mt-2 text-xs text-muted-foreground">
-                  ※サブスクリプション機能は現在準備中です
-                </p>
-              </div>
-            )}
+          <div className="flex items-center gap-3">
+            <Badge variant={subscriptionTier === 'pro' ? 'default' : 'outline'}>
+              {subscriptionTier === 'pro' ? 'PRO' : 'FREE'}
+            </Badge>
+            <span className="text-sm text-muted-foreground">現在のプラン</span>
           </div>
+
+          {subscriptionTier === 'free' && (
+            <div className="rounded-lg border border-dashed p-4">
+              <p className="text-sm text-muted-foreground">
+                Proプランにアップグレードすると、お気に入り機能などの追加機能をご利用いただけます。
+              </p>
+              <p className="mt-2 text-xs text-muted-foreground">
+                ※サブスクリプション機能は現在準備中です
+              </p>
+            </div>
+          )}
         </Card>
 
         {/* Preferences */}

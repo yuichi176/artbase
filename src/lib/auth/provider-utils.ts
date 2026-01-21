@@ -53,6 +53,37 @@ export function getProviderDisplayName(providerId: string): string {
 }
 
 /**
+ * Get provider info for a specific provider ID
+ * @param user Firebase user object
+ * @param providerId Provider ID to search for
+ * @returns Provider info or null if not found
+ */
+export function getProviderInfo(user: FirebaseUser | null, providerId: string) {
+  if (!user) return null
+  return user.providerData.find((provider) => provider.providerId === providerId) || null
+}
+
+/**
+ * Get email address for Email/Password provider
+ * @param user Firebase user object
+ * @returns Email address or null if not linked
+ */
+export function getEmailPasswordEmail(user: FirebaseUser | null): string | null {
+  const providerInfo = getProviderInfo(user, PROVIDER_IDS.EMAIL_PASSWORD)
+  return providerInfo?.email || null
+}
+
+/**
+ * Get email address for Google provider
+ * @param user Firebase user object
+ * @returns Email address or null if not linked
+ */
+export function getGoogleEmail(user: FirebaseUser | null): string | null {
+  const providerInfo = getProviderInfo(user, PROVIDER_IDS.GOOGLE)
+  return providerInfo?.email || null
+}
+
+/**
  * Get Firebase error message in Japanese
  * @param errorCode Firebase error code
  * @returns Japanese error message

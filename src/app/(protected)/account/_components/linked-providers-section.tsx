@@ -6,11 +6,10 @@ import { firebaseUserAtom } from '@/store/auth'
 import {
   isEmailPasswordLinked,
   isGoogleLinked,
-  PROVIDER_IDS,
-  getProviderDisplayName,
+  getEmailPasswordEmail,
+  getGoogleEmail,
 } from '@/lib/auth/provider-utils'
 import { Card } from '@/components/shadcn-ui/card'
-import { Badge } from '@/components/shadcn-ui/badge'
 import { Button } from '@/components/shadcn-ui/button'
 import { LinkEmailPasswordDialog } from './link-email-password-dialog'
 import { LinkGoogleButton } from './link-google-button'
@@ -25,48 +24,51 @@ export function LinkedProvidersSection() {
 
   const hasEmailPassword = isEmailPasswordLinked(firebaseUser)
   const hasGoogle = isGoogleLinked(firebaseUser)
+  const emailPasswordEmail = getEmailPasswordEmail(firebaseUser)
+  const googleEmail = getGoogleEmail(firebaseUser)
 
   return (
     <>
       <Card className="p-6">
         <h2 className="text-lg font-semibold">ログイン方法</h2>
 
-        {/* Current linked providers */}
-        <div className="mt-4">
-          <div className="text-sm text-muted-foreground">現在のログイン方法</div>
-          <div className="mt-2 flex flex-wrap gap-2">
-            {hasEmailPassword && (
-              <Badge variant="outline">{getProviderDisplayName(PROVIDER_IDS.EMAIL_PASSWORD)}</Badge>
+        <div className="space-y-6">
+          {/* Google Login Section */}
+          <div>
+            <h3 className="text-sm font-bold">Googleログイン</h3>
+            {hasGoogle ? (
+              <div className="mt-2">
+                <div className="text-sm text-muted-foreground">連携済みアカウント</div>
+                <div className="mt-1 font-medium">{googleEmail}</div>
+              </div>
+            ) : (
+              <div className="mt-3">
+                <LinkGoogleButton />
+              </div>
             )}
-            {hasGoogle && (
-              <Badge variant="outline">{getProviderDisplayName(PROVIDER_IDS.GOOGLE)}</Badge>
+          </div>
+
+          {/* Email/Password Login Section */}
+          <div>
+            <h3 className="text-sm font-bold">メールアドレスログイン</h3>
+            {hasEmailPassword ? (
+              <div className="mt-2">
+                <div className="text-sm text-muted-foreground">連携済みメールアドレス</div>
+                <div className="mt-1 font-medium">{emailPasswordEmail}</div>
+              </div>
+            ) : (
+              <div className="mt-3">
+                <Button
+                  variant="outline"
+                  onClick={() => setIsEmailPasswordDialogOpen(true)}
+                  className="w-full justify-start"
+                >
+                  メール/パスワードを追加
+                </Button>
+              </div>
             )}
           </div>
         </div>
-
-        {/* Add new provider section - only show if not all providers are linked */}
-        {(!hasEmailPassword || !hasGoogle) && (
-          <>
-            <div className="my-4 border-t" />
-
-            <div>
-              <div className="text-sm text-muted-foreground">ログイン方法を追加</div>
-              <div className="mt-3 space-y-3">
-                {!hasEmailPassword && (
-                  <Button
-                    variant="outline"
-                    onClick={() => setIsEmailPasswordDialogOpen(true)}
-                    className="w-full justify-start"
-                  >
-                    メール/パスワードを追加
-                  </Button>
-                )}
-
-                {!hasGoogle && <LinkGoogleButton />}
-              </div>
-            </div>
-          </>
-        )}
       </Card>
 
       {/* Email/Password Dialog */}
