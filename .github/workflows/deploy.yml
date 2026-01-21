@@ -15,7 +15,15 @@ env:
   IMAGE: ${{ vars.GCP_REGION }}-docker.pkg.dev/${{ vars.GCP_PROJECT_ID }}/${{ vars.ARTIFACT_REPO }}/${{ vars.SERVICE_NAME }}:${{ github.sha }}
 
 jobs:
+  test-and-build:
+    uses: ./.github/workflows/test-and-build.yml
+    with:
+      RUNNER: ubuntu-latest
+      NODE_VERSION: "22"
+      PNPM_VERSION: "10"
+
   deploy:
+    needs: test-and-build
     runs-on: ubuntu-latest
     permissions:
       contents: 'read'
