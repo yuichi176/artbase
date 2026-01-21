@@ -53,7 +53,7 @@ export function LinkGoogleButton({ onSuccess, onError }: LinkGoogleButtonProps) 
         variant="outline"
         onClick={handleLinkGoogle}
         disabled={isLoading}
-        className="w-full justify-start gap-2"
+        className="justify-start gap-2"
       >
         <svg className="size-5" viewBox="0 0 24 24">
           <path

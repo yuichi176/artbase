@@ -44,7 +44,7 @@ export function isGoogleLinked(user: FirebaseUser | null): boolean {
 export function getProviderDisplayName(providerId: string): string {
   switch (providerId) {
     case PROVIDER_IDS.EMAIL_PASSWORD:
-      return 'メール/パスワード'
+      return 'メールアドレス'
     case PROVIDER_IDS.GOOGLE:
       return 'Google'
     default:
@@ -84,6 +84,16 @@ export function getGoogleEmail(user: FirebaseUser | null): string | null {
 }
 
 /**
+ * Check if user can unlink a provider (must have at least 2 providers)
+ * @param user Firebase user object
+ * @returns true if user can unlink a provider
+ */
+export function canUnlinkProvider(user: FirebaseUser | null): boolean {
+  if (!user) return false
+  return user.providerData.length > 1
+}
+
+/**
  * Get Firebase error message in Japanese
  * @param errorCode Firebase error code
  * @returns Japanese error message
@@ -106,6 +116,8 @@ export function getAuthErrorMessage(errorCode: string): string {
       return 'ポップアップがブロックされました。ブラウザの設定を確認してください'
     case 'auth/credential-already-in-use':
       return 'この認証情報は既に使用されています'
+    case 'auth/no-such-provider':
+      return 'この認証方法は連携されていません'
     default:
       return '予期しないエラーが発生しました'
   }
