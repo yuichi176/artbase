@@ -95,3 +95,78 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }
+
+/**
+ * PATCH /api/auth/user
+ * Update user profile (displayName, email)
+ */
+export async function PATCH(request: Request) {
+  try {
+    // Verify Firebase ID token
+    const decodedToken = await verifyAuthToken(request)
+    const { uid } = decodedToken
+
+    // Parse request body
+    const body = await request.json()
+    const { displayName, email } = body
+
+    // Get current user document
+    const userRef = db.collection('users').doc(uid)
+    const userDoc = await userRef.get()
+
+    if (!userDoc.exists) {
+      return NextResponse.json({ error: 'User not found' }, { status: 404 })
+    }
+
+    // Prepare update data for Firestore
+    const updates: Partial<RawUser> = {
+      updatedAt: Timestamp.now(),
+    }
+
+    // Update displayName if provided
+    if (displayName !== undefined) {
+      updates.displayName = displayName
+    }
+
+    // Update email if provided
+    if (email !== undefined && email !== decodedToken.email) {
+      // Validate email format
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+      if (!emailRegex.test(email)) {
+        return NextResponse.json({ error: 'Invalid email format' }, { status: 400 })
+      }
+
+      // Update email in Firebase Auth
+      try {
+        await adminAuth.updateUser(uid, { email })
+        updates.email = email
+      } catch (error) {
+        console.error('Failed to update email in Firebase Auth:', error)
+        return NextResponse.json({ error: 'Failed to update email' }, { status: 400 })
+      }
+    }
+
+    // Update Firestore document
+    await userRef.update(updates)
+
+    // Get updated user document
+    const updatedUserDoc = await userRef.get()
+    const rawUser = updatedUserDoc.data() as RawUser
+    const user = convertRawUserToUser(rawUser)
+
+    // Validate with Zod
+    const validatedUser = userSchema.parse(user)
+
+    return NextResponse.json(validatedUser)
+  } catch (error) {
+    console.error('Error in PATCH /api/auth/user:', error)
+
+    if (error instanceof Error) {
+      if (error.message.includes('token')) {
+        return NextResponse.json({ error: 'Unauthorized', message: error.message }, { status: 401 })
+      }
+    }
+
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+  }
+}
