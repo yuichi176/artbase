@@ -6,6 +6,7 @@ import { useAuth } from '@/hooks/useAuth'
 import { Card } from '@/components/shadcn-ui/card'
 import { Button } from '@/components/shadcn-ui/button'
 import { AccountEditForm } from '@/app/(protected)/account/_components/account-edit-form'
+import { LinkedProvidersSection } from '@/app/(protected)/account/_components/linked-providers-section'
 import { useAtomValue } from 'jotai'
 import { subscriptionTierAtom } from '@/store/subscription'
 import { Badge } from '@/components/shadcn-ui/badge'
@@ -68,6 +69,9 @@ export default function AccountPage() {
             </div>
           )}
         </Card>
+
+        {/* Login Methods */}
+        <LinkedProvidersSection />
 
         {/* Subscription Info */}
         <Card className="p-6">

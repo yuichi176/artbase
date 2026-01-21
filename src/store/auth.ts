@@ -1,6 +1,7 @@
 import { atom } from 'jotai'
 import type { User as FirebaseUser } from 'firebase/auth'
 import type { User } from '@/schema/user'
+import { getLinkedProviders } from '@/lib/auth/provider-utils'
 
 /**
  * Firebase Auth user (from Firebase Auth SDK)
@@ -40,4 +41,13 @@ export const userDisplayNameAtom = atom((get) => {
   const user = get(userAtom)
   if (!user) return null
   return user.displayName || user.email
+})
+
+/**
+ * Computed atom: linked authentication providers
+ * Returns array of provider IDs (e.g., ['password', 'google.com'])
+ */
+export const linkedProvidersAtom = atom((get) => {
+  const firebaseUser = get(firebaseUserAtom)
+  return getLinkedProviders(firebaseUser)
 })
