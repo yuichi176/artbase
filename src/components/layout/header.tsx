@@ -1,13 +1,26 @@
 import { ModeToggle } from '@/components/mode-toggle'
 import { Logo } from '@/components/icon/Logo'
+import { AuthButton } from '@/components/auth/auth-button'
+import { cn } from '@/utils/shadcn'
+import Link from 'next/link'
 
-export const Header = () => {
+export const Header = ({ className }: { className?: string }) => {
   return (
-    <header className="w-full h-16 bg-background border-b border-border flex items-center p-4 md:px-6">
-      <div className="grow pt-2">
-        <Logo />
+    <header
+      className={cn(
+        'w-full bg-background border-b border-border flex items-center justify-between p-4 md:px-6',
+        className,
+      )}
+    >
+      <div className="pt-2">
+        <Link href="/">
+          <Logo />
+        </Link>
       </div>
-      <ModeToggle />
+      <div className="flex items-center gap-3">
+        <ModeToggle />
+        <AuthButton />
+      </div>
     </header>
   )
 }

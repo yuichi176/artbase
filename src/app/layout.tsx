@@ -2,8 +2,10 @@ import type { Metadata, Viewport } from 'next'
 import './globals.css'
 import { Noto_Sans_JP } from 'next/font/google'
 import { clsx } from 'clsx'
+import { Provider as JotaiProvider } from 'jotai'
 import { Header } from '@/components/layout/header'
 import { ThemeProvider } from '@/components/theme-provider'
+import { AuthInitializer } from '@/components/auth/auth-initializer'
 
 // TODO: Fill in metadata fields
 export const metadata: Metadata = {
@@ -88,16 +90,21 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ja" className={clsx(notoSansJp.className)} suppressHydrationWarning>
-      <body>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <Header />
-          <main className="p-2 md:p-4">{children}</main>
-        </ThemeProvider>
+      <body className="relative">
+        <JotaiProvider>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <AuthInitializer />
+            <Header className="h-[var(--height-header)] z-[var(--z-index-header)] fixed" />
+            <main className="px-2 md:px-4 pb-2 md:pb-2 pt-[var(--height-header)] min-h-[100dvh]">
+              {children}
+            </main>
+          </ThemeProvider>
+        </JotaiProvider>
       </body>
     </html>
   )
