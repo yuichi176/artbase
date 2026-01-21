@@ -118,6 +118,13 @@ export function getAuthErrorMessage(errorCode: string): string {
       return 'この認証情報は既に使用されています'
     case 'auth/no-such-provider':
       return 'この認証方法は連携されていません'
+    case 'auth/wrong-password':
+    case 'auth/invalid-credential':
+      return '現在のパスワードが正しくありません'
+    case 'auth/user-not-found':
+      return 'ユーザーが見つかりません'
+    case 'auth/too-many-requests':
+      return 'リクエストが多すぎます。しばらく時間をおいてから再度お試しください'
     default:
       return '予期しないエラーが発生しました'
   }

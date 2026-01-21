@@ -16,11 +16,13 @@ import { Button } from '@/components/shadcn-ui/button'
 import { LinkEmailPasswordDialog } from './link-email-password-dialog'
 import { LinkGoogleButton } from './link-google-button'
 import { UnlinkProviderDialog } from './unlink-provider-dialog'
+import { ChangePasswordDialog } from './change-password-dialog'
 import { Mail } from 'lucide-react'
 
 export function LinkedProvidersSection() {
   const firebaseUser = useAtomValue(firebaseUserAtom)
   const [isEmailPasswordDialogOpen, setIsEmailPasswordDialogOpen] = useState(false)
+  const [isChangePasswordDialogOpen, setIsChangePasswordDialogOpen] = useState(false)
   const [unlinkDialogState, setUnlinkDialogState] = useState<{
     open: boolean
     providerId: string
@@ -113,13 +115,27 @@ export function LinkedProvidersSection() {
               </Button>
             </div>
             {hasEmailPassword ? (
-              <div className="mt-2">
+              <div className="mt-2 space-y-3">
                 <div className="flex-1 min-w-0">
                   <div className="text-sm text-muted-foreground">連携済みメールアドレス</div>
                   <div className="mt-1 break-words font-medium">{emailPasswordEmail}</div>
                 </div>
+
+                {/* Password Management Section */}
+                <div className="space-y-2">
+                  <div className="flex flex-wrap gap-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setIsChangePasswordDialogOpen(true)}
+                    >
+                      パスワードを変更
+                    </Button>
+                  </div>
+                </div>
+
                 {!canUnlink && (
-                  <p className="mt-2 text-xs text-muted-foreground">
+                  <p className="text-xs text-muted-foreground">
                     ※最後のログイン方法は解除できません
                   </p>
                 )}
@@ -145,6 +161,15 @@ export function LinkedProvidersSection() {
         open={isEmailPasswordDialogOpen}
         onOpenChange={setIsEmailPasswordDialogOpen}
       />
+
+      {/* Change Password Dialog */}
+      {emailPasswordEmail && (
+        <ChangePasswordDialog
+          open={isChangePasswordDialogOpen}
+          onOpenChange={setIsChangePasswordDialogOpen}
+          userEmail={emailPasswordEmail}
+        />
+      )}
 
       {/* Unlink Provider Dialog */}
       <UnlinkProviderDialog
