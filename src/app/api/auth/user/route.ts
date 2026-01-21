@@ -98,7 +98,7 @@ export async function GET(request: Request) {
 
 /**
  * PATCH /api/auth/user
- * Update user profile (displayName, email)
+ * Update user profile (displayName)
  */
 export async function PATCH(request: Request) {
   try {
@@ -108,7 +108,7 @@ export async function PATCH(request: Request) {
 
     // Parse request body
     const body = await request.json()
-    const { displayName, email } = body
+    const { displayName } = body
 
     // Get current user document
     const userRef = db.collection('users').doc(uid)
@@ -126,24 +126,6 @@ export async function PATCH(request: Request) {
     // Update displayName if provided
     if (displayName !== undefined) {
       updates.displayName = displayName
-    }
-
-    // Update email if provided
-    if (email !== undefined && email !== decodedToken.email) {
-      // Validate email format
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-      if (!emailRegex.test(email)) {
-        return NextResponse.json({ error: 'Invalid email format' }, { status: 400 })
-      }
-
-      // Update email in Firebase Auth
-      try {
-        await adminAuth.updateUser(uid, { email })
-        updates.email = email
-      } catch (error) {
-        console.error('Failed to update email in Firebase Auth:', error)
-        return NextResponse.json({ error: 'Failed to update email' }, { status: 400 })
-      }
     }
 
     // Update Firestore document

@@ -18,7 +18,6 @@ interface AccountEditFormProps {
 export function AccountEditForm({ user, onSuccess, onCancel }: AccountEditFormProps) {
   const setUser = useSetAtom(userAtom)
   const [displayName, setDisplayName] = useState(user.displayName || '')
-  const [email, setEmail] = useState(user.email)
   const [error, setError] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
 
@@ -38,15 +37,10 @@ export function AccountEditForm({ user, onSuccess, onCancel }: AccountEditFormPr
       // Prepare update data
       const updates: {
         displayName?: string | null
-        email?: string
       } = {}
 
       if (displayName !== user.displayName) {
         updates.displayName = displayName || null
-      }
-
-      if (email !== user.email) {
-        updates.email = email
       }
 
       // Skip if no changes
@@ -72,12 +66,6 @@ export function AccountEditForm({ user, onSuccess, onCancel }: AccountEditFormPr
 
       const updatedUser: User = await response.json()
       setUser(updatedUser)
-
-      // If email was changed, reload the page to refresh auth state
-      if (updates.email) {
-        window.location.reload()
-        return
-      }
 
       onSuccess?.()
     } catch (err) {
@@ -106,21 +94,6 @@ export function AccountEditForm({ user, onSuccess, onCancel }: AccountEditFormPr
               placeholder="表示名を入力"
               disabled={isLoading}
             />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="email">メールアドレス</Label>
-            <Input
-              id="email"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="email@example.com"
-              required
-              disabled={isLoading}
-            />
-            <p className="text-xs text-muted-foreground">
-              メールアドレスを変更するとログイン情報が更新されます
-            </p>
           </div>
           {error && (
             <div className="rounded-md bg-destructive/10 p-3 text-sm text-destructive">{error}</div>

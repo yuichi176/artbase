@@ -58,11 +58,6 @@ export default function AccountPage() {
               </div>
 
               <div>
-                <div className="text-sm text-muted-foreground">メールアドレス</div>
-                <div className="mt-1 font-medium">{user.email}</div>
-              </div>
-
-              <div>
                 <div className="text-sm text-muted-foreground">ユーザーID</div>
                 <div className="mt-1 font-mono text-sm text-muted-foreground">{user.uid}</div>
               </div>
