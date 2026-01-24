@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { useAuth } from './useAuth'
+import { useAuth } from './use-auth'
 
 /**
  * Custom hook to protect routes that require authentication

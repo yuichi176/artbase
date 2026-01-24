@@ -1,7 +1,7 @@
 import { Calendar, ExternalLink, MapPin } from 'lucide-react'
 import { Museum } from '@/schema/museum'
 import { Badge } from '@/components/shadcn-ui/badge'
-import { MuseumAccess } from '@/app/tokyo/exhibitions/_components/MuseumAccess'
+import { MuseumAccess } from '@/app/tokyo/exhibitions/_components/museum-access'
 
 interface MuseumCardProps {
   museum: Museum

@@ -1,8 +1,7 @@
 name: PR Check
 on:
   pull_request:
-    branches:
-      - main
+    types: [opened, synchronize, reopened]
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -21,8 +20,9 @@ jobs:
     uses: ./.github/workflows/claude-code-review.yml
     with:
       RUNNER: ubuntu-latest
+    secrets:
+      CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
     permissions:
       contents: read
-      pull-requests: read
-      issues: read
+      pull-requests: write
       id-token: write

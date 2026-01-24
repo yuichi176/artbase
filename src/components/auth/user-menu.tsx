@@ -4,7 +4,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useAtomValue } from 'jotai'
-import { signOut } from '@/hooks/useAuth'
+import { signOut } from '@/hooks/use-auth'
 import { userAtom, userDisplayNameAtom } from '@/store/auth'
 import {
   DropdownMenu,
