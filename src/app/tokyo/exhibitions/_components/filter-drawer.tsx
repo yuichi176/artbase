@@ -25,7 +25,7 @@ import {
 } from '@/components/shadcn-ui/dialog'
 import { useMediaQuery } from '@/hooks/useMediaQuery'
 
-interface FilterSectionProps {
+interface FilterDrawerProps {
   selectedVenueTypes: string[]
   handleClickVenueType: (type: VenueType) => void
   selectedAreas: Area[]
@@ -39,7 +39,7 @@ interface FilterSectionProps {
   onReset: () => void
 }
 
-export const FilterSection = (props: FilterSectionProps) => {
+export const FilterDrawer = (props: FilterDrawerProps) => {
   const [isOpen, setIsOpen] = useState(false)
   const isDesktop = useMediaQuery('(min-width: 48rem)')
 
@@ -113,7 +113,7 @@ const FilterContent = ({
   selectedOngoingStatus,
   handleClickOngoingStatus,
   onReset,
-}: FilterSectionProps) => {
+}: FilterDrawerProps) => {
   const availableAreaOptions = availableAreas.map((area) => ({
     label: area,
     value: area,

@@ -2,11 +2,11 @@
 
 import { Card } from '@/components/shadcn-ui/card'
 import { Museum, VenueType, Area } from '@/schema/museum'
-import MuseumCard from '@/app/tokyo/exhibitions/_components/MuseumCard'
+import MuseumCard from '@/app/tokyo/exhibitions/_components/museum-card'
 import { useMemo, useState } from 'react'
-import { FilterSection } from '@/app/tokyo/exhibitions/_components/FilterSection'
+import { FilterDrawer } from '@/app/tokyo/exhibitions/_components/filter-drawer'
 import { OngoingStatusType } from '@/schema/exhibition'
-import { SearchInput } from '@/app/tokyo/exhibitions/_components/SearchInput'
+import { SearchInput } from '@/app/tokyo/exhibitions/_components/search-input'
 
 interface TopPagePresentationProps {
   museums: Museum[]
@@ -122,7 +122,7 @@ export const TopPagePresentation = ({ museums }: TopPagePresentationProps) => {
     <div className="space-y-3">
       <SearchInput value={searchQuery} onChange={setSearchQuery} />
 
-      <FilterSection
+      <FilterDrawer
         selectedVenueTypes={selectedVenueTypes}
         handleClickVenueType={handleClickVenueType}
         selectedAreas={selectedAreas}
