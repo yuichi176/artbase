@@ -42,33 +42,224 @@ The project uses **lefthook** for Git hooks. On every commit, the following chec
 ### Project Structure
 ```
 src/
-├── app/                          # Next.js App Router
-│   ├── _components/              # Private components (not routes)
-│   │   └── TopPageSection.tsx    # Main exhibition display component
-│   ├── layout.tsx                # Root layout with fonts
-│   ├── page.tsx                  # Home page
-│   └── globals.css               # Global styles
-├── components/ui/                # Reusable UI components (shadcn/ui)
-│   ├── badge.tsx
-│   └── card.tsx
-├── lib/                          # Utility libraries
-│   ├── firestore.ts              # Firestore client instance
-│   └── utils.ts                  # General utilities
-└── schema/                       # Type definitions and schemas
-    └── exhibition.ts             # Exhibition and Museum types
+├── app/                                    # Next.js App Router
+│   ├── (auth)/                            # Authentication routes (signin, signup)
+│   │   ├── _components/                   # Auth-specific components
+│   │   │   ├── sign-in-form.tsx
+│   │   │   ├── sign-up-form.tsx
+│   │   │   └── forgot-password-dialog.tsx
+│   │   ├── signin/page.tsx
+│   │   └── signup/page.tsx
+│   ├── (protected)/                       # Protected routes (requires auth)
+│   │   └── account/
+│   │       ├── _components/               # Account page components
+│   │       │   ├── account-edit-form.tsx
+│   │       │   ├── linked-providers-section.tsx
+│   │       │   ├── link-email-password-dialog.tsx
+│   │       │   ├── link-google-button.tsx
+│   │       │   ├── change-password-dialog.tsx
+│   │       │   └── unlink-provider-dialog.tsx
+│   │       ├── account-page-section.tsx   # Data fetching layer
+│   │       └── page.tsx
+│   ├── tokyo/exhibitions/                 # Exhibition listing
+│   │   ├── _components/                   # Exhibition-specific components
+│   │   │   ├── museum-card.tsx
+│   │   │   ├── museum-access.tsx
+│   │   │   ├── search-input.tsx
+│   │   │   └── filter-drawer.tsx
+│   │   ├── top-page-section.tsx           # Data fetching & transformation
+│   │   ├── top-page-presentation.tsx      # UI & state management
+│   │   └── page.tsx
+│   ├── api/                               # API Routes
+│   │   └── auth/
+│   │       └── user/
+│   │           └── route.ts               # User CRUD operations
+│   ├── layout.tsx                         # Root layout with fonts
+│   ├── not-found.tsx
+│   └── globals.css                        # Global styles
+├── components/
+│   └── shadcn-ui/                         # Reusable UI components (shadcn/ui)
+│       ├── badge.tsx
+│       ├── card.tsx
+│       ├── button.tsx
+│       ├── input.tsx
+│       └── ...
+├── lib/                                   # Utility libraries
+│   ├── firestore.ts                       # Firestore client instance
+│   ├── firebase-admin.ts                  # Firebase Admin SDK
+│   ├── auth/                              # Auth utilities
+│   └── utils.ts                           # General utilities
+├── schema/                                # Type definitions and schemas
+│   ├── exhibition.ts                      # Exhibition and Museum types
+│   ├── user.ts                            # User types
+│   └── ...
+├── hooks/                                 # Custom React hooks
+│   ├── useAuth.ts
+│   └── useRequireAuth.ts
+└── store/                                 # Global state (Jotai)
+    ├── auth.ts
+    └── subscription.ts
 ```
 
 ### Key Patterns
 
+#### Component Architecture Pattern
+
+This project follows a layered component architecture to separate concerns between data fetching, state management, and presentation:
+
+##### 1. **Page Components** (`page.tsx`)
+- Entry point for each route
+- Typically renders a `*-section` component
+- May include route-specific configurations (e.g., `export const dynamic = 'force-dynamic'`)
+
+##### 2. **Section Components** (`*-section.tsx`) - **Server Components**
+- **Responsibility**: Data fetching and data transformation
+- **Location**: Placed in the same directory as `page.tsx`
+- **Characteristics**:
+  - Server Components by default (may use `'use cache'` directive)
+  - Fetch data directly from Firestore (no API routes)
+  - Transform raw data (e.g., `RawExhibition` → `Exhibition`)
+  - Pass processed data to presentation components
+- **Example**: `top-page-section.tsx` fetches exhibitions from Firestore and passes them to `TopPagePresentation`
+
+**Special Case: Authentication-Required Pages**
+- For pages that require user authentication (e.g., account settings, protected routes), the `*-section.tsx` component must be a **Client Component** instead of a Server Component
+- This is necessary because authentication state is managed client-side using Firebase Client SDK and React hooks (`useAuth`, `useRequireAuth`)
+- In these cases:
+  - `*-section.tsx` uses `'use client'` directive
+  - Handles authentication checks and redirects
+  - Fetches user-specific data from global state (Jotai atoms) or API routes
+  - Manages loading states during authentication
+  - Still passes data to `*-presentation.tsx` for UI rendering
+- **Example**: `account-page-section.tsx` checks authentication and fetches user data before rendering `AccountPagePresentation`
+
+##### 3. **Presentation Components** (`*-presentation.tsx`) - **Client Components**
+- **Responsibility**: UI rendering and state management
+- **Location**: Placed in the same directory as corresponding section component
+- **Characteristics**:
+  - Client Components (use `'use client'` directive)
+  - Handle user interactions and UI state (filters, search, dialogs, etc.)
+  - Manage local state with React hooks
+  - Receive data as props from section components
+  - Do NOT fetch data directly
+- **Example**: `top-page-presentation.tsx` manages filter states and renders museum cards
+
+##### 4. **Page-Specific Components** (`_components/`)
+- **Responsibility**: Reusable UI components specific to a page or feature
+- **Location**: `_components/` directory within the page route
+- **Characteristics**:
+  - Can be either Server Components or Client Components
+  - Split into appropriate granularity for readability and reusability
+  - Used by presentation components or other page-specific components
+- **Examples**: `search-input.tsx`, `museum-card.tsx`, `filter-drawer.tsx`
+
+##### Data Fetching Rules
+
+1. **Server Components** (`*-section.tsx`):
+   - Fetch data directly from Firestore
+   - Do NOT use API routes for read operations
+   - Perform data transformations (Timestamp → ISO strings, etc.)
+   - **Exception**: Authentication-required pages use Client Components for `*-section.tsx` (see Special Case above)
+
+2. **Client Components** (`*-presentation.tsx`, `_components/`):
+   - Do NOT fetch data directly from Firestore
+   - Use API routes for all write/update operations (POST, PATCH, DELETE)
+   - Receive data via props from parent Server Components (or parent Client Components for auth-required pages)
+
+3. **Client Components in Authentication-Required Pages** (`*-section.tsx` in protected routes):
+   - Use React hooks to access authentication state (e.g., `useAuth`, `useRequireAuth`)
+   - Fetch user-specific data from global state (Jotai atoms) or API routes
+   - Handle authentication checks and redirects
+   - Pass data to presentation components
+
+4. **API Routes** (`app/api/`):
+   - Handle data mutations (create, update, delete)
+   - Handle authenticated read operations for user-specific data
+   - Called from Client Components
+   - Verify authentication tokens
+   - Validate request data with Zod schemas
+
+##### Example Flow
+
+**Public Pages (Standard Flow)**
+```
+page.tsx (Server)
+  ↓
+*-section.tsx (Server Component)
+  ├─ Fetch from Firestore
+  ├─ Transform data
+  ↓
+*-presentation.tsx (Client Component)
+  ├─ Manage UI state
+  ├─ Handle user interactions
+  ├─ Call API routes for mutations
+  ↓
+_components/*.tsx (Server/Client Components)
+  └─ Render specific UI elements
+```
+
+**Authentication-Required Pages (Special Case)**
+```
+page.tsx (Server)
+  ↓
+*-section.tsx (Client Component)
+  ├─ Check authentication (useRequireAuth)
+  ├─ Fetch user data (useAuth, API routes)
+  ├─ Manage loading/redirect states
+  ↓
+*-presentation.tsx (Client Component)
+  ├─ Manage UI state
+  ├─ Handle user interactions
+  ├─ Call API routes for mutations
+  ↓
+_components/*.tsx (Client Components)
+  └─ Render specific UI elements
+```
+
 #### Firestore Authentication
 The application uses **Application Default Credentials (ADC)** for Google Cloud authentication. No explicit credentials are passed in code. See `src/lib/firestore.ts` for implementation details.
 
-#### Data Flow
-1. **RawExhibition**: Firestore document format with Timestamp objects
-2. **Exhibition**: Application format with ISO date strings (YYYY-MM-DD)
-3. **Museum**: Grouped exhibitions by venue name
+#### Data Flow & Type Transformations
 
-The `convertToMuseum` helper function in `TopPageSection.tsx` transforms flat Exhibition arrays into Museum-grouped structure for display.
+##### Read Operations (Server Components)
+1. **Firestore Document** (`RawExhibition`, `RawUser`, etc.)
+   - Contains Firestore-specific types like `Timestamp`
+   - Raw data structure from database
+
+2. **Data Transformation** (in `*-section.tsx`)
+   - Convert `Timestamp` → ISO date strings or JavaScript `Date` objects
+   - Transform raw types to application types
+   - Group/aggregate data as needed (e.g., exhibitions → museums)
+
+3. **Application Types** (`Exhibition`, `User`, `Museum`, etc.)
+   - Clean, serializable data structures
+   - Compatible with Client Components (no Firestore types)
+   - Passed as props to presentation components
+
+##### Write Operations (Client Components → API Routes)
+1. **Client Component** triggers mutation (button click, form submit)
+2. **API Route** receives request
+   - Verifies authentication token
+   - Validates request data with Zod schemas
+   - Transforms application types to Firestore types if needed
+   - Writes to Firestore
+3. **Response** returned to client
+   - Client updates UI (optimistic updates, refetch, etc.)
+
+##### Example: Exhibition Data Flow
+```
+Firestore (RawExhibition with Timestamp)
+  ↓
+top-page-section.tsx
+  ├─ Convert Timestamp → ISO string (YYYY-MM-DD)
+  ├─ Add computed fields (isOngoing)
+  ├─ Group by museum
+  ↓
+Exhibition[] / Museum[] (serializable)
+  ↓
+top-page-presentation.tsx
+  └─ Render with client-side filtering/search
+```
 
 #### Date Handling
 - Firestore stores dates as `Timestamp` objects
