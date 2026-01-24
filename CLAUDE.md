@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Artlyst Tokyo is a Next.js application that displays exhibition information for art museums in Tokyo. It fetches exhibition data from Google Cloud Firestore and displays them grouped by museum/venue.
+Artlyst is a Next.js application that displays exhibition information for art museums. It fetches exhibition data from Google Cloud Firestore and displays them grouped by museum/venue.
 
 ## Development Commands
 
@@ -42,7 +42,7 @@ The project uses **lefthook** for Git hooks. On every commit, the following chec
 ### Project Structure
 ```
 src/
-├── app/                                    # Next.js App Router
+├── app/                                   # Next.js App Router
 │   ├── (auth)/                            # Authentication routes (signin, signup)
 │   │   ├── _components/                   # Auth-specific components
 │   │   │   ├── sign-in-form.tsx
@@ -109,7 +109,7 @@ This project follows a layered component architecture to separate concerns betwe
 
 ##### 1. **Page Components** (`page.tsx`)
 - Entry point for each route
-- Typically renders a `*-section` component
+- Typically, renders a `*-section` component
 - May include route-specific configurations (e.g., `export const dynamic = 'force-dynamic'`)
 
 ##### 2. **Section Components** (`*-section.tsx`) - **Server Components**
