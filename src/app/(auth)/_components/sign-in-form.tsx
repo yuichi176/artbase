@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, FormEvent } from 'react'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import { signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from 'firebase/auth'
 import { auth } from '@/lib/firebase-client'
 import { Button } from '@/components/shadcn-ui/button'
@@ -9,10 +9,12 @@ import { Input } from '@/components/shadcn-ui/input'
 import { Label } from '@/components/shadcn-ui/label'
 import { ForgotPasswordDialog } from './forgot-password-dialog'
 
-export function SignInForm() {
+interface SignInFormProps {
+  redirectTo: string
+}
+
+export function SignInForm({ redirectTo }: SignInFormProps) {
   const router = useRouter()
-  const searchParams = useSearchParams()
-  const redirectTo = searchParams.get('redirect') || '/'
 
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')

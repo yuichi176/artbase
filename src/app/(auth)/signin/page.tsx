@@ -1,33 +1,18 @@
 import type { Metadata } from 'next'
-import Link from 'next/link'
-import { Suspense } from 'react'
-import { SignInForm } from '../_components/sign-in-form'
+import { SignInPageSection } from './signin-page-section'
 
 export const metadata: Metadata = {
   title: 'ログイン | Artlyst',
   description: 'Artlyst にログイン',
 }
 
-export default function SignInPage() {
-  return (
-    <div className="flex items-center justify-center px-4 pt-16">
-      <div className="w-full max-w-md space-y-8">
-        <div className="text-center">
-          <h1 className="text-3xl font-bold">ログイン</h1>
-          <p className="mt-2 text-sm text-muted-foreground">Artlyst へようこそ</p>
-        </div>
+interface SignInPageProps {
+  searchParams: Promise<{ redirect?: string }>
+}
 
-        <Suspense fallback={<div className="space-y-4">読み込み中...</div>}>
-          <SignInForm />
-        </Suspense>
+export default async function SignInPage({ searchParams }: SignInPageProps) {
+  const { redirect } = await searchParams
+  const redirectTo = redirect || '/'
 
-        <div className="text-center text-sm">
-          <span className="text-muted-foreground">アカウントをお持ちでない方は </span>
-          <Link href="/signup" className="font-medium text-primary hover:underline">
-            新規登録
-          </Link>
-        </div>
-      </div>
-    </div>
-  )
+  return <SignInPageSection redirectTo={redirectTo} />
 }
