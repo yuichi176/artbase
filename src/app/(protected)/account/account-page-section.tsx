@@ -1,7 +1,7 @@
 'use client'
 
-import { useRequireAuth } from '@/hooks/useRequireAuth'
-import { useAuth } from '@/hooks/useAuth'
+import { useRequireAuth } from '@/hooks/use-require-auth'
+import { useAuth } from '@/hooks/use-auth'
 import { useAtomValue } from 'jotai'
 import { subscriptionTierAtom } from '@/store/subscription'
 import { AccountPagePresentation } from '@/app/(protected)/account/account-page-presentation'

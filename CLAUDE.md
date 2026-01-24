@@ -94,8 +94,8 @@ src/
 │   ├── user.ts                            # User types
 │   └── ...
 ├── hooks/                                 # Custom React hooks
-│   ├── useAuth.ts
-│   └── useRequireAuth.ts
+│   ├── use-auth.ts
+│   └── use-require-auth.ts
 └── store/                                 # Global state (Jotai)
     ├── auth.ts
     └── subscription.ts

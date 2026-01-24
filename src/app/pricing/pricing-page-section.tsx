@@ -1,6 +1,6 @@
 'use client'
 
-import { useAuth } from '@/hooks/useAuth'
+import { useAuth } from '@/hooks/use-auth'
 import { PricingPagePresentation } from './pricing-page-presentation'
 
 export function PricingPageSection() {

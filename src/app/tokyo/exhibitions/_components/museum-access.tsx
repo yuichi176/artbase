@@ -1,7 +1,7 @@
 'use client'
 
 import { Train } from 'lucide-react'
-import { useExpandableClamp } from '@/hooks/useExpandableClamp'
+import { useExpandableClamp } from '@/hooks/use-expandable-clamp'
 
 type Props = {
   museumName: string

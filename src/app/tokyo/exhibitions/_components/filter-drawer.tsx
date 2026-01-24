@@ -23,7 +23,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/shadcn-ui/dialog'
-import { useMediaQuery } from '@/hooks/useMediaQuery'
+import { useMediaQuery } from '@/hooks/use-media-query'
 
 interface FilterDrawerProps {
   selectedVenueTypes: string[]
