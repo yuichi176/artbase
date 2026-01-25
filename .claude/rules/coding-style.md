@@ -157,6 +157,21 @@ Both are configured as CSS variables in the root layout.
 # Path Aliases
 - `@/*` maps to `src/*` (configured in tsconfig.json)
 
+## Styling
+
+### className Composition
+- Use the `cn` utility function from `@/utils/shadcn` for combining class names
+- Import: `import { cn } from '@/utils/shadcn'`
+- **Do NOT** use string concatenation or template literals for className composition
+- **Example**:
+  ```tsx
+  // Good
+  <div className={cn('base-class', condition && 'conditional-class', className)} />
+
+  // Bad
+  <div className={`base-class ${condition ? 'conditional-class' : ''} ${className}`} />
+  ```
+
 ## Code Quality
 
 # Linting & Formatting
