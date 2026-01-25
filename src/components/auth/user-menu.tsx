@@ -15,6 +15,8 @@ import {
   DropdownMenuTrigger,
 } from '@/components/shadcn-ui/dropdown-menu'
 import { UserAvatar } from './user-avatar'
+import { Lock } from 'lucide-react'
+import { cn } from '@/utils/shadcn'
 
 export function UserMenu() {
   const user = useAtomValue(userAtom)
@@ -34,6 +36,8 @@ export function UserMenu() {
   }
 
   if (!user) return null
+
+  const isProPlan = user.subscriptionTier === 'pro'
 
   return (
     <DropdownMenu>
@@ -56,6 +60,21 @@ export function UserMenu() {
         <DropdownMenuItem asChild>
           <Link href="/favorites">お気に入り</Link>
         </DropdownMenuItem>
+        {isProPlan ? (
+          <DropdownMenuItem asChild>
+            <Link href="/bookmarks">行きたい展覧会</Link>
+          </DropdownMenuItem>
+        ) : (
+          <DropdownMenuItem
+            className={cn('cursor-pointer', 'opacity-60')}
+            onClick={() => router.push('/pricing')}
+          >
+            <div className="flex items-center justify-between w-full">
+              <span>行きたい展覧会</span>
+              <Lock className="w-4 h-4 ml-2" />
+            </div>
+          </DropdownMenuItem>
+        )}
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={handleSignOut} disabled={isSigningOut}>
           {isSigningOut ? 'ログアウト中...' : 'ログアウト'}
