@@ -105,16 +105,27 @@ export const TopPagePresentation = ({ museums }: TopPagePresentationProps) => {
         }
       })
       .filter((museum) => museum.exhibitions.length > 0)
-      .filter((museum) => {
-        if (!q) return true
+      .map((museum) => {
+        if (!q) return museum
 
         const matchVenueName = museum.name.toLowerCase().includes(q)
-        const matchExhibitionTitle = museum.exhibitions.some((exhibition) =>
+
+        // 会場名に一致した場合、すべての展覧会を返す
+        if (matchVenueName) {
+          return museum
+        }
+
+        // 会場名に一致しない場合、展覧会名でフィルタリング
+        const filteredExhibitions = museum.exhibitions.filter((exhibition) =>
           exhibition.title.toLowerCase().includes(q),
         )
 
-        return matchVenueName || matchExhibitionTitle
+        return {
+          ...museum,
+          exhibitions: filteredExhibitions,
+        }
       })
+      .filter((museum) => museum.exhibitions.length > 0)
   }, [
     museums,
     selectedVenueTypes,
