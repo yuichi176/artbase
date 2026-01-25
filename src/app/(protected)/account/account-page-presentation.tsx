@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { Card } from '@/components/shadcn-ui/card'
 import { Button } from '@/components/shadcn-ui/button'
 import { Badge } from '@/components/shadcn-ui/badge'
+import { Skeleton } from '@/components/shadcn-ui/skeleton'
 import { AccountEditForm } from '@/app/(protected)/account/_components/account-edit-form'
 import { LinkedProvidersSection } from '@/app/(protected)/account/_components/linked-providers-section'
 import { useAtomValue } from 'jotai'
@@ -19,11 +20,45 @@ export function AccountPagePresentation() {
 
   if (loading || !user) {
     return (
-      <div className="container mx-auto max-w-2xl px-4 py-12">
-        <div className="h-8 w-48 animate-pulse rounded bg-muted" />
-        <div className="mt-8 space-y-4">
-          <div className="h-32 animate-pulse rounded bg-muted" />
-          <div className="h-32 animate-pulse rounded bg-muted" />
+      <div className="container mx-auto max-w-2xl px-4 py-8 md:py-12">
+        <Skeleton className="h-8 w-48" />
+
+        <div className="mt-8 space-y-6">
+          {/* User Info Skeleton */}
+          <Card className="p-6">
+            <div className="flex items-center justify-between">
+              <Skeleton className="h-6 w-32" />
+              <Skeleton className="h-9 w-16" />
+            </div>
+            <div className="mt-6 space-y-5">
+              <div>
+                <Skeleton className="h-4 w-16" />
+                <Skeleton className="mt-1 h-6 w-40" />
+              </div>
+              <div>
+                <Skeleton className="h-4 w-24" />
+                <Skeleton className="mt-1 h-5 w-full" />
+              </div>
+            </div>
+          </Card>
+
+          {/* Login Methods Skeleton */}
+          <Card className="p-6">
+            <Skeleton className="h-6 w-32" />
+            <div className="mt-6 space-y-3">
+              <Skeleton className="h-12 w-full" />
+              <Skeleton className="h-12 w-full" />
+            </div>
+          </Card>
+
+          {/* Subscription Skeleton */}
+          <Card className="p-6">
+            <Skeleton className="h-6 w-24" />
+            <div className="mt-4 flex items-center gap-3">
+              <Skeleton className="h-6 w-16" />
+              <Skeleton className="h-4 w-32" />
+            </div>
+          </Card>
         </div>
       </div>
     )
