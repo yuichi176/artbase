@@ -50,47 +50,11 @@ The project uses **lefthook** for Git hooks. On every commit, the following chec
 src/
 ├── app/                                   # Next.js App Router
 │   ├── (auth)/                            # Authentication routes (signin, signup)
-│   │   ├── _components/                   # Auth-specific components
-│   │   │   ├── sign-in-form.tsx
-│   │   │   ├── sign-up-form.tsx
-│   │   │   └── forgot-password-dialog.tsx
-│   │   ├── signin/page.tsx
-│   │   └── signup/page.tsx
 │   ├── (protected)/                       # Protected routes (requires auth)
-│   │   ├── account/
-│   │   │   ├── _components/               # Account page components
-│   │   │   │   ├── account-edit-form.tsx
-│   │   │   │   ├── linked-providers-section.tsx
-│   │   │   │   ├── link-email-password-dialog.tsx
-│   │   │   │   ├── link-google-button.tsx
-│   │   │   │   ├── change-password-dialog.tsx
-│   │   │   │   └── unlink-provider-dialog.tsx
-│   │   │   ├── account-page-section.tsx   # Data fetching layer
-│   │   │   └── page.tsx
-│   │   └── favorites/                     # Favorite venues page
-│   │       ├── favorites-page-section.tsx # Data fetching (Server Component)
-│   │       ├── favorites-page-presentation.tsx # UI & filtering (Client Component)
-│   │       └── page.tsx
 │   ├── tokyo/exhibitions/                 # Exhibition listing
-│   │   ├── _components/                   # Exhibition-specific components
-│   │   │   ├── museum-card.tsx
-│   │   │   ├── museum-card-skeleton.tsx   # Loading skeleton
-│   │   │   ├── museum-access.tsx
-│   │   │   ├── search-input.tsx
-│   │   │   ├── filter-drawer.tsx
-│   │   │   └── favorite-button.tsx        # Favorite toggle button
-│   │   ├── top-page-section.tsx           # Data fetching (Server Component)
-│   │   ├── top-page-presentation.tsx      # UI & state management (Client Component)
-│   │   └── page.tsx
 │   ├── api/                               # API Routes
-│   │   ├── auth/
-│   │   │   └── user/
-│   │   │       └── route.ts               # User CRUD operations
-│   │   ├── favorites/
-│   │   │   └── route.ts                   # Favorite venue toggle
 │   │   └── utils.ts                       # Shared API utilities
 │   ├── layout.tsx                         # Root layout with fonts
-│   ├── not-found.tsx
 │   └── globals.css                        # Global styles
 ├── components/                            # Reusable UI components
 │   └── shadcn-ui/                         # shadcn/ui styled components
