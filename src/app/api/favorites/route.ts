@@ -69,9 +69,10 @@ export async function POST(request: Request) {
     }
 
     // Update Firestore document
+    const updateTimestamp = Timestamp.now()
     await userRef.update({
       'preferences.favoriteVenues': updatedFavorites,
-      updatedAt: Timestamp.now(),
+      updatedAt: updateTimestamp,
     })
 
     const updatedRawUser: RawUser = {
@@ -80,7 +81,7 @@ export async function POST(request: Request) {
         ...rawUser.preferences,
         favoriteVenues: updatedFavorites,
       },
-      updatedAt: Timestamp.now(),
+      updatedAt: updateTimestamp,
     }
     const updatedUser = convertRawUserToUser(updatedRawUser)
 
