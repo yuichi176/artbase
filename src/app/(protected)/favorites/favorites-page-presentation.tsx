@@ -8,6 +8,8 @@ import MuseumCard from '@/app/tokyo/exhibitions/_components/museum-card'
 import { SearchInput } from '@/app/tokyo/exhibitions/_components/search-input'
 import { useRequireAuth } from '@/hooks/use-require-auth'
 import { userAtom } from '@/store/auth'
+import { MuseumListSkeleton } from '@/app/tokyo/exhibitions/_components/museum-card-skeleton'
+import { Skeleton } from '@/components/shadcn-ui/skeleton'
 
 interface FavoritesPagePresentationProps {
   museums: Museum[]
@@ -56,10 +58,13 @@ export function FavoritesPagePresentation({ museums }: FavoritesPagePresentation
   if (authLoading || !user) {
     return (
       <div className="container mx-auto px-4 py-8">
-        <h1 className="text-2xl font-bold mb-6">お気に入り会場</h1>
-        <Card className="p-8 rounded-lg text-center">
-          <p className="text-muted-foreground">読み込み中...</p>
-        </Card>
+        <Skeleton className="h-8 w-48 mb-6" />
+        <div className="space-y-3">
+          <Skeleton className="h-8 w-full" />
+          <Card className="p-2 md:p-4 rounded-lg gap-0 bg-background">
+            <MuseumListSkeleton />
+          </Card>
+        </div>
       </div>
     )
   }
