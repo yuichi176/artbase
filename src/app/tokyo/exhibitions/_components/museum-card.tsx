@@ -13,8 +13,8 @@ export default function MuseumCard({ museum, isFavorite }: MuseumCardProps) {
   return (
     <div className="border border-border rounded-xl overflow-hidden bg-background">
       <div className="bg-muted/65 border-b-1 border-border py-2 px-3 md:py-3 md:px-5 flex flex-col gap-2 md:gap-3">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
+        <div className="flex justify-between gap-2 items-start">
+          <div className="flex items-center gap-2 items-start">
             <a
               href={museum.officialUrl}
               target="_blank"
