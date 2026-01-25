@@ -34,6 +34,12 @@ export function FavoritesPagePresentation({ museums }: FavoritesPagePresentation
     return museums.filter((museum) => favoriteVenueNames.has(museum.name))
   }, [favoriteVenueNames, museums])
 
+  // Get bookmarked exhibition IDs from user preferences
+  const bookmarkedExhibitionIds = useMemo(() => {
+    const exhibitions = user?.preferences.bookmarkedExhibitions ?? []
+    return new Set(exhibitions.map(({ exhibitionId }) => exhibitionId))
+  }, [user?.preferences.bookmarkedExhibitions])
+
   const count = favoriteMuseums.reduce((sum, museum) => sum + museum.exhibitions.length, 0)
 
   // Show loading state while checking authentication
@@ -69,7 +75,11 @@ export function FavoritesPagePresentation({ museums }: FavoritesPagePresentation
           <div className="space-y-4 md:columns-2 xl:columns-3 md:gap-4">
             {favoriteMuseums.map((museum) => (
               <div key={museum.name} className="break-inside-avoid">
-                <MuseumCard museum={museum} isFavorite={favoriteVenueNames.has(museum.name)} />
+                <MuseumCard
+                  museum={museum}
+                  isFavorite={favoriteVenueNames.has(museum.name)}
+                  bookmarkedExhibitionIds={bookmarkedExhibitionIds}
+                />
               </div>
             ))}
           </div>

@@ -3,13 +3,19 @@ import { Museum } from '@/schema/museum'
 import { Badge } from '@/components/shadcn-ui/badge'
 import { MuseumAccess } from '@/app/tokyo/exhibitions/_components/museum-access'
 import { FavoriteButton } from '@/app/tokyo/exhibitions/_components/favorite-button'
+import { BookmarkButton } from '@/app/tokyo/exhibitions/_components/bookmark-button'
 
 interface MuseumCardProps {
   museum: Museum
   isFavorite: boolean
+  bookmarkedExhibitionIds: Set<string>
 }
 
-export default function MuseumCard({ museum, isFavorite }: MuseumCardProps) {
+export default function MuseumCard({
+  museum,
+  isFavorite,
+  bookmarkedExhibitionIds,
+}: MuseumCardProps) {
   return (
     <div className="border border-border rounded-xl overflow-hidden bg-background">
       <div className="bg-muted/65 border-b-1 border-border py-2 px-3 md:py-3 md:px-5 flex flex-col gap-2 md:gap-3">
@@ -42,6 +48,7 @@ export default function MuseumCard({ museum, isFavorite }: MuseumCardProps) {
 
       <div className="p-2 space-y-2">
         {museum.exhibitions.map((exhibition) => {
+          const isBookmarked = bookmarkedExhibitionIds.has(exhibition.id)
           return (
             <div key={exhibition.id} className="border border-border rounded-lg p-3  group">
               <div className="flex items-start justify-between gap-4">
@@ -76,6 +83,11 @@ export default function MuseumCard({ museum, isFavorite }: MuseumCardProps) {
                     )}
                   </div>
                 </div>
+                <BookmarkButton
+                  exhibitionId={exhibition.id}
+                  isBookmarked={isBookmarked}
+                  className="flex-shrink-0"
+                />
               </div>
             </div>
           )

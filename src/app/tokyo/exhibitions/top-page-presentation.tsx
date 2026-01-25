@@ -27,6 +27,11 @@ export const TopPagePresentation = ({ museums }: TopPagePresentationProps) => {
     return new Set(venues.map(({ name }) => name))
   }, [user?.preferences.favoriteVenues])
 
+  const bookmarkedExhibitionIds = useMemo(() => {
+    const exhibitions = user?.preferences.bookmarkedExhibitions ?? []
+    return new Set(exhibitions.map(({ exhibitionId }) => exhibitionId))
+  }, [user?.preferences.bookmarkedExhibitions])
+
   const handleClickVenueType = (value: VenueType) => {
     setSelectedVenueTypes((prev) => {
       if (prev.includes(value)) {
@@ -164,7 +169,11 @@ export const TopPagePresentation = ({ museums }: TopPagePresentationProps) => {
         <div className="space-y-4 md:columns-2 xl:columns-3 md:gap-4">
           {filteredMuseums.map((museum) => (
             <div key={museum.name} className="break-inside-avoid">
-              <MuseumCard museum={museum} isFavorite={favoriteVenueNames.has(museum.name)} />
+              <MuseumCard
+                museum={museum}
+                isFavorite={favoriteVenueNames.has(museum.name)}
+                bookmarkedExhibitionIds={bookmarkedExhibitionIds}
+              />
             </div>
           ))}
         </div>

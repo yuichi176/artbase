@@ -27,6 +27,10 @@ export function convertRawUserToUser(rawUser: RawUser): User {
         name: item.name,
         addedAt: timestampToISOString(item.addedAt),
       })),
+      bookmarkedExhibitions: (rawUser.preferences.bookmarkedExhibitions ?? []).map((item) => ({
+        exhibitionId: item.exhibitionId,
+        addedAt: timestampToISOString(item.addedAt),
+      })),
     },
     createdAt: timestampToISOString(rawUser.createdAt),
     updatedAt: timestampToISOString(rawUser.updatedAt),

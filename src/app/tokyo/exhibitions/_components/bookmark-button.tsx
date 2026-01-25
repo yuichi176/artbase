@@ -1,43 +1,55 @@
 'use client'
 
 import { startTransition, useActionState, useOptimistic } from 'react'
-import { Star } from 'lucide-react'
+import { Bookmark } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useAtomValue, useSetAtom } from 'jotai'
 import { userAtom, firebaseUserAtom, isAuthenticatedAtom } from '@/store/auth'
 import type { User } from '@/schema/user'
 import { cn } from '@/utils/shadcn'
 
-interface FavoriteButtonProps {
-  venueName: string
-  isFavorite: boolean
+interface BookmarkButtonProps {
+  exhibitionId: string
+  isBookmarked: boolean
   className?: string
 }
 
-export function FavoriteButton({ venueName, isFavorite, className = '' }: FavoriteButtonProps) {
+export function BookmarkButton({
+  exhibitionId,
+  isBookmarked,
+  className = '',
+}: BookmarkButtonProps) {
   const router = useRouter()
   const isAuthenticated = useAtomValue(isAuthenticatedAtom)
   const firebaseUser = useAtomValue(firebaseUserAtom)
+  const user = useAtomValue(userAtom)
   const setUser = useSetAtom(userAtom)
 
-  // Optimistic UI state for favorite flag
-  const [optimisticIsFavorite, setOptimisticFavorite] = useOptimistic(
-    isFavorite,
+  // Optimistic UI state for bookmark flag
+  const [optimisticIsBookmarked, setOptimisticBookmark] = useOptimistic(
+    isBookmarked,
     (current, next: boolean) => next,
   )
 
   // Action that performs the actual toggle and syncs global user state
-  const [, toggleFavorite, isPending] = useActionState(async () => {
+  const [, toggleBookmark, isPending] = useActionState(async () => {
     if (!isAuthenticated || !firebaseUser) {
       router.push('/signin')
 
       return { ok: false, error: 'Unauthenticated' }
     }
 
-    const nextFavorite = !optimisticIsFavorite
+    // Check if user has Pro plan
+    if (user?.subscriptionTier !== 'pro') {
+      router.push('/pricing')
+
+      return { ok: false, error: 'Pro plan required' }
+    }
+
+    const nextBookmark = !optimisticIsBookmarked
 
     // Optimistic toggle inside the action
-    setOptimisticFavorite(nextFavorite)
+    setOptimisticBookmark(nextBookmark)
 
     try {
       const idToken = await firebaseUser.getIdToken()
@@ -45,28 +57,28 @@ export function FavoriteButton({ venueName, isFavorite, className = '' }: Favori
         throw new Error('Failed to get authentication token')
       }
 
-      const response = await fetch('/api/favorites', {
+      const response = await fetch('/api/bookmarks', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${idToken}`,
         },
-        body: JSON.stringify({ venueName }),
+        body: JSON.stringify({ exhibitionId }),
       })
 
       if (!response.ok) {
         const errorData = await response.json()
         if (response.status === 403) {
-          // TODO: Show a nicer UI message instead of alert
-          alert(errorData.message)
+          // Redirect to pricing page for Pro plan requirement
+          router.push('/pricing')
         } else if (response.status === 401) {
           router.push('/signin')
         } else {
-          throw new Error(errorData.message || 'Failed to toggle favorite')
+          throw new Error(errorData.message || 'Failed to toggle bookmark')
         }
 
         // Rollback optimistic state on error
-        setOptimisticFavorite(!nextFavorite)
+        setOptimisticBookmark(!nextBookmark)
 
         return { ok: false, error: 'Request failed' }
       }
@@ -76,11 +88,10 @@ export function FavoriteButton({ venueName, isFavorite, className = '' }: Favori
 
       return { ok: true }
     } catch {
-      // TODO: Show a nicer UI message instead of alert
-      alert('お気に入りの更新に失敗しました。もう一度お試しください。')
+      alert('ブックマークの更新に失敗しました。もう一度お試しください。')
 
       // Rollback on exception as well
-      setOptimisticFavorite(!nextFavorite)
+      setOptimisticBookmark(!nextBookmark)
 
       return { ok: false, error: 'Exception' }
     }
@@ -95,8 +106,14 @@ export function FavoriteButton({ venueName, isFavorite, className = '' }: Favori
       return
     }
 
+    // Check if user has Pro plan
+    if (user?.subscriptionTier !== 'pro') {
+      router.push('/pricing')
+      return
+    }
+
     startTransition(() => {
-      toggleFavorite()
+      toggleBookmark()
     })
   }
 
@@ -106,15 +123,15 @@ export function FavoriteButton({ venueName, isFavorite, className = '' }: Favori
       onClick={handleClick}
       disabled={isPending}
       className={cn('transition-colors disabled:opacity-50', className)}
-      title={optimisticIsFavorite ? 'お気に入りから削除' : 'お気に入りに追加'}
-      aria-label={optimisticIsFavorite ? 'お気に入りから削除' : 'お気に入りに追加'}
+      title={optimisticIsBookmarked ? 'ブックマークから削除' : 'ブックマークに追加'}
+      aria-label={optimisticIsBookmarked ? 'ブックマークから削除' : 'ブックマークに追加'}
     >
-      <Star
+      <Bookmark
         className={cn(
           'w-4 h-4',
-          optimisticIsFavorite
-            ? 'text-yellow-500 fill-yellow-500'
-            : 'text-gray-400 hover:text-yellow-500',
+          optimisticIsBookmarked
+            ? 'text-blue-500 fill-blue-500'
+            : 'text-gray-400 hover:text-blue-500',
         )}
       />
     </button>
