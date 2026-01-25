@@ -43,13 +43,23 @@ export default function MuseumCard({ museum, isFavorite }: MuseumCardProps) {
       <div className="p-2 space-y-2">
         {museum.exhibitions.map((exhibition) => {
           return (
-            <div
-              key={exhibition.id}
-              className="border border-border rounded-lg p-3 hover:border-blue-300 hover:shadow-sm transition-all group relative"
-            >
+            <div key={exhibition.id} className="border border-border rounded-lg p-3  group">
               <div className="flex items-start justify-between gap-4">
                 <div className="flex-1 min-w-0">
-                  <h3 className="text-sm md:text-base mb-1 md:mb-2">{exhibition.title}</h3>
+                  {exhibition.officialUrl ? (
+                    <a
+                      href={exhibition.officialUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-2 transition-colors mb-1 md:mb-2"
+                      title="展覧会公式ページ"
+                    >
+                      <ExternalLink className="w-4 h-4 flex-shrink-0" />
+                      <h3 className="text-sm md:text-base">{exhibition.title}</h3>
+                    </a>
+                  ) : (
+                    <h3 className="text-sm md:text-base mb-1 md:mb-2">{exhibition.title}</h3>
+                  )}
 
                   <div className="text-sm text-muted-foreground flex items-center gap-2">
                     <Calendar className="w-4 h-4 mt-0.5 flex-shrink-0" />
@@ -66,18 +76,6 @@ export default function MuseumCard({ museum, isFavorite }: MuseumCardProps) {
                     )}
                   </div>
                 </div>
-                {exhibition.officialUrl && (
-                  <a
-                    href={exhibition.officialUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-blue-600 hover:text-blue-500 flex-shrink-0 transition-colors"
-                    title="展覧会公式ページ"
-                  >
-                    <span aria-hidden="true" className="absolute inset-0" />
-                    <ExternalLink className="w-4 h-4" />
-                  </a>
-                )}
               </div>
             </div>
           )
