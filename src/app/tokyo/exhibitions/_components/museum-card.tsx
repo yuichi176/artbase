@@ -2,12 +2,14 @@ import { Calendar, ExternalLink, MapPin } from 'lucide-react'
 import { Museum } from '@/schema/museum'
 import { Badge } from '@/components/shadcn-ui/badge'
 import { MuseumAccess } from '@/app/tokyo/exhibitions/_components/museum-access'
+import { FavoriteButton } from '@/app/tokyo/exhibitions/_components/favorite-button'
 
 interface MuseumCardProps {
   museum: Museum
+  isFavorite: boolean
 }
 
-export default function MuseumCard({ museum }: MuseumCardProps) {
+export default function MuseumCard({ museum, isFavorite }: MuseumCardProps) {
   return (
     <div className="border border-border rounded-xl overflow-hidden bg-background">
       <div className="bg-muted/65 border-b-1 border-border py-2 px-3 md:py-3 md:px-5 flex flex-col gap-2 md:gap-3">
@@ -18,15 +20,18 @@ export default function MuseumCard({ museum }: MuseumCardProps) {
               {museum.venueType}
             </Badge>
           </div>
-          <a
-            href={museum.officialUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-blue-600 hover:text-blue-500 flex-shrink-0 transition-colors"
-            title="会場公式ページ"
-          >
-            <ExternalLink className="w-4 h-4" />
-          </a>
+          <div className="flex items-center gap-2">
+            <FavoriteButton venueName={museum.name} isFavorite={isFavorite} />
+            <a
+              href={museum.officialUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-blue-600 hover:text-blue-500 flex-shrink-0 transition-colors"
+              title="会場公式ページ"
+            >
+              <ExternalLink className="w-4 h-4" />
+            </a>
+          </div>
         </div>
 
         <div className="flex items-center gap-2 text-muted-foreground text-xs md:text-sm">
