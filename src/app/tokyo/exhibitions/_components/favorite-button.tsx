@@ -58,6 +58,7 @@ export function FavoriteButton({ venueName, isFavorite, className = '' }: Favori
         if (!response.ok) {
           const errorData = await response.json()
           if (response.status === 403) {
+            // TODO: Show a nicer UI message instead of alert
             alert(errorData.message)
           } else if (response.status === 401) {
             router.push('/signin')
@@ -76,7 +77,7 @@ export function FavoriteButton({ venueName, isFavorite, className = '' }: Favori
 
         return { ok: true }
       } catch (error) {
-        console.error('Failed to update favorite:', error)
+        // TODO: Show a nicer UI message instead of alert
         alert('お気に入りの更新に失敗しました。もう一度お試しください。')
 
         // Rollback on exception as well
