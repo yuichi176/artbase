@@ -74,9 +74,14 @@ export async function POST(request: Request) {
       updatedAt: Timestamp.now(),
     })
 
-    // Get updated user document
-    const updatedUserDoc = await userRef.get()
-    const updatedRawUser = updatedUserDoc.data() as RawUser
+    const updatedRawUser: RawUser = {
+      ...rawUser,
+      preferences: {
+        ...rawUser.preferences,
+        favoriteVenues: updatedFavorites,
+      },
+      updatedAt: Timestamp.now(),
+    }
     const updatedUser = convertRawUserToUser(updatedRawUser)
 
     // Validate with Zod

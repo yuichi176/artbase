@@ -93,6 +93,8 @@ export async function PATCH(request: Request) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 })
     }
 
+    const rawUser = userDoc.data() as RawUser
+
     // Prepare update data for Firestore
     const updates: Partial<RawUser> = {
       updatedAt: Timestamp.now(),
@@ -106,10 +108,12 @@ export async function PATCH(request: Request) {
     // Update Firestore document
     await userRef.update(updates)
 
-    // Get updated user document
-    const updatedUserDoc = await userRef.get()
-    const rawUser = updatedUserDoc.data() as RawUser
-    const user = convertRawUserToUser(rawUser)
+    // Update local rawUser object instead of refetching from Firestore
+    const updatedRawUser: RawUser = {
+      ...rawUser,
+      ...updates,
+    }
+    const user = convertRawUserToUser(updatedRawUser)
 
     // Validate with Zod
     const validatedUser = userSchema.parse(user)
