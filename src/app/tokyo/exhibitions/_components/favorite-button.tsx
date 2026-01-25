@@ -27,7 +27,7 @@ export function FavoriteButton({ venueName, isFavorite, className = '' }: Favori
   )
 
   // Action that performs the actual toggle and syncs global user state
-  const [_, toggleFavorite, isPending] = useActionState(
+  const [, toggleFavorite, isPending] = useActionState(
     async (prev: null | { ok: boolean; error?: string }) => {
       if (!isAuthenticated || !firebaseUser) {
         router.push('/signin')
