@@ -57,8 +57,8 @@ export function FavoritesPagePresentation({ museums }: FavoritesPagePresentation
   // Show loading state while checking authentication
   if (authLoading || !user) {
     return (
-      <div className="container mx-auto px-4 py-8">
-        <Skeleton className="h-8 w-48 mb-6" />
+      <div className="container">
+        <Skeleton className="h-8 w-48 mb-3" />
         <div className="space-y-3">
           <Skeleton className="h-8 w-full" />
           <Card className="p-2 md:p-4 rounded-lg gap-0 bg-background">
@@ -72,8 +72,8 @@ export function FavoritesPagePresentation({ museums }: FavoritesPagePresentation
   // Empty state: no favorites at all
   if (favoriteVenues.length === 0) {
     return (
-      <div className="container mx-auto px-4 py-8">
-        <h1 className="text-2xl font-bold mb-6">お気に入り会場</h1>
+      <div className="container">
+        <h1 className="text-xl font-bold mb-3 pl-1">お気に入り会場</h1>
         <Card className="p-8 rounded-lg text-center">
           <p className="text-muted-foreground">まだお気に入りの会場がありません</p>
           <p className="text-sm text-muted-foreground mt-2">
@@ -85,8 +85,8 @@ export function FavoritesPagePresentation({ museums }: FavoritesPagePresentation
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="text-2xl font-bold mb-6">お気に入り会場</h1>
+    <div className="container">
+      <h1 className="text-xl font-bold mb-3 pl-1">お気に入り会場</h1>
 
       <div className="space-y-3">
         <SearchInput value={searchQuery} onChange={setSearchQuery} />

@@ -65,10 +65,10 @@ export function AccountPagePresentation() {
   }
 
   return (
-    <div className="container mx-auto max-w-2xl px-4 py-8 md:py-12">
-      <h1 className="text-2xl font-bold">アカウント設定</h1>
+    <div className="container max-w-xl px-4 py-8 md:py-12 mx-auto">
+      <h1 className="text-xl font-bold pl-1">アカウント設定</h1>
 
-      <div className="mt-8 space-y-6">
+      <div className="mt-5 space-y-6">
         {/* User Info */}
         <Card className="p-6">
           <div className="flex items-center justify-between">
