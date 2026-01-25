@@ -27,67 +27,64 @@ export function FavoriteButton({ venueName, isFavorite, className = '' }: Favori
   )
 
   // Action that performs the actual toggle and syncs global user state
-  const [, toggleFavorite, isPending] = useActionState(
-    async (prev: null | { ok: boolean; error?: string }) => {
-      if (!isAuthenticated || !firebaseUser) {
-        router.push('/signin')
+  const [, toggleFavorite, isPending] = useActionState(async () => {
+    if (!isAuthenticated || !firebaseUser) {
+      router.push('/signin')
 
-        return { ok: false, error: 'Unauthenticated' }
+      return { ok: false, error: 'Unauthenticated' }
+    }
+
+    const nextFavorite = !optimisticIsFavorite
+
+    // Optimistic toggle inside the action
+    setOptimisticFavorite(nextFavorite)
+
+    try {
+      const idToken = await firebaseUser.getIdToken()
+      if (!idToken) {
+        throw new Error('Failed to get authentication token')
       }
 
-      const nextFavorite = !optimisticIsFavorite
+      const response = await fetch('/api/favorites', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${idToken}`,
+        },
+        body: JSON.stringify({ venueName }),
+      })
 
-      // Optimistic toggle inside the action
-      setOptimisticFavorite(nextFavorite)
-
-      try {
-        const idToken = await firebaseUser.getIdToken()
-        if (!idToken) {
-          throw new Error('Failed to get authentication token')
+      if (!response.ok) {
+        const errorData = await response.json()
+        if (response.status === 403) {
+          // TODO: Show a nicer UI message instead of alert
+          alert(errorData.message)
+        } else if (response.status === 401) {
+          router.push('/signin')
+        } else {
+          throw new Error(errorData.message || 'Failed to toggle favorite')
         }
 
-        const response = await fetch('/api/favorites', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${idToken}`,
-          },
-          body: JSON.stringify({ venueName }),
-        })
-
-        if (!response.ok) {
-          const errorData = await response.json()
-          if (response.status === 403) {
-            // TODO: Show a nicer UI message instead of alert
-            alert(errorData.message)
-          } else if (response.status === 401) {
-            router.push('/signin')
-          } else {
-            throw new Error(errorData.message || 'Failed to toggle favorite')
-          }
-
-          // Rollback optimistic state on error
-          setOptimisticFavorite(!nextFavorite)
-
-          return { ok: false, error: 'Request failed' }
-        }
-
-        const updatedUser: User = await response.json()
-        setUser(updatedUser)
-
-        return { ok: true }
-      } catch (error) {
-        // TODO: Show a nicer UI message instead of alert
-        alert('お気に入りの更新に失敗しました。もう一度お試しください。')
-
-        // Rollback on exception as well
+        // Rollback optimistic state on error
         setOptimisticFavorite(!nextFavorite)
 
-        return { ok: false, error: 'Exception' }
+        return { ok: false, error: 'Request failed' }
       }
-    },
-    null,
-  )
+
+      const updatedUser: User = await response.json()
+      setUser(updatedUser)
+
+      return { ok: true }
+    } catch (error) {
+      // TODO: Show a nicer UI message instead of alert
+      alert('お気に入りの更新に失敗しました。もう一度お試しください。')
+
+      // Rollback on exception as well
+      setOptimisticFavorite(!nextFavorite)
+
+      return { ok: false, error: 'Exception' }
+    }
+  }, null)
 
   const handleClick = (event: React.MouseEvent) => {
     event.preventDefault()
