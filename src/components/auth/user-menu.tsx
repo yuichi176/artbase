@@ -53,6 +53,9 @@ export function UserMenu() {
         <DropdownMenuItem asChild>
           <Link href="/account">アカウント設定</Link>
         </DropdownMenuItem>
+        <DropdownMenuItem asChild>
+          <Link href="/favorites">お気に入り</Link>
+        </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={handleSignOut} disabled={isSigningOut}>
           {isSigningOut ? 'ログアウト中...' : 'ログアウト'}
