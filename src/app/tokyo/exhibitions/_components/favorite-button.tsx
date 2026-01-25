@@ -105,6 +105,7 @@ export function FavoriteButton({ venueName, isFavorite, className = '' }: Favori
 
   return (
     <button
+      type="button"
       onClick={handleClick}
       disabled={isPending}
       className={cn('transition-colors disabled:opacity-50', className)}
