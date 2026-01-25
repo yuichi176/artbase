@@ -15,13 +15,6 @@ export default function MuseumCard({ museum, isFavorite }: MuseumCardProps) {
       <div className="bg-muted/65 border-b-1 border-border py-2 px-3 md:py-3 md:px-5 flex flex-col gap-2 md:gap-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <h2 className="text-sm md:text-base">{museum.name}</h2>
-            <Badge variant="outline" className="rounded-lg text-[0.625rem] px-2">
-              {museum.venueType}
-            </Badge>
-          </div>
-          <div className="flex items-center gap-2">
-            <FavoriteButton venueName={museum.name} isFavorite={isFavorite} />
             <a
               href={museum.officialUrl}
               target="_blank"
@@ -31,7 +24,12 @@ export default function MuseumCard({ museum, isFavorite }: MuseumCardProps) {
             >
               <ExternalLink className="w-4 h-4" />
             </a>
+            <h2 className="text-sm md:text-base">{museum.name}</h2>
+            <Badge variant="outline" className="rounded-lg text-[0.625rem] px-2">
+              {museum.venueType}
+            </Badge>
           </div>
+          <FavoriteButton venueName={museum.name} isFavorite={isFavorite} />
         </div>
 
         <div className="flex items-center gap-2 text-muted-foreground text-xs md:text-sm">
