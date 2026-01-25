@@ -62,7 +62,7 @@ export function UserMenu() {
         </DropdownMenuItem>
         {isProPlan ? (
           <DropdownMenuItem asChild>
-            <Link href="/bookmarks">行きたい展覧会</Link>
+            <Link href="/bookmarks">ブックマーク</Link>
           </DropdownMenuItem>
         ) : (
           <DropdownMenuItem
@@ -70,7 +70,7 @@ export function UserMenu() {
             onClick={() => router.push('/pricing')}
           >
             <div className="flex items-center justify-between w-full">
-              <span>行きたい展覧会</span>
+              <span>ブックマーク</span>
               <Lock className="w-4 h-4 ml-2" />
             </div>
           </DropdownMenuItem>

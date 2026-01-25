@@ -73,7 +73,7 @@ export function BookmarksPagePresentation({ museums }: BookmarksPagePresentation
   if (bookmarkedExhibitions.length === 0) {
     return (
       <div className="container">
-        <h1 className="text-xl font-bold mb-3 pl-1">行きたい展覧会</h1>
+        <h1 className="text-xl font-bold mb-3 pl-1">ブックマーク</h1>
         <Card className="p-8 rounded-lg text-center">
           <p className="text-muted-foreground ">まだブックマークした展覧会がありません</p>
           <p className="text-sm text-muted-foreground mt-2 text-center">
@@ -92,7 +92,7 @@ export function BookmarksPagePresentation({ museums }: BookmarksPagePresentation
 
   return (
     <div className="container">
-      <h1 className="text-xl font-bold mb-3 pl-1">行きたい展覧会</h1>
+      <h1 className="text-xl font-bold mb-3 pl-1">ブックマーク</h1>
 
       <Card className="p-2 md:p-4 rounded-lg gap-0 bg-background">
         <p className="text-sm pl-1 mb-3">{bookmarkedExhibitions.length}件の展覧会</p>
