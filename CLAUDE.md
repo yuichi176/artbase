@@ -6,6 +6,12 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Artlyst is a Next.js application that displays exhibition information for art museums. It fetches exhibition data from Google Cloud Firestore and displays them grouped by museum/venue.
 
+### Key Features
+- **Exhibition Listing**: Browse current and upcoming exhibitions grouped by museum/venue
+- **Search & Filtering**: Search by venue/exhibition name, filter by venue type, area, museum, and ongoing status
+- **Favorite Venues**: Authenticated users can favorite venues (Free plan: 1 venue, Pro plan: unlimited)
+- **Authentication**: Firebase Authentication with email/password and Google OAuth
+
 ## Development Commands
 
 ### Package Manager
@@ -44,61 +50,23 @@ The project uses **lefthook** for Git hooks. On every commit, the following chec
 src/
 ├── app/                                   # Next.js App Router
 │   ├── (auth)/                            # Authentication routes (signin, signup)
-│   │   ├── _components/                   # Auth-specific components
-│   │   │   ├── sign-in-form.tsx
-│   │   │   ├── sign-up-form.tsx
-│   │   │   └── forgot-password-dialog.tsx
-│   │   ├── signin/page.tsx
-│   │   └── signup/page.tsx
 │   ├── (protected)/                       # Protected routes (requires auth)
-│   │   └── account/
-│   │       ├── _components/               # Account page components
-│   │       │   ├── account-edit-form.tsx
-│   │       │   ├── linked-providers-section.tsx
-│   │       │   ├── link-email-password-dialog.tsx
-│   │       │   ├── link-google-button.tsx
-│   │       │   ├── change-password-dialog.tsx
-│   │       │   └── unlink-provider-dialog.tsx
-│   │       ├── account-page-section.tsx   # Data fetching layer
-│   │       └── page.tsx
 │   ├── tokyo/exhibitions/                 # Exhibition listing
-│   │   ├── _components/                   # Exhibition-specific components
-│   │   │   ├── museum-card.tsx
-│   │   │   ├── museum-access.tsx
-│   │   │   ├── search-input.tsx
-│   │   │   └── filter-drawer.tsx
-│   │   ├── top-page-section.tsx           # Data fetching & transformation
-│   │   ├── top-page-presentation.tsx      # UI & state management
-│   │   └── page.tsx
 │   ├── api/                               # API Routes
-│   │   └── auth/
-│   │       └── user/
-│   │           └── route.ts               # User CRUD operations
+│   │   └── utils.ts                       # Shared API utilities
 │   ├── layout.tsx                         # Root layout with fonts
-│   ├── not-found.tsx
 │   └── globals.css                        # Global styles
-├── components/
-│   └── shadcn-ui/                         # Reusable UI components (shadcn/ui)
-│       ├── badge.tsx
-│       ├── card.tsx
-│       ├── button.tsx
-│       ├── input.tsx
-│       └── ...
+├── components/                            # Reusable UI components
+│   └── shadcn-ui/                         # shadcn/ui styled components
 ├── lib/                                   # Utility libraries
 │   ├── firestore.ts                       # Firestore client instance
 │   ├── firebase-admin.ts                  # Firebase Admin SDK
 │   ├── auth/                              # Auth utilities
+│   ├── data/                              # Data fetching layer
 │   └── utils.ts                           # General utilities
 ├── schema/                                # Type definitions and schemas
-│   ├── exhibition.ts                      # Exhibition and Museum types
-│   ├── user.ts                            # User types
-│   └── ...
 ├── hooks/                                 # Custom React hooks
-│   ├── use-auth.ts
-│   └── use-require-auth.ts
 └── store/                                 # Global state (Jotai)
-    ├── auth.ts
-    └── subscription.ts
 ```
 
 ### Key Patterns
@@ -122,17 +90,6 @@ This project follows a layered component architecture to separate concerns betwe
   - Pass processed data to presentation components
 - **Example**: `top-page-section.tsx` fetches exhibitions from Firestore and passes them to `TopPagePresentation`
 
-**Special Case: Authentication-Required Pages**
-- For pages that require user authentication (e.g., account settings, protected routes), the `*-section.tsx` component must be a **Client Component** instead of a Server Component
-- This is necessary because authentication state is managed client-side using Firebase Client SDK and React hooks (`useAuth`, `useRequireAuth`)
-- In these cases:
-  - `*-section.tsx` uses `'use client'` directive
-  - Handles authentication checks and redirects
-  - Fetches user-specific data from global state (Jotai atoms) or API routes
-  - Manages loading states during authentication
-  - Still passes data to `*-presentation.tsx` for UI rendering
-- **Example**: `account-page-section.tsx` checks authentication and fetches user data before rendering `AccountPagePresentation`
-
 ##### 3. **Presentation Components** (`*-presentation.tsx`) - **Client Components**
 - **Responsibility**: UI rendering and state management
 - **Location**: Placed in the same directory as corresponding section component
@@ -143,6 +100,14 @@ This project follows a layered component architecture to separate concerns betwe
   - Receive data as props from section components
   - Do NOT fetch data directly
 - **Example**: `top-page-presentation.tsx` manages filter states and renders museum cards
+
+**Special Case: Authentication-Required Pages**
+- For pages that require user authentication (e.g., account settings, protected routes), authentication state is managed using React hooks (`useAuth`, `useRequireAuth`)
+- In these cases:
+    - Handles authentication checks and redirects
+    - Get user-specific data from global state (Jotai atoms)
+    - Manages loading states during authentication
+- **Example**: `account-page-presentation.tsx` is a Client Component that use user data and handles auth state
 
 ##### 4. **Page-Specific Components** (`_components/`)
 - **Responsibility**: Reusable UI components specific to a page or feature
@@ -195,24 +160,6 @@ page.tsx (Server)
   ├─ Call API routes for mutations
   ↓
 _components/*.tsx (Server/Client Components)
-  └─ Render specific UI elements
-```
-
-**Authentication-Required Pages (Special Case)**
-```
-page.tsx (Server)
-  ↓
-*-section.tsx (Client Component)
-  ├─ Check authentication (useRequireAuth)
-  ├─ Fetch user data (useAuth, API routes)
-  ├─ Manage loading/redirect states
-  ↓
-*-presentation.tsx (Client Component)
-  ├─ Manage UI state
-  ├─ Handle user interactions
-  ├─ Call API routes for mutations
-  ↓
-_components/*.tsx (Client Components)
   └─ Render specific UI elements
 ```
 

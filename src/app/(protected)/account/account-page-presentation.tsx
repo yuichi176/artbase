@@ -6,15 +6,28 @@ import { Button } from '@/components/shadcn-ui/button'
 import { Badge } from '@/components/shadcn-ui/badge'
 import { AccountEditForm } from '@/app/(protected)/account/_components/account-edit-form'
 import { LinkedProvidersSection } from '@/app/(protected)/account/_components/linked-providers-section'
-import type { User, SubscriptionTier } from '@/schema/user'
+import { useAtomValue } from 'jotai'
+import { userAtom } from '@/store/auth'
+import { useRequireAuth } from '@/hooks/use-require-auth'
+import { subscriptionTierAtom } from '@/store/subscription'
 
-interface AccountPagePresentationProps {
-  user: User
-  subscriptionTier: SubscriptionTier
-}
-
-export function AccountPagePresentation({ user, subscriptionTier }: AccountPagePresentationProps) {
+export function AccountPagePresentation() {
+  const { loading } = useRequireAuth('/account')
+  const user = useAtomValue(userAtom)
+  const subscriptionTier = useAtomValue(subscriptionTierAtom)
   const [isEditing, setIsEditing] = useState(false)
+
+  if (loading || !user) {
+    return (
+      <div className="container mx-auto max-w-2xl px-4 py-12">
+        <div className="h-8 w-48 animate-pulse rounded bg-muted" />
+        <div className="mt-8 space-y-4">
+          <div className="h-32 animate-pulse rounded bg-muted" />
+          <div className="h-32 animate-pulse rounded bg-muted" />
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="container mx-auto max-w-2xl px-4 py-8 md:py-12">

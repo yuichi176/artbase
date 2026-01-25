@@ -7,6 +7,18 @@ export type SubscriptionStatus = z.infer<typeof subscriptionStatusSchema>
 const subscriptionTierSchema = z.enum(['free', 'pro'])
 export type SubscriptionTier = z.infer<typeof subscriptionTierSchema>
 
+// Favorite venue item (application type with ISO date string)
+export type FavoriteVenueItem = {
+  name: string
+  addedAt: string
+}
+
+// Raw favorite venue item from Firestore (with Timestamp)
+export type RawFavoriteVenueItem = {
+  name: string
+  addedAt: Timestamp
+}
+
 // Raw user type from Firestore (with Timestamp objects)
 export type RawUser = {
   uid: string
@@ -21,11 +33,17 @@ export type RawUser = {
   stripePriceId: string | null
   preferences: {
     emailNotifications: boolean
-    favoriteVenues: string[]
+    favoriteVenues: RawFavoriteVenueItem[]
   }
   createdAt: Timestamp
   updatedAt: Timestamp
 }
+
+// Favorite venue item schema
+export const favoriteVenueItemSchema = z.object({
+  name: z.string(),
+  addedAt: z.string(),
+})
 
 // Application user type (with ISO date strings)
 export const userSchema = z.object({
@@ -41,7 +59,7 @@ export const userSchema = z.object({
   stripePriceId: z.string().nullable(),
   preferences: z.object({
     emailNotifications: z.boolean(),
-    favoriteVenues: z.array(z.string()),
+    favoriteVenues: z.array(favoriteVenueItemSchema),
   }),
   createdAt: z.string(),
   updatedAt: z.string(),

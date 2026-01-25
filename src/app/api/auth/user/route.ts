@@ -1,34 +1,9 @@
 import { NextResponse } from 'next/server'
 import { verifyAuthToken } from '@/lib/auth/verify-token'
 import { db, auth as adminAuth } from '@/lib/firebase-admin'
-import { userSchema, type RawUser, type User } from '@/schema/user'
+import { userSchema, type RawUser } from '@/schema/user'
 import { Timestamp } from 'firebase-admin/firestore'
-
-// Convert Firestore Timestamp to ISO date string
-function timestampToISOString(timestamp: Timestamp): string {
-  return timestamp.toDate().toISOString()
-}
-
-// Convert RawUser (from Firestore) to User (application format)
-function convertRawUserToUser(rawUser: RawUser): User {
-  return {
-    uid: rawUser.uid,
-    email: rawUser.email,
-    displayName: rawUser.displayName,
-    photoURL: rawUser.photoURL,
-    stripeCustomerId: rawUser.stripeCustomerId,
-    subscriptionStatus: rawUser.subscriptionStatus,
-    subscriptionTier: rawUser.subscriptionTier,
-    currentPeriodEnd: rawUser.currentPeriodEnd
-      ? timestampToISOString(rawUser.currentPeriodEnd)
-      : null,
-    stripeSubscriptionId: rawUser.stripeSubscriptionId,
-    stripePriceId: rawUser.stripePriceId,
-    preferences: rawUser.preferences,
-    createdAt: timestampToISOString(rawUser.createdAt),
-    updatedAt: timestampToISOString(rawUser.updatedAt),
-  }
-}
+import { convertRawUserToUser } from '@/app/api/utils'
 
 /**
  * GET /api/auth/user
@@ -118,6 +93,8 @@ export async function PATCH(request: Request) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 })
     }
 
+    const rawUser = userDoc.data() as RawUser
+
     // Prepare update data for Firestore
     const updates: Partial<RawUser> = {
       updatedAt: Timestamp.now(),
@@ -131,10 +108,12 @@ export async function PATCH(request: Request) {
     // Update Firestore document
     await userRef.update(updates)
 
-    // Get updated user document
-    const updatedUserDoc = await userRef.get()
-    const rawUser = updatedUserDoc.data() as RawUser
-    const user = convertRawUserToUser(rawUser)
+    // Update local rawUser object instead of refetching from Firestore
+    const updatedRawUser: RawUser = {
+      ...rawUser,
+      ...updates,
+    }
+    const user = convertRawUserToUser(updatedRawUser)
 
     // Validate with Zod
     const validatedUser = userSchema.parse(user)
