@@ -92,28 +92,6 @@ export function AccountPagePresentation() {
             </div>
           )}
         </Card>
-
-        {/* Preferences */}
-        <Card className="p-6">
-          <h2 className="text-lg font-semibold">設定</h2>
-          <div className="space-y-3">
-            <div>
-              <div className="text-sm text-muted-foreground">メール通知</div>
-              <div className="mt-1 font-medium">
-                {user.preferences.emailNotifications ? '有効' : '無効'}
-              </div>
-            </div>
-
-            <div>
-              <div className="text-sm text-muted-foreground">お気に入り美術館</div>
-              <div className="mt-1 font-medium">
-                {user.preferences.favoriteVenues.length > 0
-                  ? user.preferences.favoriteVenues.join(', ')
-                  : 'なし'}
-              </div>
-            </div>
-          </div>
-        </Card>
       </div>
     </div>
   )
