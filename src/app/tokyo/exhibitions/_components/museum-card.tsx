@@ -19,12 +19,12 @@ export default function MuseumCard({ museum, isFavorite }: MuseumCardProps) {
               href={museum.officialUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-blue-600 hover:text-blue-500 flex-shrink-0 transition-colors"
+              className="flex items-center gap-2 transition-colors"
               title="会場公式ページ"
             >
-              <ExternalLink className="w-4 h-4" />
+              <ExternalLink className="w-4 h-4 flex-shrink-0" />
+              <h2 className="text-sm md:text-base">{museum.name}</h2>
             </a>
-            <h2 className="text-sm md:text-base">{museum.name}</h2>
             <Badge variant="outline" className="rounded-lg text-[0.625rem] px-2">
               {museum.venueType}
             </Badge>
