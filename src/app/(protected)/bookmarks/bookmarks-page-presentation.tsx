@@ -76,7 +76,9 @@ export function BookmarksPagePresentation({ museums }: BookmarksPagePresentation
       <div className="container">
         <div className="pl-1 mb-3">
           <h1 className="text-xl font-bold mb-1">ブックマーク</h1>
-          <p>ブックマークページの説明</p>
+          <p className="text-sm text-muted-foreground">
+            気になる展覧会をブックマークして管理できます。開催終了後も表示されます。
+          </p>
         </div>
         <Card className="p-8 rounded-lg text-center">
           <p className="text-muted-foreground ">まだブックマークした展覧会がありません</p>
@@ -98,7 +100,9 @@ export function BookmarksPagePresentation({ museums }: BookmarksPagePresentation
     <div className="container">
       <div className="pl-1 mb-3">
         <h1 className="text-xl font-bold mb-1">ブックマーク</h1>
-        <p>ブックマークページの説明</p>
+        <p className="text-sm text-muted-foreground">
+          気になる展覧会をブックマークして管理できます。開催が終了した展覧会も表示されます。
+        </p>
       </div>
 
       <Card className="p-2 md:p-4 rounded-lg gap-0 bg-background">
