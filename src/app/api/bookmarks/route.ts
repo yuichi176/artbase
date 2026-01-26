@@ -130,22 +130,35 @@ export async function POST(request: Request) {
     // Use composite ID for bookmark document
     const bookmarkId = `${uid}_${exhibitionId}`
     const bookmarkRef = db.collection('bookmarks').doc(bookmarkId)
-    const bookmarkDoc = await bookmarkRef.get()
 
-    if (bookmarkDoc.exists) {
-      // Remove bookmark
-      await bookmarkRef.delete()
-      return NextResponse.json({ bookmarked: false })
-    } else {
-      // Add bookmark
-      const newBookmark: RawBookmark = {
-        userId: uid,
-        exhibitionId,
-        createdAt: Timestamp.now(),
+    // Use transaction to handle race conditions
+    const result = await db.runTransaction(async (transaction) => {
+      // Read phase: All reads must happen first
+      const bookmarkDoc = await transaction.get(bookmarkRef)
+
+      if (bookmarkDoc.exists) {
+        // Remove bookmark
+        transaction.delete(bookmarkRef)
+        return { bookmarked: false }
+      } else {
+        // Verify exhibition exists within transaction for referential integrity
+        const exhibitionDocInTransaction = await transaction.get(exhibitionRef)
+        if (!exhibitionDocInTransaction.exists) {
+          throw new Error('EXHIBITION_NOT_FOUND')
+        }
+
+        // Write phase: Add bookmark
+        const newBookmark: RawBookmark = {
+          userId: uid,
+          exhibitionId,
+          createdAt: Timestamp.now(),
+        }
+        transaction.set(bookmarkRef, newBookmark)
+        return { bookmarked: true }
       }
-      await bookmarkRef.set(newBookmark)
-      return NextResponse.json({ bookmarked: true })
-    }
+    })
+
+    return NextResponse.json(result)
   } catch (error) {
     console.error('Error in POST /api/bookmarks:', error)
 
@@ -157,6 +170,16 @@ export async function POST(request: Request) {
     }
 
     if (error instanceof Error) {
+      if (error.message === 'EXHIBITION_NOT_FOUND') {
+        return NextResponse.json(
+          {
+            error: 'Exhibition not found',
+            message: '指定された展覧会が見つかりません。',
+          },
+          { status: 404 },
+        )
+      }
+
       if (error.message.includes('token')) {
         return NextResponse.json({ error: 'Unauthorized', message: error.message }, { status: 401 })
       }
