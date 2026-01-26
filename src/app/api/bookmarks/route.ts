@@ -174,7 +174,13 @@ export async function GET(request: Request) {
 
     // Check if user has Pro plan
     if (rawUser.subscriptionTier !== 'pro') {
-      return NextResponse.json({ error: 'Pro plan required' }, { status: 403 })
+      return NextResponse.json(
+        {
+          error: 'Pro plan required',
+          message: 'ブックマーク機能はProプラン限定です。',
+        },
+        { status: 403 },
+      )
     }
 
     // Get all bookmarks for this user
