@@ -38,11 +38,16 @@ export function FavoritesPagePresentation({ museums }: FavoritesPagePresentation
   if (favoriteMuseumIds.size === 0) {
     return (
       <div className="container">
-        <h1 className="text-xl font-bold mb-3 pl-1">お気に入り</h1>
+        <div className="pl-1 mb-3">
+          <h1 className="text-xl font-bold mb-1">お気に入り</h1>
+          <p className="text-sm text-muted-foreground">
+            お気に入りの会場の展覧会情報をまとめて確認できます。
+          </p>
+        </div>
         <Card className="p-8 rounded-lg text-center">
           <p className="text-muted-foreground">まだお気に入りの会場がありません</p>
           <p className="text-sm text-muted-foreground mt-2">
-            展覧会ページで☆ボタンをクリックして、お気に入りに追加しましょう
+            展覧会ページで☆ボタンをクリックして、お気に入りに追加しましょう。
           </p>
         </Card>
       </div>
@@ -51,7 +56,12 @@ export function FavoritesPagePresentation({ museums }: FavoritesPagePresentation
 
   return (
     <div className="container">
-      <h1 className="text-xl font-bold mb-3 pl-1">お気に入り</h1>
+      <div className="pl-1 mb-3">
+        <h1 className="text-xl font-bold mb-1">お気に入り</h1>
+        <p className="text-sm text-muted-foreground">
+          お気に入りの会場の展覧会情報をまとめて確認できます。
+        </p>
+      </div>
 
       {count !== 0 ? (
         <div className="space-y-3">
