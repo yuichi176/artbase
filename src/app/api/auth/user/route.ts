@@ -47,7 +47,6 @@ export async function GET(request: Request) {
       preferences: {
         emailNotifications: false,
         favoriteVenues: [],
-        bookmarkedExhibitions: [],
       },
       createdAt: now,
       updatedAt: now,

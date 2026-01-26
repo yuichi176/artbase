@@ -9,6 +9,7 @@ import { useRequireAuth } from '@/hooks/use-require-auth'
 import { userAtom } from '@/store/auth'
 import { MuseumListSkeleton } from '@/app/tokyo/exhibitions/_components/museum-card-skeleton'
 import { Skeleton } from '@/components/shadcn-ui/skeleton'
+import { useBookmarks } from '@/hooks/use-bookmarks'
 
 interface FavoritesPagePresentationProps {
   museums: Museum[]
@@ -17,6 +18,7 @@ interface FavoritesPagePresentationProps {
 export function FavoritesPagePresentation({ museums }: FavoritesPagePresentationProps) {
   const { loading: authLoading } = useRequireAuth('/favorites')
   const user = useAtomValue(userAtom)
+  const { bookmarkedExhibitionIds, toggleBookmark } = useBookmarks()
 
   // Get favorite venues from user preferences
   const favoriteVenues = useMemo(
@@ -33,12 +35,6 @@ export function FavoritesPagePresentation({ museums }: FavoritesPagePresentation
   const favoriteMuseums = useMemo(() => {
     return museums.filter((museum) => favoriteVenueNames.has(museum.name))
   }, [favoriteVenueNames, museums])
-
-  // Get bookmarked exhibition IDs from user preferences
-  const bookmarkedExhibitionIds = useMemo(() => {
-    const exhibitions = user?.preferences.bookmarkedExhibitions ?? []
-    return new Set(exhibitions.map(({ exhibitionId }) => exhibitionId))
-  }, [user?.preferences.bookmarkedExhibitions])
 
   const count = favoriteMuseums.reduce((sum, museum) => sum + museum.exhibitions.length, 0)
 
@@ -79,6 +75,7 @@ export function FavoritesPagePresentation({ museums }: FavoritesPagePresentation
                   museum={museum}
                   isFavorite={favoriteVenueNames.has(museum.name)}
                   bookmarkedExhibitionIds={bookmarkedExhibitionIds}
+                  onBookmarkToggle={toggleBookmark}
                 />
               </div>
             ))}

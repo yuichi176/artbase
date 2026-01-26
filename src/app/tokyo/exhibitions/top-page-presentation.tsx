@@ -9,6 +9,7 @@ import { OngoingStatusType } from '@/schema/exhibition'
 import { SearchInput } from '@/app/tokyo/exhibitions/_components/search-input'
 import { useAtomValue } from 'jotai'
 import { userAtom } from '@/store/auth'
+import { useBookmarks } from '@/hooks/use-bookmarks'
 
 interface TopPagePresentationProps {
   museums: Museum[]
@@ -16,6 +17,7 @@ interface TopPagePresentationProps {
 
 export const TopPagePresentation = ({ museums }: TopPagePresentationProps) => {
   const user = useAtomValue(userAtom)
+  const { bookmarkedExhibitionIds, toggleBookmark } = useBookmarks()
   const [selectedVenueTypes, setSelectedVenueTypes] = useState<VenueType[]>([])
   const [selectedAreas, setSelectedAreas] = useState<Area[]>([])
   const [selectedMuseumNames, setSelectedMuseumNames] = useState<string[]>([])
@@ -26,11 +28,6 @@ export const TopPagePresentation = ({ museums }: TopPagePresentationProps) => {
     const venues = user?.preferences.favoriteVenues ?? []
     return new Set(venues.map(({ name }) => name))
   }, [user?.preferences.favoriteVenues])
-
-  const bookmarkedExhibitionIds = useMemo(() => {
-    const exhibitions = user?.preferences.bookmarkedExhibitions ?? []
-    return new Set(exhibitions.map(({ exhibitionId }) => exhibitionId))
-  }, [user?.preferences.bookmarkedExhibitions])
 
   const handleClickVenueType = (value: VenueType) => {
     setSelectedVenueTypes((prev) => {
@@ -173,6 +170,7 @@ export const TopPagePresentation = ({ museums }: TopPagePresentationProps) => {
                 museum={museum}
                 isFavorite={favoriteVenueNames.has(museum.name)}
                 bookmarkedExhibitionIds={bookmarkedExhibitionIds}
+                onBookmarkToggle={toggleBookmark}
               />
             </div>
           ))}

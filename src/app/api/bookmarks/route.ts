@@ -1,10 +1,10 @@
 import { NextResponse } from 'next/server'
 import { verifyAuthToken } from '@/lib/auth/verify-token'
 import { db } from '@/lib/firebase-admin'
-import { userSchema, type RawUser, type RawBookmarkedExhibitionItem } from '@/schema/user'
+import { type RawUser } from '@/schema/user'
+import { type RawBookmark } from '@/schema/bookmark'
 import { Timestamp } from 'firebase-admin/firestore'
 import { z } from 'zod'
-import { convertRawUserToUser } from '@/app/api/utils'
 
 // Request body schema
 const toggleBookmarkSchema = z.object({
@@ -35,7 +35,6 @@ export async function POST(request: Request) {
     }
 
     const rawUser = userDoc.data() as RawUser
-    const currentBookmarks = rawUser.preferences.bookmarkedExhibitions ?? []
     const subscriptionTier = rawUser.subscriptionTier
 
     // Check if user has Pro plan
@@ -49,45 +48,25 @@ export async function POST(request: Request) {
       )
     }
 
-    // Check if exhibition is already bookmarked
-    const bookmarkIndex = currentBookmarks.findIndex((item) => item.exhibitionId === exhibitionId)
-    const isBookmarked = bookmarkIndex !== -1
+    // Use composite ID for bookmark document
+    const bookmarkId = `${uid}_${exhibitionId}`
+    const bookmarkRef = db.collection('bookmarks').doc(bookmarkId)
+    const bookmarkDoc = await bookmarkRef.get()
 
-    let updatedBookmarks: RawBookmarkedExhibitionItem[]
-
-    if (isBookmarked) {
-      // Remove from bookmarks
-      updatedBookmarks = currentBookmarks.filter((item) => item.exhibitionId !== exhibitionId)
+    if (bookmarkDoc.exists) {
+      // Remove bookmark
+      await bookmarkRef.delete()
+      return NextResponse.json({ bookmarked: false })
     } else {
-      // Add to bookmarks
-      const newBookmark: RawBookmarkedExhibitionItem = {
+      // Add bookmark
+      const newBookmark: RawBookmark = {
+        userId: uid,
         exhibitionId,
-        addedAt: Timestamp.now(),
+        createdAt: Timestamp.now(),
       }
-      updatedBookmarks = [...currentBookmarks, newBookmark]
+      await bookmarkRef.set(newBookmark)
+      return NextResponse.json({ bookmarked: true })
     }
-
-    // Update Firestore document
-    const updateTimestamp = Timestamp.now()
-    await userRef.update({
-      'preferences.bookmarkedExhibitions': updatedBookmarks,
-      updatedAt: updateTimestamp,
-    })
-
-    const updatedRawUser: RawUser = {
-      ...rawUser,
-      preferences: {
-        ...rawUser.preferences,
-        bookmarkedExhibitions: updatedBookmarks,
-      },
-      updatedAt: updateTimestamp,
-    }
-    const updatedUser = convertRawUserToUser(updatedRawUser)
-
-    // Validate with Zod
-    const validatedUser = userSchema.parse(updatedUser)
-
-    return NextResponse.json(validatedUser)
   } catch (error) {
     console.error('Error in POST /api/bookmarks:', error)
 
@@ -97,6 +76,42 @@ export async function POST(request: Request) {
         { status: 400 },
       )
     }
+
+    if (error instanceof Error) {
+      if (error.message.includes('token')) {
+        return NextResponse.json({ error: 'Unauthorized', message: error.message }, { status: 401 })
+      }
+    }
+
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+  }
+}
+
+/**
+ * GET /api/bookmarks
+ * Get all bookmarks for the authenticated user
+ */
+export async function GET(request: Request) {
+  try {
+    // Verify Firebase ID token
+    const decodedToken = await verifyAuthToken(request)
+    const { uid } = decodedToken
+
+    // Get all bookmarks for this user
+    const bookmarksSnapshot = await db
+      .collection('bookmarks')
+      .where('userId', '==', uid)
+      .orderBy('createdAt', 'desc')
+      .get()
+
+    const exhibitionIds = bookmarksSnapshot.docs.map((doc) => {
+      const data = doc.data() as RawBookmark
+      return data.exhibitionId
+    })
+
+    return NextResponse.json({ exhibitionIds })
+  } catch (error) {
+    console.error('Error in GET /api/bookmarks:', error)
 
     if (error instanceof Error) {
       if (error.message.includes('token')) {

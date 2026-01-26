@@ -9,12 +9,14 @@ interface MuseumCardProps {
   museum: Museum
   isFavorite: boolean
   bookmarkedExhibitionIds: Set<string>
+  onBookmarkToggle?: (exhibitionId: string, isBookmarked: boolean) => void
 }
 
 export default function MuseumCard({
   museum,
   isFavorite,
   bookmarkedExhibitionIds,
+  onBookmarkToggle,
 }: MuseumCardProps) {
   return (
     <div className="border border-border rounded-xl overflow-hidden bg-background">
@@ -86,6 +88,11 @@ export default function MuseumCard({
                 <BookmarkButton
                   exhibitionId={exhibition.id}
                   isBookmarked={isBookmarked}
+                  onToggle={
+                    onBookmarkToggle
+                      ? (bookmarked) => onBookmarkToggle(exhibition.id, bookmarked)
+                      : undefined
+                  }
                   className="flex-shrink-0"
                 />
               </div>

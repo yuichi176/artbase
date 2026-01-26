@@ -3,27 +3,27 @@
 import { startTransition, useActionState, useOptimistic } from 'react'
 import { Bookmark } from 'lucide-react'
 import { useRouter } from 'next/navigation'
-import { useAtomValue, useSetAtom } from 'jotai'
+import { useAtomValue } from 'jotai'
 import { userAtom, firebaseUserAtom, isAuthenticatedAtom } from '@/store/auth'
-import type { User } from '@/schema/user'
 import { cn } from '@/utils/shadcn'
 
 interface BookmarkButtonProps {
   exhibitionId: string
   isBookmarked: boolean
+  onToggle?: (isBookmarked: boolean) => void
   className?: string
 }
 
 export function BookmarkButton({
   exhibitionId,
   isBookmarked,
+  onToggle,
   className = '',
 }: BookmarkButtonProps) {
   const router = useRouter()
   const isAuthenticated = useAtomValue(isAuthenticatedAtom)
   const firebaseUser = useAtomValue(firebaseUserAtom)
   const user = useAtomValue(userAtom)
-  const setUser = useSetAtom(userAtom)
 
   // Optimistic UI state for bookmark flag
   const [optimisticIsBookmarked, setOptimisticBookmark] = useOptimistic(
@@ -83,8 +83,12 @@ export function BookmarkButton({
         return { ok: false, error: 'Request failed' }
       }
 
-      const updatedUser: User = await response.json()
-      setUser(updatedUser)
+      const result = await response.json()
+
+      // Notify parent component of the change
+      if (onToggle) {
+        onToggle(result.bookmarked)
+      }
 
       return { ok: true }
     } catch {

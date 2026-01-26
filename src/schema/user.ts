@@ -19,18 +19,6 @@ export type RawFavoriteVenueItem = {
   addedAt: Timestamp
 }
 
-// Bookmarked exhibition item (application type with ISO date string)
-export type BookmarkedExhibitionItem = {
-  exhibitionId: string
-  addedAt: string
-}
-
-// Raw bookmarked exhibition item from Firestore (with Timestamp)
-export type RawBookmarkedExhibitionItem = {
-  exhibitionId: string
-  addedAt: Timestamp
-}
-
 // Raw user type from Firestore (with Timestamp objects)
 export type RawUser = {
   uid: string
@@ -46,7 +34,6 @@ export type RawUser = {
   preferences: {
     emailNotifications: boolean
     favoriteVenues: RawFavoriteVenueItem[]
-    bookmarkedExhibitions: RawBookmarkedExhibitionItem[]
   }
   createdAt: Timestamp
   updatedAt: Timestamp
@@ -55,12 +42,6 @@ export type RawUser = {
 // Favorite venue item schema
 export const favoriteVenueItemSchema = z.object({
   name: z.string(),
-  addedAt: z.string(),
-})
-
-// Bookmarked exhibition item schema
-export const bookmarkedExhibitionItemSchema = z.object({
-  exhibitionId: z.string(),
   addedAt: z.string(),
 })
 
@@ -79,7 +60,6 @@ export const userSchema = z.object({
   preferences: z.object({
     emailNotifications: z.boolean(),
     favoriteVenues: z.array(favoriteVenueItemSchema),
-    bookmarkedExhibitions: z.array(bookmarkedExhibitionItemSchema),
   }),
   createdAt: z.string(),
   updatedAt: z.string(),

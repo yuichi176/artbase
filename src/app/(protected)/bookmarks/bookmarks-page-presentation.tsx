@@ -13,6 +13,7 @@ import { Calendar, MapPin, ExternalLink, Bookmark } from 'lucide-react'
 import { Badge } from '@/components/shadcn-ui/badge'
 import { BookmarkButton } from '@/app/tokyo/exhibitions/_components/bookmark-button'
 import { cn } from '@/utils/shadcn'
+import { useBookmarks } from '@/hooks/use-bookmarks'
 
 interface BookmarksPagePresentationProps {
   museums: Museum[]
@@ -22,6 +23,7 @@ export function BookmarksPagePresentation({ museums }: BookmarksPagePresentation
   const { loading: authLoading } = useRequireAuth('/bookmarks')
   const user = useAtomValue(userAtom)
   const router = useRouter()
+  const { bookmarkedExhibitionIds, toggleBookmark, loading: bookmarksLoading } = useBookmarks()
 
   // Check Pro plan and redirect if needed
   useEffect(() => {
@@ -29,12 +31,6 @@ export function BookmarksPagePresentation({ museums }: BookmarksPagePresentation
       router.push('/pricing')
     }
   }, [authLoading, user, router])
-
-  // Get bookmarked exhibition IDs from user preferences
-  const bookmarkedExhibitionIds = useMemo(
-    () => new Set(user?.preferences.bookmarkedExhibitions.map((item) => item.exhibitionId) ?? []),
-    [user?.preferences.bookmarkedExhibitions],
-  )
 
   // Extract all exhibitions from museums and filter by bookmarked IDs
   const bookmarkedExhibitions = useMemo(() => {
@@ -57,8 +53,8 @@ export function BookmarksPagePresentation({ museums }: BookmarksPagePresentation
     })
   }, [museums, bookmarkedExhibitionIds])
 
-  // Show loading state while checking authentication
-  if (authLoading || !user) {
+  // Show loading state while checking authentication or fetching bookmarks
+  if (authLoading || bookmarksLoading || !user) {
     return (
       <div className="container">
         <Skeleton className="h-8 w-64 mb-3" />
@@ -69,6 +65,11 @@ export function BookmarksPagePresentation({ museums }: BookmarksPagePresentation
         </Card>
       </div>
     )
+  }
+
+  // Check Pro plan after authentication is complete
+  if (user.subscriptionTier !== 'pro') {
+    return null // Redirect happens in useEffect
   }
 
   if (bookmarkedExhibitions.length === 0) {
@@ -166,6 +167,7 @@ export function BookmarksPagePresentation({ museums }: BookmarksPagePresentation
                   <BookmarkButton
                     exhibitionId={exhibition.id}
                     isBookmarked={true}
+                    onToggle={(bookmarked) => toggleBookmark(exhibition.id, bookmarked)}
                     className="flex-shrink-0"
                   />
                 </div>
