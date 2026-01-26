@@ -36,6 +36,20 @@ export async function POST(request: Request) {
     const rawUser = userDoc.data() as RawUser
     const subscriptionTier = rawUser.subscriptionTier
 
+    // Validate that museum exists
+    const museumRef = db.collection('museum').doc(museumId)
+    const museumDoc = await museumRef.get()
+
+    if (!museumDoc.exists) {
+      return NextResponse.json(
+        {
+          error: 'Museum not found',
+          message: '指定された会場が見つかりません。',
+        },
+        { status: 404 },
+      )
+    }
+
     // Use composite ID for favorite document
     const favoriteId = `${uid}_${museumId}`
     const favoriteRef = db.collection('favorites').doc(favoriteId)

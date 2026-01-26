@@ -228,9 +228,11 @@ service cloud.firestore {
                   && resource.data.userId == request.auth.uid;
 
       // Allow create only for own favorites with required fields
+      // Note: exists() validation adds a document read cost
       allow create: if request.auth != null
                     && request.resource.data.userId == request.auth.uid
-                    && request.resource.data.keys().hasAll(['userId', 'museumId', 'createdAt']);
+                    && request.resource.data.keys().hasAll(['userId', 'museumId', 'createdAt'])
+                    && exists(/databases/$(database)/documents/museum/$(request.resource.data.museumId));
 
       // Allow delete only for own favorites
       allow delete: if request.auth != null
@@ -247,9 +249,11 @@ service cloud.firestore {
                   && resource.data.userId == request.auth.uid;
 
       // Allow create only for own bookmarks with required fields
+      // Note: exists() validation adds a document read cost
       allow create: if request.auth != null
                     && request.resource.data.userId == request.auth.uid
-                    && request.resource.data.keys().hasAll(['userId', 'exhibitionId', 'createdAt']);
+                    && request.resource.data.keys().hasAll(['userId', 'exhibitionId', 'createdAt'])
+                    && exists(/databases/$(database)/documents/exhibition/$(request.resource.data.exhibitionId));
 
       // Allow delete only for own bookmarks
       allow delete: if request.auth != null
@@ -260,6 +264,35 @@ service cloud.firestore {
     }
   }
 }
+```
+
+#### Referential Integrity Validation
+
+The security rules above include referential integrity checks using `exists()`:
+- `favorites` validates that the `museumId` exists in the `museum` collection
+- `bookmarks` validates that the `exhibitionId` exists in the `exhibition` collection
+
+**Benefits:**
+- Prevents creation of orphaned relationships (favorites/bookmarks pointing to non-existent entities)
+- Ensures data integrity at the database level
+- Provides clear security boundary
+
+**Cost Considerations:**
+- Each `exists()` check adds **one document read** to the operation
+- For create operations: 2 reads (the exists check + the document being created)
+- This is acceptable for user-initiated actions with low frequency
+
+**Best Practice:**
+Combine API-level validation with security rules for defense in depth:
+```typescript
+// API validates first (better UX - returns specific error)
+const museumDoc = await db.collection('museum').doc(museumId).get()
+if (!museumDoc.exists) {
+  return NextResponse.json({ error: 'Museum not found' }, { status: 404 })
+}
+
+// Security rules validate as final safeguard
+// Even if API is bypassed, rules will catch invalid references
 ```
 
 ### Implementation Checklist
