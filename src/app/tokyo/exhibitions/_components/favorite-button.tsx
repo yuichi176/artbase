@@ -3,22 +3,26 @@
 import { startTransition, useActionState, useOptimistic } from 'react'
 import { Star } from 'lucide-react'
 import { useRouter } from 'next/navigation'
-import { useAtomValue, useSetAtom } from 'jotai'
-import { userAtom, firebaseUserAtom, isAuthenticatedAtom } from '@/store/auth'
-import type { User } from '@/schema/user'
+import { useAtomValue } from 'jotai'
+import { firebaseUserAtom, isAuthenticatedAtom } from '@/store/auth'
 import { cn } from '@/utils/shadcn'
 
 interface FavoriteButtonProps {
-  venueName: string
+  museumId: string
   isFavorite: boolean
+  onToggle?: (favorited: boolean) => void
   className?: string
 }
 
-export function FavoriteButton({ venueName, isFavorite, className = '' }: FavoriteButtonProps) {
+export function FavoriteButton({
+  museumId,
+  isFavorite,
+  onToggle,
+  className = '',
+}: FavoriteButtonProps) {
   const router = useRouter()
   const isAuthenticated = useAtomValue(isAuthenticatedAtom)
   const firebaseUser = useAtomValue(firebaseUserAtom)
-  const setUser = useSetAtom(userAtom)
 
   // Optimistic UI state for favorite flag
   const [optimisticIsFavorite, setOptimisticFavorite] = useOptimistic(
@@ -26,7 +30,7 @@ export function FavoriteButton({ venueName, isFavorite, className = '' }: Favori
     (current, next: boolean) => next,
   )
 
-  // Action that performs the actual toggle and syncs global user state
+  // Action that performs the actual toggle
   const [, toggleFavorite, isPending] = useActionState(async () => {
     if (!isAuthenticated || !firebaseUser) {
       router.push('/signin')
@@ -51,7 +55,7 @@ export function FavoriteButton({ venueName, isFavorite, className = '' }: Favori
           'Content-Type': 'application/json',
           Authorization: `Bearer ${idToken}`,
         },
-        body: JSON.stringify({ venueName }),
+        body: JSON.stringify({ museumId }),
       })
 
       if (!response.ok) {
@@ -71,8 +75,10 @@ export function FavoriteButton({ venueName, isFavorite, className = '' }: Favori
         return { ok: false, error: 'Request failed' }
       }
 
-      const updatedUser: User = await response.json()
-      setUser(updatedUser)
+      // Call the optional callback with the new state
+      if (onToggle) {
+        onToggle(nextFavorite)
+      }
 
       return { ok: true }
     } catch {

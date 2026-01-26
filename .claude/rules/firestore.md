@@ -10,7 +10,9 @@ When implementing many-to-many relationships between users and entities (exhibit
 - Design each relationship as a single document (userId + entityId pair)
 - Enable bidirectional queries and flexible addition of attributes in the future
 
-### Collection Structure Example: Bookmark Feature
+### Collection Structure Examples
+
+#### Bookmark Feature
 
 Example structure with a top-level `bookmarks` collection:
 
@@ -31,6 +33,29 @@ collections/
         ├── userId: string
         ├── exhibitionId: string
         └── createdAt: Timestamp
+
+#### Favorite Museum Feature
+
+Example structure with a top-level `favorites` collection:
+
+```
+collections/
+├── users/
+│   └── {uid}
+│       ├── email: string
+│       ├── displayName: string
+│       └── ...
+├── museum/
+│   └── {museumId}
+│       ├── name: string
+│       ├── address: string
+│       └── ...
+└── favorites/ (intermediate collection)
+    └── {favoriteId}  // Example: "{userId}_{museumId}" ensures uniqueness
+        ├── userId: string
+        ├── museumId: string  // museum collection document ID
+        └── createdAt: Timestamp
+```
 ```
 
 ### Document ID Design
@@ -196,17 +221,37 @@ const bookmarksSnapshot = await db
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // bookmarks collection rules
+    // Favorites collection rules
+    match /favorites/{favoriteId} {
+      // Allow read only for own favorites
+      allow read: if request.auth != null
+                  && resource.data.userId == request.auth.uid;
+
+      // Allow create only for own favorites with required fields
+      allow create: if request.auth != null
+                    && request.resource.data.userId == request.auth.uid
+                    && request.resource.data.keys().hasAll(['userId', 'museumId', 'createdAt']);
+
+      // Allow delete only for own favorites
+      allow delete: if request.auth != null
+                    && resource.data.userId == request.auth.uid;
+
+      // Disallow updates (use delete → recreate instead)
+      allow update: if false;
+    }
+
+    // Bookmarks collection rules
     match /bookmarks/{bookmarkId} {
       // Allow read only for own bookmarks
       allow read: if request.auth != null
                   && resource.data.userId == request.auth.uid;
 
-      // Allow create/delete only for own bookmarks
+      // Allow create only for own bookmarks with required fields
       allow create: if request.auth != null
                     && request.resource.data.userId == request.auth.uid
                     && request.resource.data.keys().hasAll(['userId', 'exhibitionId', 'createdAt']);
 
+      // Allow delete only for own bookmarks
       allow delete: if request.auth != null
                     && resource.data.userId == request.auth.uid;
 

@@ -4,12 +4,6 @@ import { Timestamp } from '@google-cloud/firestore'
 const subscriptionTierSchema = z.enum(['free', 'pro'])
 export type SubscriptionTier = z.infer<typeof subscriptionTierSchema>
 
-// Raw favorite venue item from Firestore (with Timestamp)
-export type RawFavoriteVenueItem = {
-  name: string
-  addedAt: Timestamp
-}
-
 // Raw user type from Firestore (with Timestamp objects)
 export type RawUser = {
   uid: string
@@ -17,18 +11,9 @@ export type RawUser = {
   displayName: string | null
   photoURL: string | null
   subscriptionTier: SubscriptionTier
-  preferences: {
-    favoriteVenues: RawFavoriteVenueItem[]
-  }
   createdAt: Timestamp
   updatedAt: Timestamp
 }
-
-// Favorite venue item schema
-export const favoriteVenueItemSchema = z.object({
-  name: z.string(),
-  addedAt: z.string(),
-})
 
 // Application user type (with ISO date strings)
 export const userSchema = z.object({
@@ -37,9 +22,6 @@ export const userSchema = z.object({
   displayName: z.string().nullable(),
   photoURL: z.string().url().nullable(),
   subscriptionTier: subscriptionTierSchema,
-  preferences: z.object({
-    favoriteVenues: z.array(favoriteVenueItemSchema),
-  }),
   createdAt: z.string(),
   updatedAt: z.string(),
 })

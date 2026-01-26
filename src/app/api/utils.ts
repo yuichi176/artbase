@@ -14,12 +14,6 @@ export function convertRawUserToUser(rawUser: RawUser): User {
     displayName: rawUser.displayName,
     photoURL: rawUser.photoURL,
     subscriptionTier: rawUser.subscriptionTier,
-    preferences: {
-      favoriteVenues: rawUser.preferences.favoriteVenues.map((item) => ({
-        name: item.name,
-        addedAt: timestampToISOString(item.addedAt),
-      })),
-    },
     createdAt: timestampToISOString(rawUser.createdAt),
     updatedAt: timestampToISOString(rawUser.updatedAt),
   }

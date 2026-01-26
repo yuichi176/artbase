@@ -47,6 +47,7 @@ export type RawMuseum = {
 }
 
 export type Museum = {
+  id: string
   name: string
   address: string
   access: string

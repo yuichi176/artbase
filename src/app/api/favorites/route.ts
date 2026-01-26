@@ -1,19 +1,19 @@
 import { NextResponse } from 'next/server'
 import { verifyAuthToken } from '@/lib/auth/verify-token'
 import { db } from '@/lib/firebase-admin'
-import { userSchema, type RawUser, type RawFavoriteVenueItem } from '@/schema/user'
+import { type RawUser } from '@/schema/user'
+import { type RawFavorite } from '@/schema/favorite'
 import { Timestamp } from 'firebase-admin/firestore'
 import { z } from 'zod'
-import { convertRawUserToUser } from '@/app/api/utils'
 
 // Request body schema
 const toggleFavoriteSchema = z.object({
-  venueName: z.string(),
+  museumId: z.string(),
 })
 
 /**
  * POST /api/favorites
- * Toggle favorite venue (add or remove)
+ * Toggle favorite museum (add or remove)
  */
 export async function POST(request: Request) {
   try {
@@ -23,7 +23,7 @@ export async function POST(request: Request) {
 
     // Parse and validate request body
     const body = await request.json()
-    const { venueName } = toggleFavoriteSchema.parse(body)
+    const { museumId } = toggleFavoriteSchema.parse(body)
 
     // Get user document from Firestore
     const userRef = db.collection('users').doc(uid)
@@ -34,61 +34,43 @@ export async function POST(request: Request) {
     }
 
     const rawUser = userDoc.data() as RawUser
-    const currentFavorites = rawUser.preferences.favoriteVenues
     const subscriptionTier = rawUser.subscriptionTier
 
-    // Check if venue is already favorited
-    const favoriteIndex = currentFavorites.findIndex((item) => item.name === venueName)
-    const isFavorited = favoriteIndex !== -1
+    // Use composite ID for favorite document
+    const favoriteId = `${uid}_${museumId}`
+    const favoriteRef = db.collection('favorites').doc(favoriteId)
+    const favoriteDoc = await favoriteRef.get()
 
-    let updatedFavorites: RawFavoriteVenueItem[]
-
-    if (isFavorited) {
-      // Remove from favorites
-      updatedFavorites = currentFavorites.filter((item) => item.name !== venueName)
+    if (favoriteDoc.exists) {
+      // Remove favorite
+      await favoriteRef.delete()
+      return NextResponse.json({ favorited: false })
     } else {
       // Check plan limits before adding
-      const maxFavorites = subscriptionTier === 'free' ? 1 : Infinity
+      if (subscriptionTier === 'free') {
+        // Count existing favorites for free users
+        const favoritesSnapshot = await db.collection('favorites').where('userId', '==', uid).get()
 
-      if (currentFavorites.length >= maxFavorites) {
-        return NextResponse.json(
-          {
-            error: 'Favorite limit exceeded',
-            message: 'Freeプランでは1つまでお気に入りに追加できます。',
-          },
-          { status: 403 },
-        )
+        if (favoritesSnapshot.size >= 1) {
+          return NextResponse.json(
+            {
+              error: 'Favorite limit exceeded',
+              message: 'Freeプランでは1つまでお気に入りに追加できます。',
+            },
+            { status: 403 },
+          )
+        }
       }
 
-      // Add to favorites
-      const newFavorite: RawFavoriteVenueItem = {
-        name: venueName,
-        addedAt: Timestamp.now(),
+      // Add favorite
+      const newFavorite: RawFavorite = {
+        userId: uid,
+        museumId,
+        createdAt: Timestamp.now(),
       }
-      updatedFavorites = [...currentFavorites, newFavorite]
+      await favoriteRef.set(newFavorite)
+      return NextResponse.json({ favorited: true })
     }
-
-    // Update Firestore document
-    const updateTimestamp = Timestamp.now()
-    await userRef.update({
-      'preferences.favoriteVenues': updatedFavorites,
-      updatedAt: updateTimestamp,
-    })
-
-    const updatedRawUser: RawUser = {
-      ...rawUser,
-      preferences: {
-        ...rawUser.preferences,
-        favoriteVenues: updatedFavorites,
-      },
-      updatedAt: updateTimestamp,
-    }
-    const updatedUser = convertRawUserToUser(updatedRawUser)
-
-    // Validate with Zod
-    const validatedUser = userSchema.parse(updatedUser)
-
-    return NextResponse.json(validatedUser)
   } catch (error) {
     console.error('Error in POST /api/favorites:', error)
 
@@ -98,6 +80,42 @@ export async function POST(request: Request) {
         { status: 400 },
       )
     }
+
+    if (error instanceof Error) {
+      if (error.message.includes('token')) {
+        return NextResponse.json({ error: 'Unauthorized', message: error.message }, { status: 401 })
+      }
+    }
+
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+  }
+}
+
+/**
+ * GET /api/favorites
+ * Get all favorite museums for the authenticated user
+ */
+export async function GET(request: Request) {
+  try {
+    // Verify Firebase ID token
+    const decodedToken = await verifyAuthToken(request)
+    const { uid } = decodedToken
+
+    // Get all favorites for this user
+    const favoritesSnapshot = await db
+      .collection('favorites')
+      .where('userId', '==', uid)
+      .orderBy('createdAt', 'desc')
+      .get()
+
+    const museumIds = favoritesSnapshot.docs.map((doc) => {
+      const data = doc.data() as RawFavorite
+      return data.museumId
+    })
+
+    return NextResponse.json({ museumIds })
+  } catch (error) {
+    console.error('Error in GET /api/favorites:', error)
 
     if (error instanceof Error) {
       if (error.message.includes('token')) {
