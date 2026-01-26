@@ -44,6 +44,7 @@ export async function getMuseumsWithCache(now: Date) {
       const relatedExhibitions = exhibitions.filter((exhibition) => exhibition.venue === data.name)
 
       return {
+        id: doc.id,
         name: data.name,
         address: data.address,
         access: data.access,

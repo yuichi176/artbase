@@ -10,6 +10,7 @@ interface MuseumCardProps {
   isFavorite: boolean
   bookmarkedExhibitionIds: Set<string>
   onBookmarkToggle?: (exhibitionId: string, isBookmarked: boolean) => void
+  onFavoriteToggle?: (museumId: string, isFavorited: boolean) => void
 }
 
 export default function MuseumCard({
@@ -17,6 +18,7 @@ export default function MuseumCard({
   isFavorite,
   bookmarkedExhibitionIds,
   onBookmarkToggle,
+  onFavoriteToggle,
 }: MuseumCardProps) {
   return (
     <div className="border border-border rounded-xl overflow-hidden bg-background">
@@ -37,7 +39,13 @@ export default function MuseumCard({
               {museum.venueType}
             </Badge>
           </div>
-          <FavoriteButton venueName={museum.name} isFavorite={isFavorite} />
+          <FavoriteButton
+            museumId={museum.id}
+            isFavorite={isFavorite}
+            onToggle={
+              onFavoriteToggle ? (favorited) => onFavoriteToggle(museum.id, favorited) : undefined
+            }
+          />
         </div>
 
         <div className="flex items-center gap-2 text-muted-foreground text-xs md:text-sm">

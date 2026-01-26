@@ -113,6 +113,20 @@ export async function POST(request: Request) {
       )
     }
 
+    // Validate that exhibition exists
+    const exhibitionRef = db.collection('exhibition').doc(exhibitionId)
+    const exhibitionDoc = await exhibitionRef.get()
+
+    if (!exhibitionDoc.exists) {
+      return NextResponse.json(
+        {
+          error: 'Exhibition not found',
+          message: '指定された展覧会が見つかりません。',
+        },
+        { status: 404 },
+      )
+    }
+
     // Use composite ID for bookmark document
     const bookmarkId = `${uid}_${exhibitionId}`
     const bookmarkRef = db.collection('bookmarks').doc(bookmarkId)

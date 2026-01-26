@@ -7,27 +7,21 @@ import { useMemo, useState } from 'react'
 import { FilterDrawer } from '@/app/tokyo/exhibitions/_components/filter-drawer'
 import { OngoingStatusType } from '@/schema/exhibition'
 import { SearchInput } from '@/app/tokyo/exhibitions/_components/search-input'
-import { useAtomValue } from 'jotai'
-import { userAtom } from '@/store/auth'
 import { useBookmarks } from '@/hooks/use-bookmarks'
+import { useFavorites } from '@/hooks/use-favorites'
 
 interface TopPagePresentationProps {
   museums: Museum[]
 }
 
 export const TopPagePresentation = ({ museums }: TopPagePresentationProps) => {
-  const user = useAtomValue(userAtom)
   const { bookmarkedExhibitionIds, toggleBookmark } = useBookmarks()
+  const { favoriteMuseumIds, toggleFavorite } = useFavorites()
   const [selectedVenueTypes, setSelectedVenueTypes] = useState<VenueType[]>([])
   const [selectedAreas, setSelectedAreas] = useState<Area[]>([])
   const [selectedMuseumNames, setSelectedMuseumNames] = useState<string[]>([])
   const [selectedOngoingStatus, setSelectedOngoingStatus] = useState<OngoingStatusType>('all')
   const [searchQuery, setSearchQuery] = useState('')
-
-  const favoriteVenueNames = useMemo(() => {
-    const venues = user?.preferences.favoriteVenues ?? []
-    return new Set(venues.map(({ name }) => name))
-  }, [user?.preferences.favoriteVenues])
 
   const handleClickVenueType = (value: VenueType) => {
     setSelectedVenueTypes((prev) => {
@@ -168,9 +162,10 @@ export const TopPagePresentation = ({ museums }: TopPagePresentationProps) => {
             <div key={museum.name} className="break-inside-avoid">
               <MuseumCard
                 museum={museum}
-                isFavorite={favoriteVenueNames.has(museum.name)}
+                isFavorite={favoriteMuseumIds.has(museum.id)}
                 bookmarkedExhibitionIds={bookmarkedExhibitionIds}
                 onBookmarkToggle={toggleBookmark}
+                onFavoriteToggle={toggleFavorite}
               />
             </div>
           ))}

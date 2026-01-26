@@ -39,9 +39,6 @@ export async function GET(request: Request) {
       displayName: firebaseUser.displayName ?? null,
       photoURL: firebaseUser.photoURL ?? null,
       subscriptionTier: 'free',
-      preferences: {
-        favoriteVenues: [],
-      },
       createdAt: now,
       updatedAt: now,
     }
