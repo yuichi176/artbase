@@ -13,16 +13,8 @@ export function convertRawUserToUser(rawUser: RawUser): User {
     email: rawUser.email,
     displayName: rawUser.displayName,
     photoURL: rawUser.photoURL,
-    stripeCustomerId: rawUser.stripeCustomerId,
-    subscriptionStatus: rawUser.subscriptionStatus,
     subscriptionTier: rawUser.subscriptionTier,
-    currentPeriodEnd: rawUser.currentPeriodEnd
-      ? timestampToISOString(rawUser.currentPeriodEnd)
-      : null,
-    stripeSubscriptionId: rawUser.stripeSubscriptionId,
-    stripePriceId: rawUser.stripePriceId,
     preferences: {
-      emailNotifications: rawUser.preferences.emailNotifications,
       favoriteVenues: rawUser.preferences.favoriteVenues.map((item) => ({
         name: item.name,
         addedAt: timestampToISOString(item.addedAt),
