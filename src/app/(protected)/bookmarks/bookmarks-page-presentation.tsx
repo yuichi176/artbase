@@ -12,6 +12,7 @@ import { Badge } from '@/components/shadcn-ui/badge'
 import { BookmarkButton } from '@/app/tokyo/exhibitions/_components/bookmark-button'
 import { cn } from '@/utils/shadcn'
 import { useBookmarks } from '@/hooks/use-bookmarks'
+import { TZDate } from '@date-fns/tz'
 
 export function BookmarksPagePresentation() {
   const { loading: authLoading } = useRequireAuth('/bookmarks')
@@ -95,7 +96,8 @@ export function BookmarksPagePresentation() {
         <p className="text-sm pl-1 mb-3">{bookmarkedExhibitions.length}件の展覧会</p>
         <div className="space-y-2">
           {bookmarkedExhibitions.map((exhibition) => {
-            const isExpired = !exhibition.isOngoing && new Date(exhibition.endDate) < new Date()
+            const now = new TZDate(new Date(), 'Asia/Tokyo')
+            const isExpired = !exhibition.isOngoing && new Date(exhibition.endDate) < now
             return (
               <div
                 key={exhibition.id}
