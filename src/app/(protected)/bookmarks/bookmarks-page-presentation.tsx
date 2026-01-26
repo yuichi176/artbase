@@ -12,6 +12,7 @@ import { Skeleton } from '@/components/shadcn-ui/skeleton'
 import { Calendar, MapPin, ExternalLink, Bookmark } from 'lucide-react'
 import { Badge } from '@/components/shadcn-ui/badge'
 import { BookmarkButton } from '@/app/tokyo/exhibitions/_components/bookmark-button'
+import { cn } from '@/utils/shadcn'
 
 interface BookmarksPagePresentationProps {
   museums: Museum[]
@@ -73,7 +74,10 @@ export function BookmarksPagePresentation({ museums }: BookmarksPagePresentation
   if (bookmarkedExhibitions.length === 0) {
     return (
       <div className="container">
-        <h1 className="text-xl font-bold mb-3 pl-1">ブックマーク</h1>
+        <div className="pl-1 mb-3">
+          <h1 className="text-xl font-bold mb-1">ブックマーク</h1>
+          <p>ブックマークページの説明</p>
+        </div>
         <Card className="p-8 rounded-lg text-center">
           <p className="text-muted-foreground ">まだブックマークした展覧会がありません</p>
           <p className="text-sm text-muted-foreground mt-2 text-center">
@@ -92,58 +96,78 @@ export function BookmarksPagePresentation({ museums }: BookmarksPagePresentation
 
   return (
     <div className="container">
-      <h1 className="text-xl font-bold mb-3 pl-1">ブックマーク</h1>
+      <div className="pl-1 mb-3">
+        <h1 className="text-xl font-bold mb-1">ブックマーク</h1>
+        <p>ブックマークページの説明</p>
+      </div>
 
       <Card className="p-2 md:p-4 rounded-lg gap-0 bg-background">
         <p className="text-sm pl-1 mb-3">{bookmarkedExhibitions.length}件の展覧会</p>
         <div className="space-y-2">
-          {bookmarkedExhibitions.map((exhibition) => (
-            <div key={exhibition.id} className="border border-border rounded-lg p-3 md:p-4">
-              <div className="flex items-start justify-between gap-4">
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 text-muted-foreground text-xs md:text-sm mb-2">
-                    <MapPin className="w-3.5 h-3.5 md:w-4 md:h-4 flex-shrink-0" />
-                    <span>{exhibition.venue}</span>
-                  </div>
+          {bookmarkedExhibitions.map((exhibition) => {
+            const isExpired = !exhibition.isOngoing && new Date(exhibition.endDate) < new Date()
+            return (
+              <div
+                key={exhibition.id}
+                className={cn(
+                  'border border-border rounded-lg p-3 md:p-4',
+                  isExpired && 'opacity-60 bg-muted/30',
+                )}
+              >
+                <div className="flex items-start justify-between gap-4">
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 text-muted-foreground text-xs md:text-sm mb-2">
+                      <MapPin className="w-3.5 h-3.5 md:w-4 md:h-4 flex-shrink-0" />
+                      <span>{exhibition.venue}</span>
+                    </div>
 
-                  {exhibition.officialUrl ? (
-                    <a
-                      href={exhibition.officialUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center gap-2 transition-colors mb-2"
-                      title="展覧会公式ページ"
-                    >
-                      <ExternalLink className="w-4 h-4 flex-shrink-0" />
-                      <h3 className="text-sm md:text-base font-medium">{exhibition.title}</h3>
-                    </a>
-                  ) : (
-                    <h3 className="text-sm md:text-base font-medium mb-2">{exhibition.title}</h3>
-                  )}
-
-                  <div className="text-sm text-muted-foreground flex items-center gap-2">
-                    <Calendar className="w-4 h-4 flex-shrink-0" />
-                    <p>
-                      {exhibition.startDate} ~ {exhibition.endDate}
-                    </p>
-                    {exhibition.isOngoing && (
-                      <Badge
-                        variant="secondary"
-                        className="bg-emerald-50 border-emerald-200 text-emerald-700 dark:bg-emerald-950/50 dark:border-emerald-800 dark:text-emerald-300 text-[0.625rem]"
+                    {exhibition.officialUrl ? (
+                      <a
+                        href={exhibition.officialUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-2 transition-colors mb-2"
+                        title="展覧会公式ページ"
                       >
-                        開催中
-                      </Badge>
+                        <ExternalLink className="w-4 h-4 flex-shrink-0" />
+                        <h3 className="text-sm md:text-base font-medium">{exhibition.title}</h3>
+                      </a>
+                    ) : (
+                      <h3 className="text-sm md:text-base font-medium mb-2">{exhibition.title}</h3>
                     )}
+
+                    <div className="text-sm text-muted-foreground flex items-center gap-2">
+                      <Calendar className="w-4 h-4 flex-shrink-0" />
+                      <p>
+                        {exhibition.startDate} ~ {exhibition.endDate}
+                      </p>
+                      {exhibition.isOngoing && (
+                        <Badge
+                          variant="secondary"
+                          className="bg-emerald-50 border-emerald-200 text-emerald-700 dark:bg-emerald-950/50 dark:border-emerald-800 dark:text-emerald-300 text-[0.625rem]"
+                        >
+                          開催中
+                        </Badge>
+                      )}
+                      {isExpired && (
+                        <Badge
+                          variant="secondary"
+                          className="bg-gray-100 border-gray-300 text-gray-600 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 text-[0.625rem]"
+                        >
+                          終了
+                        </Badge>
+                      )}
+                    </div>
                   </div>
+                  <BookmarkButton
+                    exhibitionId={exhibition.id}
+                    isBookmarked={true}
+                    className="flex-shrink-0"
+                  />
                 </div>
-                <BookmarkButton
-                  exhibitionId={exhibition.id}
-                  isBookmarked={true}
-                  className="flex-shrink-0"
-                />
               </div>
-            </div>
-          ))}
+            )
+          })}
         </div>
       </Card>
     </div>
