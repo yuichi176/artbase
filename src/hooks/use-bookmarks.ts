@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { useAtomValue } from 'jotai'
-import { firebaseUserAtom, isAuthenticatedAtom } from '@/store/auth'
+import { firebaseUserAtom, isAuthenticatedAtom, userAtom } from '@/store/auth'
 import type { Exhibition } from '@/schema/exhibition'
 
 /**
@@ -11,13 +11,15 @@ import type { Exhibition } from '@/schema/exhibition'
 export function useBookmarks() {
   const isAuthenticated = useAtomValue(isAuthenticatedAtom)
   const firebaseUser = useAtomValue(firebaseUserAtom)
+  const user = useAtomValue(userAtom)
+
   const [bookmarkedExhibitionIds, setBookmarkedExhibitionIds] = useState<Set<string>>(new Set())
   const [bookmarkedExhibitions, setBookmarkedExhibitions] = useState<Exhibition[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    if (!isAuthenticated || !firebaseUser) {
+    if (!isAuthenticated || !firebaseUser || !user || user.subscriptionTier !== 'pro') {
       setBookmarkedExhibitionIds(new Set())
       setLoading(false)
       return
