@@ -59,7 +59,7 @@ export function useBookmarks() {
     }
 
     fetchBookmarks()
-  }, [isAuthenticated, firebaseUser])
+  }, [isAuthenticated, firebaseUser, user])
 
   const toggleBookmark = (exhibitionId: string, isBookmarked: boolean) => {
     setBookmarkedExhibitionIds((prev) => {
