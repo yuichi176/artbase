@@ -97,6 +97,21 @@ export async function GET(request: Request) {
     const decodedToken = await verifyAuthToken(request)
     const { uid } = decodedToken
 
+    // Get user document from Firestore
+    const userRef = db.collection('users').doc(uid)
+    const userDoc = await userRef.get()
+
+    if (!userDoc.exists) {
+      return NextResponse.json({ error: 'User not found' }, { status: 404 })
+    }
+
+    const rawUser = userDoc.data() as RawUser
+
+    // Check if user has Pro plan
+    if (rawUser.subscriptionTier !== 'pro') {
+      return NextResponse.json({ error: 'Pro plan required' }, { status: 403 })
+    }
+
     // Get all bookmarks for this user
     const bookmarksSnapshot = await db
       .collection('bookmarks')
