@@ -57,8 +57,8 @@ export function BookmarksPagePresentation({ museums }: BookmarksPagePresentation
     })
   }, [museums, bookmarkedExhibitionIds])
 
-  // Show loading state while checking authentication or Pro plan
-  if (authLoading || !user || user.subscriptionTier !== 'pro') {
+  // Show loading state while checking authentication
+  if (authLoading || !user) {
     return (
       <div className="container">
         <Skeleton className="h-8 w-64 mb-3" />
