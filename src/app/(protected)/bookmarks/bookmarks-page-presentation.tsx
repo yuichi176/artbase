@@ -4,8 +4,6 @@ import { useMemo, useEffect } from 'react'
 import { useAtomValue } from 'jotai'
 import { useRouter } from 'next/navigation'
 import { Card } from '@/components/shadcn-ui/card'
-import { Museum } from '@/schema/museum'
-import { Exhibition } from '@/schema/exhibition'
 import { useRequireAuth } from '@/hooks/use-require-auth'
 import { userAtom } from '@/store/auth'
 import { Skeleton } from '@/components/shadcn-ui/skeleton'
@@ -15,15 +13,15 @@ import { BookmarkButton } from '@/app/tokyo/exhibitions/_components/bookmark-but
 import { cn } from '@/utils/shadcn'
 import { useBookmarks } from '@/hooks/use-bookmarks'
 
-interface BookmarksPagePresentationProps {
-  museums: Museum[]
-}
-
-export function BookmarksPagePresentation({ museums }: BookmarksPagePresentationProps) {
+export function BookmarksPagePresentation() {
   const { loading: authLoading } = useRequireAuth('/bookmarks')
   const user = useAtomValue(userAtom)
   const router = useRouter()
-  const { bookmarkedExhibitionIds, toggleBookmark, loading: bookmarksLoading } = useBookmarks()
+  const {
+    bookmarkedExhibitions: exhibitions,
+    toggleBookmark,
+    loading: bookmarksLoading,
+  } = useBookmarks()
 
   // Check Pro plan and redirect if needed
   useEffect(() => {
@@ -32,32 +30,19 @@ export function BookmarksPagePresentation({ museums }: BookmarksPagePresentation
     }
   }, [authLoading, user, router])
 
-  // Extract all exhibitions from museums and filter by bookmarked IDs
+  // Sort exhibitions by start date (most recent first)
   const bookmarkedExhibitions = useMemo(() => {
-    const allExhibitions: (Exhibition & { venue: string })[] = []
-
-    museums.forEach((museum) => {
-      museum.exhibitions.forEach((exhibition) => {
-        if (bookmarkedExhibitionIds.has(exhibition.id)) {
-          allExhibitions.push({
-            ...exhibition,
-            venue: museum.name,
-          })
-        }
-      })
-    })
-
-    // Sort by start date (most recent first)
-    return allExhibitions.sort((a, b) => {
+    return [...exhibitions].sort((a, b) => {
       return new Date(b.startDate).getTime() - new Date(a.startDate).getTime()
     })
-  }, [museums, bookmarkedExhibitionIds])
+  }, [exhibitions])
 
   // Show loading state while checking authentication or fetching bookmarks
   if (authLoading || bookmarksLoading || !user) {
     return (
       <div className="container">
         <Skeleton className="h-8 w-64 mb-3" />
+        <Skeleton className="h-8 max-w-96 mb-3" />
         <Card className="p-8 rounded-lg">
           <Skeleton className="h-6 w-full mb-4" />
           <Skeleton className="h-6 w-full mb-4" />

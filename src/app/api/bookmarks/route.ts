@@ -3,13 +3,78 @@ import { verifyAuthToken } from '@/lib/auth/verify-token'
 import { db } from '@/lib/firebase-admin'
 import { type RawUser } from '@/schema/user'
 import { type RawBookmark } from '@/schema/bookmark'
+import { type RawExhibition, type Exhibition } from '@/schema/exhibition'
 import { Timestamp } from 'firebase-admin/firestore'
 import { z } from 'zod'
+import { TZDate } from '@date-fns/tz'
+import { FieldPath } from 'firebase-admin/firestore'
 
 // Request body schema
 const toggleBookmarkSchema = z.object({
   exhibitionId: z.string(),
 })
+
+/**
+ * Get exhibitions by their IDs
+ * Handles Firestore's 'in' query limit of 30 items by chunking
+ */
+async function getExhibitionsByIds(exhibitionIds: string[]): Promise<Exhibition[]> {
+  if (exhibitionIds.length === 0) {
+    return []
+  }
+
+  const tz = 'Asia/Tokyo'
+  const now = new TZDate(new Date(), tz)
+
+  // Firestore 'in' query supports max 30 items
+  const CHUNK_SIZE = 30
+  const chunks: string[][] = []
+
+  for (let i = 0; i < exhibitionIds.length; i += CHUNK_SIZE) {
+    chunks.push(exhibitionIds.slice(i, i + CHUNK_SIZE))
+  }
+
+  // Fetch all chunks in parallel
+  const chunkResults = await Promise.all(
+    chunks.map(async (chunk) => {
+      const snapshot = await db
+        .collection('exhibition')
+        .where(FieldPath.documentId(), 'in', chunk)
+        .get()
+
+      return snapshot.docs.map((doc) => {
+        const data = doc.data() as RawExhibition
+        const startDate = data.startDate ? new TZDate(data.startDate.toDate(), tz) : null
+        const endDate = data.endDate ? new TZDate(data.endDate.toDate(), tz) : null
+
+        // Format dates as YYYY-MM-DD
+        const formatDate = (date: TZDate): string => {
+          const year = date.getFullYear()
+          const month = String(date.getMonth() + 1).padStart(2, '0')
+          const day = String(date.getDate()).padStart(2, '0')
+          return `${year}-${month}-${day}`
+        }
+
+        const isOngoing = startDate && endDate ? now >= startDate && now <= endDate : false
+
+        return {
+          id: doc.id,
+          title: data.title,
+          venue: data.venue ?? '',
+          startDate: startDate ? formatDate(startDate) : '',
+          endDate: endDate ? formatDate(endDate) : '',
+          officialUrl: data.officialUrl ?? '',
+          imageUrl: data.imageUrl ?? '',
+          status: data.status,
+          isOngoing,
+        }
+      })
+    }),
+  )
+
+  // Flatten results
+  return chunkResults.flat()
+}
 
 /**
  * POST /api/bookmarks
@@ -89,7 +154,7 @@ export async function POST(request: Request) {
 
 /**
  * GET /api/bookmarks
- * Get all bookmarks for the authenticated user
+ * Get all bookmarks with exhibition details for the authenticated user
  */
 export async function GET(request: Request) {
   try {
@@ -124,7 +189,10 @@ export async function GET(request: Request) {
       return data.exhibitionId
     })
 
-    return NextResponse.json({ exhibitionIds })
+    // Fetch exhibition details
+    const exhibitions = await getExhibitionsByIds(exhibitionIds)
+
+    return NextResponse.json({ exhibitions })
   } catch (error) {
     console.error('Error in GET /api/bookmarks:', error)
 
