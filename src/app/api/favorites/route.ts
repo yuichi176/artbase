@@ -39,37 +39,52 @@ export async function POST(request: Request) {
     // Use composite ID for favorite document
     const favoriteId = `${uid}_${museumId}`
     const favoriteRef = db.collection('favorites').doc(favoriteId)
-    const favoriteDoc = await favoriteRef.get()
 
-    if (favoriteDoc.exists) {
-      // Remove favorite
-      await favoriteRef.delete()
-      return NextResponse.json({ favorited: false })
-    } else {
-      // Check plan limits before adding
-      if (subscriptionTier === 'free') {
-        // Count existing favorites for free users
-        const favoritesSnapshot = await db.collection('favorites').where('userId', '==', uid).get()
+    // Use transaction to handle race conditions
+    try {
+      const result = await db.runTransaction(async (transaction) => {
+        const favoriteDoc = await transaction.get(favoriteRef)
 
-        if (favoritesSnapshot.size >= 1) {
-          return NextResponse.json(
-            {
-              error: 'Favorite limit exceeded',
-              message: 'Freeプランでは1つまでお気に入りに追加できます。',
-            },
-            { status: 403 },
-          )
+        if (favoriteDoc.exists) {
+          // Remove favorite
+          transaction.delete(favoriteRef)
+          return { favorited: false }
+        } else {
+          // Check plan limits before adding (for free users only)
+          if (subscriptionTier === 'free') {
+            // Query existing favorites within transaction to prevent race conditions
+            const favoritesSnapshot = await transaction.get(
+              db.collection('favorites').where('userId', '==', uid),
+            )
+
+            if (favoritesSnapshot.size >= 1) {
+              throw new Error('LIMIT_EXCEEDED')
+            }
+          }
+
+          // Add favorite
+          const newFavorite: RawFavorite = {
+            userId: uid,
+            museumId,
+            createdAt: Timestamp.now(),
+          }
+          transaction.set(favoriteRef, newFavorite)
+          return { favorited: true }
         }
-      }
+      })
 
-      // Add favorite
-      const newFavorite: RawFavorite = {
-        userId: uid,
-        museumId,
-        createdAt: Timestamp.now(),
+      return NextResponse.json(result)
+    } catch (error) {
+      if (error instanceof Error && error.message === 'LIMIT_EXCEEDED') {
+        return NextResponse.json(
+          {
+            error: 'Favorite limit exceeded',
+            message: 'Freeプランでは1つまでお気に入りに追加できます。',
+          },
+          { status: 403 },
+        )
       }
-      await favoriteRef.set(newFavorite)
-      return NextResponse.json({ favorited: true })
+      throw error
     }
   } catch (error) {
     console.error('Error in POST /api/favorites:', error)
