@@ -9,6 +9,7 @@ import { OngoingStatusType } from '@/schema/exhibition'
 import { SearchInput } from '@/app/tokyo/exhibitions/_components/search-input'
 import { useAtomValue } from 'jotai'
 import { userAtom } from '@/store/auth'
+import { useBookmarks } from '@/hooks/use-bookmarks'
 
 interface TopPagePresentationProps {
   museums: Museum[]
@@ -16,6 +17,7 @@ interface TopPagePresentationProps {
 
 export const TopPagePresentation = ({ museums }: TopPagePresentationProps) => {
   const user = useAtomValue(userAtom)
+  const { bookmarkedExhibitionIds, toggleBookmark } = useBookmarks()
   const [selectedVenueTypes, setSelectedVenueTypes] = useState<VenueType[]>([])
   const [selectedAreas, setSelectedAreas] = useState<Area[]>([])
   const [selectedMuseumNames, setSelectedMuseumNames] = useState<string[]>([])
@@ -164,7 +166,12 @@ export const TopPagePresentation = ({ museums }: TopPagePresentationProps) => {
         <div className="space-y-4 md:columns-2 xl:columns-3 md:gap-4">
           {filteredMuseums.map((museum) => (
             <div key={museum.name} className="break-inside-avoid">
-              <MuseumCard museum={museum} isFavorite={favoriteVenueNames.has(museum.name)} />
+              <MuseumCard
+                museum={museum}
+                isFavorite={favoriteVenueNames.has(museum.name)}
+                bookmarkedExhibitionIds={bookmarkedExhibitionIds}
+                onBookmarkToggle={toggleBookmark}
+              />
             </div>
           ))}
         </div>
