@@ -80,7 +80,7 @@ export function BookmarksPagePresentation() {
       <div className="pl-1 mb-5">
         <h1 className="text-xl font-bold mb-3">ブックマーク</h1>
         <p className="text-sm text-muted-foreground">
-          気になる展覧会をブックマークして管理できます。終了した展覧会は自動的に非表示になります。
+          気になる展覧会をブックマークして管理できます。
         </p>
       </div>
 

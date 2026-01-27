@@ -46,7 +46,6 @@ export function useBookmarks() {
 
         const data = await response.json()
         const exhibitions = data.exhibitions as Exhibition[]
-
         setBookmarkedExhibitions(exhibitions)
         setBookmarkedExhibitionIds(new Set(exhibitions.map((ex) => ex.id)))
         setError(null)
