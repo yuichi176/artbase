@@ -1,4 +1,4 @@
-# Firestore Data Modeling Guidelines
+# Firestore Data Modeling Guideline
 
 ## Many-to-Many Relationship Design Pattern
 
@@ -33,34 +33,12 @@ collections/
         ├── userId: string
         ├── exhibitionId: string
         └── createdAt: Timestamp
-
-#### Favorite Museum Feature
-
-Example structure with a top-level `favorites` collection:
-
-```
-collections/
-├── users/
-│   └── {uid}
-│       ├── email: string
-│       ├── displayName: string
-│       └── ...
-├── museum/
-│   └── {museumId}
-│       ├── name: string
-│       ├── address: string
-│       └── ...
-└── favorites/ (intermediate collection)
-    └── {favoriteId}  // Example: "{userId}_{museumId}" ensures uniqueness
-        ├── userId: string
-        ├── museumId: string  // museum collection document ID
-        └── createdAt: Timestamp
-```
 ```
 
 ### Document ID Design
 
 #### Composite ID Pattern (Recommended)
+
 ```typescript
 const bookmarkId = `${userId}_${exhibitionId}`
 ```
@@ -74,6 +52,7 @@ const bookmarkId = `${userId}_${exhibitionId}`
 - Be aware of ID length limit (1500 bytes, usually not an issue)
 
 #### Auto-generated ID Pattern
+
 ```typescript
 const bookmarkRef = db.collection('bookmarks').doc()  // Firestore auto-generates
 ```
@@ -194,12 +173,6 @@ bookmarks collection:
   - Index: exhibitionId (asc), createdAt (desc)
 ```
 
-Create indexes in Firebase Console or with Firebase CLI:
-
-```bash
-firebase firestore:indexes
-```
-
 #### Batch Processing
 
 Use pagination when retrieving large numbers of bookmarks:
@@ -273,17 +246,21 @@ The security rules above include referential integrity checks using `exists()`:
 - `bookmarks` validates that the `exhibitionId` exists in the `exhibition` collection
 
 **Benefits:**
+
 - Prevents creation of orphaned relationships (favorites/bookmarks pointing to non-existent entities)
 - Ensures data integrity at the database level
 - Provides clear security boundary
 
 **Cost Considerations:**
+
 - Each `exists()` check adds **one document read** to the operation
 - For create operations: 2 reads (the exists check + the document being created)
 - This is acceptable for user-initiated actions with low frequency
 
 **Best Practice:**
+
 Combine API-level validation with security rules for defense in depth:
+
 ```typescript
 // API validates first (better UX - returns specific error)
 const museumDoc = await db.collection('museum').doc(museumId).get()
@@ -407,9 +384,9 @@ await db.runTransaction(async (transaction) => {
 - Firestore automatically retries transactions on conflicts
 - Design transactions to be **idempotent** (safe to retry)
 - Avoid side effects like:
-  - Sending emails
-  - Making external API calls
-  - Logging to external services
+    - Sending emails
+    - Making external API calls
+    - Logging to external services
 
 #### 4. Transaction Timeout
 - Transactions have a **270-second timeout** (4.5 minutes)
