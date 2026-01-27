@@ -5,12 +5,12 @@ import { Button } from '@/components/shadcn-ui/button'
 import { Badge } from '@/components/shadcn-ui/badge'
 import { CheckIcon } from 'lucide-react'
 import Link from 'next/link'
+import { useAtomValue } from 'jotai'
+import { isAuthenticatedAtom } from '@/store/auth'
 
-interface PricingPagePresentationProps {
-  isAuthenticated: boolean
-}
+export function PricingPagePresentation() {
+  const isAuthenticated = useAtomValue(isAuthenticatedAtom)
 
-export function PricingPagePresentation({ isAuthenticated }: PricingPagePresentationProps) {
   async function handleSubscribe() {
     if (!isAuthenticated) {
       window.location.href = '/signin?redirect=/pricing'
