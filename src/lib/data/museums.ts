@@ -72,12 +72,15 @@ export async function getMuseumsWithCache(): Promise<Museum[]> {
     })
     .sort((a, b) => {
       // Get the latest createdAt from each museum's exhibitions
-      const latestCreatedAtA = Math.max(
-        ...a.exhibitions.map((ex) => new Date(ex.createdAt).getTime()),
-      )
-      const latestCreatedAtB = Math.max(
-        ...b.exhibitions.map((ex) => new Date(ex.createdAt).getTime()),
-      )
+      // Handle empty exhibitions array (treat as oldest)
+      const latestCreatedAtA =
+        a.exhibitions.length > 0
+          ? Math.max(...a.exhibitions.map((ex) => new Date(ex.createdAt).getTime()))
+          : 0
+      const latestCreatedAtB =
+        b.exhibitions.length > 0
+          ? Math.max(...b.exhibitions.map((ex) => new Date(ex.createdAt).getTime()))
+          : 0
 
       // Sort by latest createdAt (descending - newest first)
       return latestCreatedAtB - latestCreatedAtA
