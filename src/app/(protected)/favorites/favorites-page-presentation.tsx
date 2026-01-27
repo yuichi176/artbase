@@ -35,8 +35,8 @@ export function FavoritesPagePresentation({ museums }: FavoritesPagePresentation
 
   return (
     <div className="container">
-      <div className="pl-1 mb-3">
-        <h1 className="text-xl font-bold mb-1">お気に入り</h1>
+      <div className="pl-1 mb-5">
+        <h1 className="text-xl font-bold mb-3">お気に入り</h1>
         <p className="text-sm text-muted-foreground">
           お気に入りの会場の展覧会情報をまとめて確認できます。
         </p>
