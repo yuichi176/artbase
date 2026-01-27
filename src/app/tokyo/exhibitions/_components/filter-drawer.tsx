@@ -41,6 +41,7 @@ interface FilterDrawerProps {
   availableMuseumNames: string[]
   selectedOngoingStatus: OngoingStatusFilter
   onApply: (filters: FilterValues) => void
+  onReset: () => void
 }
 
 export const FilterDrawer = (props: FilterDrawerProps) => {
@@ -117,6 +118,7 @@ const FilterContent = ({
   availableMuseumNames,
   selectedOngoingStatus,
   onApply,
+  onReset,
   isOpen,
   onClose,
 }: FilterDrawerProps & { isOpen: boolean; onClose: () => void }) => {
@@ -176,6 +178,11 @@ const FilterContent = ({
     onClose()
   }
 
+  const handleResetAndApply = () => {
+    onReset()
+    onClose()
+  }
+
   const availableAreaOptions = availableAreas.map((area) => ({
     label: area,
     value: area,
@@ -217,12 +224,17 @@ const FilterContent = ({
         </div>
       </div>
       <div className="p-4 border-t border-border">
-        <div className="w-full flex gap-3">
-          <Button onClick={handleResetDraft} className="w-1/2" variant="outline">
-            クリア
-          </Button>
-          <Button onClick={handleApply} className="w-1/2">
-            適用
+        <div className="space-y-3">
+          <div className="w-full flex gap-3">
+            <Button onClick={handleResetDraft} className="w-1/2" variant="outline">
+              クリア
+            </Button>
+            <Button onClick={handleApply} className="w-1/2">
+              適用
+            </Button>
+          </div>
+          <Button onClick={handleResetAndApply} className="w-full" variant="outline">
+            リセット
           </Button>
         </div>
       </div>
