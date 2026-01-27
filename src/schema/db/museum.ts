@@ -1,7 +1,8 @@
-import { Exhibition } from '@/schema/exhibition'
+import { z } from 'zod'
 
 const venueTypes = ['美術館', '博物館', 'ギャラリー', 'イベントスペース'] as const
-export type VenueType = (typeof venueTypes)[number]
+export const venueTypeSchema = z.enum(venueTypes)
+export type VenueType = z.infer<typeof venueTypeSchema>
 export const venueTypeOptions = venueTypes.map((type) => ({
   label: type,
   value: type,
@@ -29,7 +30,8 @@ const areas = [
   '小金井・府中・多摩',
   '立川・八王子・多摩センター',
 ] as const
-export type Area = (typeof areas)[number]
+export const areaSchema = z.enum(areas)
+export type Area = z.infer<typeof areaSchema>
 export const areaOptions = areas.map((area) => ({
   label: area,
   value: area,
@@ -44,16 +46,4 @@ export type RawMuseum = {
   area: Area
   officialUrl: string
   scrapeUrl: string
-}
-
-export type Museum = {
-  id: string
-  name: string
-  address: string
-  access: string
-  openingInformation: string
-  venueType: VenueType
-  area: Area
-  officialUrl: string
-  exhibitions: Exhibition[]
 }

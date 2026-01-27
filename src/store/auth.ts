@@ -1,6 +1,6 @@
 import { atom } from 'jotai'
 import type { User as FirebaseUser } from 'firebase/auth'
-import type { User } from '@/schema/user'
+import type { User } from '@/schema/ui/user'
 import { getLinkedProviders } from '@/lib/auth/provider-utils'
 
 /**

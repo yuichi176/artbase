@@ -2,7 +2,7 @@
 
 import { useMemo } from 'react'
 import { Card } from '@/components/shadcn-ui/card'
-import { Museum } from '@/schema/museum'
+import { Museum } from '@/schema/ui/museum'
 import MuseumCard from '@/app/tokyo/exhibitions/_components/museum-card'
 import { useRequireAuth } from '@/hooks/use-require-auth'
 import { MuseumListSkeleton } from '@/app/tokyo/exhibitions/_components/museum-card-skeleton'

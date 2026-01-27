@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import { useAtomValue } from 'jotai'
 import { firebaseUserAtom, isAuthenticatedAtom, userAtom } from '@/store/auth'
-import type { Exhibition } from '@/schema/exhibition'
+import type { Exhibition } from '@/schema/ui/exhibition'
 
 /**
  * Custom hook to fetch and manage user's bookmarked exhibitions

@@ -1,5 +1,6 @@
 import { Timestamp } from '@google-cloud/firestore'
-import { RawUser, User } from '@/schema/user'
+import { RawUser } from '@/schema/db/user'
+import { User } from '@/schema/ui/user'
 
 // Convert Firestore Timestamp to ISO date string
 function timestampToISOString(timestamp: Timestamp): string {

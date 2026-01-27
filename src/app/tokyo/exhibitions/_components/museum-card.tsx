@@ -1,5 +1,5 @@
 import { Calendar, ExternalLink, MapPin } from 'lucide-react'
-import { Museum } from '@/schema/museum'
+import { Museum } from '@/schema/ui/museum'
 import { Badge } from '@/components/shadcn-ui/badge'
 import { MuseumAccess } from '@/app/tokyo/exhibitions/_components/museum-access'
 import { FavoriteButton } from '@/app/tokyo/exhibitions/_components/favorite-button'

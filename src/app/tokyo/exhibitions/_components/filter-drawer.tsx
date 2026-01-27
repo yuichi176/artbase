@@ -11,8 +11,8 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from '@/components/shadcn-ui/drawer'
-import { VenueType, venueTypeOptions, Area } from '@/schema/museum'
-import { ongoingStatusOptions, OngoingStatusType } from '@/schema/exhibition'
+import { VenueType, venueTypeOptions, Area } from '@/schema/db/museum'
+import { ongoingStatusOptions, OngoingStatusType } from '@/schema/ui/exhibition'
 import { Label } from '@radix-ui/react-label'
 import { RadioGroup, RadioGroupItem } from '@/components/shadcn-ui/radio-group'
 import { Checkbox } from '@/components/shadcn-ui/checkbox'

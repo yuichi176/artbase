@@ -95,6 +95,62 @@ _components/*.tsx (Server/Client Components)
 ## Firestore Authentication
 The application uses **Application Default Credentials (ADC)** for Google Cloud authentication. No explicit credentials are passed in code. See `src/lib/firestore.ts` for implementation details.
 
+## Schema Organization
+
+The project separates type definitions into **DB layer** and **UI layer** to maintain clear boundaries between Firestore types and application types.
+
+### Directory Structure
+
+```
+src/schema/
+├── db/              # Database layer types (Firestore)
+└── ui/              # UI layer types (Application)
+```
+
+### DB Layer Types (`src/schema/db/`)
+
+- **Purpose**: Define Firestore document schemas with native Firestore types
+- **Characteristics**:
+  - Contains `Timestamp` objects for date/time fields
+  - Matches the exact structure stored in Firestore
+  - Used in Server Components and API routes for database operations
+- **Naming Convention**: `RawExhibition`, `RawUser`, `RawBookmark`, etc.
+
+### UI Layer Types (`src/schema/ui/`)
+
+- **Purpose**: Define serializable application types for Client Components
+- **Characteristics**:
+  - Uses ISO date strings or JavaScript `Date` objects instead of `Timestamp`
+  - Fully serializable (can be passed through Server/Client boundary)
+  - Used in Client Components and as props
+  - May include computed fields (e.g., `isOngoing`)
+- **Naming Convention**: `Exhibition`, `User`, `Bookmark`, etc. (no "Raw" prefix)
+
+### Type Conversion Responsibilities
+
+1. **Server Components** (`*-section.tsx`):
+   - Import from `src/schema/db/` for Firestore reads
+   - Transform DB types → UI types before passing to Client Components
+   - Convert `Timestamp` → ISO strings using `TZDate` with 'Asia/Tokyo' timezone
+
+2. **API Routes** (`app/api/`):
+   - Import from `src/schema/db/` for Firestore writes
+   - Import from `src/schema/ui/` for request/response validation
+   - Convert UI types → DB types when writing to Firestore
+
+3. **Client Components**:
+   - Only import from `src/schema/ui/`
+   - Never import or use DB layer types
+   - Work exclusively with serializable types
+
+### Benefits of This Approach
+
+- **Type Safety**: Enforces correct type usage at compile time
+- **Clear Boundaries**: Separates concerns between database and application layers
+- **Serializability**: Prevents non-serializable types from crossing Server/Client boundary
+- **Maintainability**: Changes to database schema are isolated to DB layer
+- **Flexibility**: UI types can include computed fields without affecting database schema
+
 ## Data Flow & Type Transformations
 
 ### Read Operations (Server Components)

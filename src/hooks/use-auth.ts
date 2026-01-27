@@ -11,7 +11,7 @@ import {
   authErrorAtom,
   isAuthenticatedAtom,
 } from '@/store/auth'
-import type { User } from '@/schema/user'
+import type { User } from '@/schema/ui/user'
 
 /**
  * Custom hook to manage Firebase authentication state

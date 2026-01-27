@@ -1,9 +1,10 @@
 import { NextResponse } from 'next/server'
 import { verifyAuthToken } from '@/lib/auth/verify-token'
 import { db, auth as adminAuth } from '@/lib/firebase-admin'
-import { userSchema, type RawUser } from '@/schema/user'
+import { userSchema } from '@/schema/ui/user'
 import { Timestamp } from 'firebase-admin/firestore'
 import { convertRawUserToUser } from '@/app/api/utils'
+import { RawUser } from '@/schema/db/user'
 
 /**
  * GET /api/auth/user

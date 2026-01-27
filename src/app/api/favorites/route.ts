@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server'
 import { verifyAuthToken } from '@/lib/auth/verify-token'
 import { db } from '@/lib/firebase-admin'
-import { type RawUser } from '@/schema/user'
-import { type RawFavorite } from '@/schema/favorite'
+import { type RawUser } from '@/schema/db/user'
+import { type RawFavorite } from '@/schema/db/favorite'
 import { Timestamp } from 'firebase-admin/firestore'
 import { z } from 'zod'
 

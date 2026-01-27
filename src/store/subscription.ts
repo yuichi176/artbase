@@ -1,6 +1,6 @@
 import { atom } from 'jotai'
 import { userAtom } from './auth'
-import type { SubscriptionTier } from '@/schema/user'
+import type { SubscriptionTier } from '@/schema/db/user'
 
 /**
  * Subscription tier

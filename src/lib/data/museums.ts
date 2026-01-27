@@ -3,8 +3,10 @@
 import db from '@/lib/firestore'
 import { Timestamp } from '@google-cloud/firestore'
 import { TZDate } from '@date-fns/tz'
-import { Exhibition, RawExhibition } from '@/schema/exhibition'
-import { Museum, RawMuseum } from '@/schema/museum'
+import { Exhibition } from '@/schema/ui/exhibition'
+import { RawExhibition } from '@/schema/db/exhibition'
+import { RawMuseum } from '@/schema/db/museum'
+import { Museum } from '@/schema/ui/museum'
 
 export async function getMuseumsWithCache(now: Date) {
   const nowJst = new TZDate(now, 'Asia/Tokyo')
