@@ -47,8 +47,7 @@ export function useBookmarks() {
         const data = await response.json()
         const exhibitions = data.exhibitions as Exhibition[]
 
-        const filtered = exhibitions.filter((ex) => ex.ongoingStatus !== 'end')
-        setBookmarkedExhibitions(filtered)
+        setBookmarkedExhibitions(exhibitions)
         setBookmarkedExhibitionIds(new Set(exhibitions.map((ex) => ex.id)))
         setError(null)
       } catch (err) {
