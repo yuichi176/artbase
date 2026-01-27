@@ -41,7 +41,6 @@ interface FilterDrawerProps {
   availableMuseumNames: string[]
   selectedOngoingStatus: OngoingStatusFilter
   onApply: (filters: FilterValues) => void
-  onReset: () => void
 }
 
 export const FilterDrawer = (props: FilterDrawerProps) => {
@@ -118,7 +117,6 @@ const FilterContent = ({
   availableMuseumNames,
   selectedOngoingStatus,
   onApply,
-  onReset,
   isOpen,
   onClose,
 }: FilterDrawerProps & { isOpen: boolean; onClose: () => void }) => {
@@ -140,27 +138,21 @@ const FilterContent = ({
   }, [isOpen, selectedVenueTypes, selectedAreas, selectedMuseumNames, selectedOngoingStatus])
 
   const handleClickVenueType = (value: VenueType) => {
-    if (draftVenueTypes.includes(value)) {
-      setDraftVenueTypes(draftVenueTypes.filter((v) => v !== value))
-    } else {
-      setDraftVenueTypes([...draftVenueTypes, value])
-    }
+    setDraftVenueTypes((prev) =>
+      prev.includes(value) ? prev.filter((v) => v !== value) : [...prev, value],
+    )
   }
 
   const handleClickArea = (value: Area) => {
-    if (draftAreas.includes(value)) {
-      setDraftAreas(draftAreas.filter((v) => v !== value))
-    } else {
-      setDraftAreas([...draftAreas, value])
-    }
+    setDraftAreas((prev) =>
+      prev.includes(value) ? prev.filter((v) => v !== value) : [...prev, value],
+    )
   }
 
   const handleClickMuseumName = (value: string) => {
-    if (draftMuseumNames.includes(value)) {
-      setDraftMuseumNames(draftMuseumNames.filter((v) => v !== value))
-    } else {
-      setDraftMuseumNames([...draftMuseumNames, value])
-    }
+    setDraftMuseumNames((prev) =>
+      prev.includes(value) ? prev.filter((v) => v !== value) : [...prev, value],
+    )
   }
 
   const handleClickOngoingStatus = (value: OngoingStatusFilter) => {
