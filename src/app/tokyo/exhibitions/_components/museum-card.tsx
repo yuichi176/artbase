@@ -91,6 +91,14 @@ export default function MuseumCard({
                         開催中
                       </Badge>
                     )}
+                    {exhibition.ongoingStatus === 'upcoming' && (
+                      <Badge
+                        variant="secondary"
+                        className="bg-slate-50 border-slate-200 text-slate-600 dark:bg-slate-900/50 dark:border-slate-700 dark:text-slate-400 text-[0.625rem]"
+                      >
+                        開催前
+                      </Badge>
+                    )}
                   </div>
                 </div>
                 <BookmarkButton
