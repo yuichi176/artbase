@@ -31,10 +31,27 @@ export function BookmarksPagePresentation() {
     }
   }, [authLoading, user, router])
 
-  // Sort exhibitions by start date (most recent first)
+  // Sort exhibitions by status (ongoing > upcoming > end), then by date
   const bookmarkedExhibitions = useMemo(() => {
+    const statusOrder: Record<'ongoing' | 'upcoming' | 'end', number> = {
+      ongoing: 0,
+      upcoming: 1,
+      end: 2,
+    }
+
     return [...exhibitions].sort((a, b) => {
-      return new Date(b.startDate).getTime() - new Date(a.startDate).getTime()
+      // First, sort by status
+      const statusDiff = statusOrder[a.ongoingStatus] - statusOrder[b.ongoingStatus]
+      if (statusDiff !== 0) return statusDiff
+
+      // Then sort by date within each status
+      // For upcoming: sort by start date (ascending - soonest to start first)
+      // For ongoing and end: sort by end date (ascending - soonest to end first)
+      if (a.ongoingStatus === 'upcoming') {
+        return new Date(a.startDate).getTime() - new Date(b.startDate).getTime()
+      } else {
+        return new Date(a.endDate).getTime() - new Date(b.endDate).getTime()
+      }
     })
   }, [exhibitions])
 

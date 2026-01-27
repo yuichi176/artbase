@@ -6,7 +6,7 @@ import { Museum } from '@/schema/ui/museum'
 import MuseumCard from '@/app/tokyo/exhibitions/_components/museum-card'
 import { useMemo, useState } from 'react'
 import { FilterDrawer } from '@/app/tokyo/exhibitions/_components/filter-drawer'
-import { OngoingStatusType } from '@/schema/ui/exhibition'
+import { OngoingStatusFilter } from '@/schema/ui/exhibition'
 import { SearchInput } from '@/app/tokyo/exhibitions/_components/search-input'
 import { useBookmarks } from '@/hooks/use-bookmarks'
 import { useFavorites } from '@/hooks/use-favorites'
@@ -21,7 +21,7 @@ export const TopPagePresentation = ({ museums }: TopPagePresentationProps) => {
   const [selectedVenueTypes, setSelectedVenueTypes] = useState<VenueType[]>([])
   const [selectedAreas, setSelectedAreas] = useState<Area[]>([])
   const [selectedMuseumNames, setSelectedMuseumNames] = useState<string[]>([])
-  const [selectedOngoingStatus, setSelectedOngoingStatus] = useState<OngoingStatusType>('all')
+  const [selectedOngoingStatus, setSelectedOngoingStatus] = useState<OngoingStatusFilter>('all')
   const [searchQuery, setSearchQuery] = useState('')
 
   const handleClickVenueType = (value: VenueType) => {
@@ -51,7 +51,7 @@ export const TopPagePresentation = ({ museums }: TopPagePresentationProps) => {
     })
   }
 
-  const handleClickOngoingStatus = (value: OngoingStatusType) => {
+  const handleClickOngoingStatus = (value: OngoingStatusFilter) => {
     setSelectedOngoingStatus(value)
   }
 

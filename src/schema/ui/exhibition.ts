@@ -1,13 +1,18 @@
 import { z } from 'zod'
 import { statusSchema } from '@/schema/db/exhibition'
 
-const ongoingStatusSchema = z.enum(['all', 'ongoing', 'upcoming', 'end'])
-export type OngoingStatusType = z.infer<typeof ongoingStatusSchema>
+// Actual data type (no 'all')
+const ongoingStatusSchema = z.enum(['ongoing', 'upcoming', 'end'])
+export type OngoingStatus = z.infer<typeof ongoingStatusSchema>
+
+// Filter type (includes 'all')
+export type OngoingStatusFilter = 'all' | OngoingStatus
+
 export const ongoingStatusOptions = [
-  { label: 'すべて', value: 'all' },
-  { label: '開催中', value: 'ongoing' },
-  { label: '開催前', value: 'upcoming' },
-] satisfies { label: string; value: OngoingStatusType }[]
+  { label: 'すべて', value: 'all' as const },
+  { label: '開催中', value: 'ongoing' as const },
+  { label: '開催前', value: 'upcoming' as const },
+] satisfies { label: string; value: OngoingStatusFilter }[]
 
 export const exhibitionSchema = z.object({
   id: z.string(),

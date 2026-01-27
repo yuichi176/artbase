@@ -12,7 +12,7 @@ import {
   DrawerTrigger,
 } from '@/components/shadcn-ui/drawer'
 import { VenueType, venueTypeOptions, Area } from '@/schema/db/museum'
-import { ongoingStatusOptions, OngoingStatusType } from '@/schema/ui/exhibition'
+import { ongoingStatusOptions, OngoingStatusFilter } from '@/schema/ui/exhibition'
 import { Label } from '@radix-ui/react-label'
 import { RadioGroup, RadioGroupItem } from '@/components/shadcn-ui/radio-group'
 import { Checkbox } from '@/components/shadcn-ui/checkbox'
@@ -34,8 +34,8 @@ interface FilterDrawerProps {
   selectedMuseumNames: string[]
   availableMuseumNames: string[]
   handleClickMuseumName: (name: string) => void
-  selectedOngoingStatus: OngoingStatusType
-  handleClickOngoingStatus: (status: OngoingStatusType) => void
+  selectedOngoingStatus: OngoingStatusFilter
+  handleClickOngoingStatus: (status: OngoingStatusFilter) => void
   onReset: () => void
 }
 
@@ -130,7 +130,7 @@ const FilterContent = ({
         <FilterFieldRadio
           label="開催状況"
           options={ongoingStatusOptions}
-          onValueChange={(value) => handleClickOngoingStatus(value as OngoingStatusType)}
+          onValueChange={(value) => handleClickOngoingStatus(value as OngoingStatusFilter)}
           value={selectedOngoingStatus}
         />
         <FilterFieldCheckbox
