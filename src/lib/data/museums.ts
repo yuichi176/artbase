@@ -8,7 +8,8 @@ import { RawExhibition } from '@/schema/db/exhibition'
 import { RawMuseum } from '@/schema/db/museum'
 import { Museum } from '@/schema/ui/museum'
 
-export async function getMuseumsWithCache(now: Date): Promise<Museum[]> {
+export async function getMuseumsWithCache(): Promise<Museum[]> {
+  const now = new Date()
   const nowJst = new TZDate(now, 'Asia/Tokyo')
 
   const exhibitionDocumentsSnapshot = await db
