@@ -33,25 +33,6 @@ export function FavoritesPagePresentation({ museums }: FavoritesPagePresentation
     )
   }
 
-  if (favoriteMuseumIds.size === 0) {
-    return (
-      <div className="container">
-        <div className="pl-1 mb-3">
-          <h1 className="text-xl font-bold mb-1">お気に入り</h1>
-          <p className="text-sm text-muted-foreground">
-            お気に入りの会場の展覧会情報をまとめて確認できます。
-          </p>
-        </div>
-        <Card className="p-8 rounded-lg text-center">
-          <p className="text-muted-foreground">まだお気に入りの会場がありません</p>
-          <p className="text-sm text-muted-foreground mt-2">
-            展覧会ページで☆ボタンをクリックして、お気に入りに追加しましょう。
-          </p>
-        </Card>
-      </div>
-    )
-  }
-
   return (
     <div className="container">
       <div className="pl-1 mb-3">
@@ -61,21 +42,30 @@ export function FavoritesPagePresentation({ museums }: FavoritesPagePresentation
         </p>
       </div>
 
-      <div className="space-y-3">
-        <div className="space-y-4 md:columns-2 xl:columns-3 md:gap-4">
-          {favoriteMuseums.map((museum) => (
-            <div key={museum.name} className="break-inside-avoid">
-              <MuseumCard
-                museum={museum}
-                isFavorite={favoriteMuseumIds.has(museum.id)}
-                bookmarkedExhibitionIds={bookmarkedExhibitionIds}
-                onBookmarkToggle={toggleBookmark}
-                onFavoriteToggle={toggleFavorite}
-              />
-            </div>
-          ))}
+      {favoriteMuseums.length === 0 ? (
+        <Card className="p-6 rounded-lg text-center gap-4">
+          <p className="text-sm text-muted-foreground">まだお気に入りの会場はありません。</p>
+          <p className="text-xs text-muted-foreground">
+            気になる会場を見つけたら☆ボタンで登録して、自分だけのリストをつくりましょう。
+          </p>
+        </Card>
+      ) : (
+        <div className="space-y-3">
+          <div className="space-y-4 md:columns-2 xl:columns-3 md:gap-4">
+            {favoriteMuseums.map((museum) => (
+              <div key={museum.name} className="break-inside-avoid">
+                <MuseumCard
+                  museum={museum}
+                  isFavorite={favoriteMuseumIds.has(museum.id)}
+                  bookmarkedExhibitionIds={bookmarkedExhibitionIds}
+                  onBookmarkToggle={toggleBookmark}
+                  onFavoriteToggle={toggleFavorite}
+                />
+              </div>
+            ))}
+          </div>
         </div>
-      </div>
+      )}
     </div>
   )
 }
