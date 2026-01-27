@@ -77,6 +77,8 @@ async function getExhibitionsByIds(exhibitionIds: string[]): Promise<Exhibition[
           officialUrl: data.officialUrl ?? '',
           imageUrl: data.imageUrl ?? '',
           status: data.status,
+          createdAt: data.createdAt.toDate().toISOString(),
+          updatedAt: data.updatedAt.toDate().toISOString(),
           ongoingStatus,
         }
       })

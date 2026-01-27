@@ -45,6 +45,8 @@ export async function getMuseumsWithCache(now: Date): Promise<Museum[]> {
       officialUrl: data.officialUrl ?? '',
       imageUrl: data.imageUrl ?? '',
       status: data.status,
+      createdAt: data.createdAt.toDate().toISOString(),
+      updatedAt: data.updatedAt.toDate().toISOString(),
       ongoingStatus,
     }
   })
@@ -68,6 +70,18 @@ export async function getMuseumsWithCache(now: Date): Promise<Museum[]> {
       }
     })
     .filter((museum) => museum.exhibitions.length > 0)
+    .sort((a, b) => {
+      // Get the latest createdAt from each museum's exhibitions
+      const latestCreatedAtA = Math.max(
+        ...a.exhibitions.map((ex) => new Date(ex.createdAt).getTime()),
+      )
+      const latestCreatedAtB = Math.max(
+        ...b.exhibitions.map((ex) => new Date(ex.createdAt).getTime()),
+      )
+
+      // Sort by latest createdAt (descending - newest first)
+      return latestCreatedAtB - latestCreatedAtA
+    })
 
   return museums
 }

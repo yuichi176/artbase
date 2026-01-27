@@ -1,11 +1,9 @@
 import { z } from 'zod'
 import { statusSchema } from '@/schema/db/exhibition'
 
-// Actual data type (no 'all')
 const ongoingStatusSchema = z.enum(['ongoing', 'upcoming', 'end'])
 export type OngoingStatus = z.infer<typeof ongoingStatusSchema>
 
-// Filter type (includes 'all')
 export type OngoingStatusFilter = 'all' | OngoingStatus
 
 export const ongoingStatusOptions = [
@@ -23,6 +21,8 @@ export const exhibitionSchema = z.object({
   officialUrl: z.string().optional(),
   imageUrl: z.string().optional(),
   status: statusSchema,
+  createdAt: z.string(),
+  updatedAt: z.string(),
   ongoingStatus: ongoingStatusSchema,
 })
 export type Exhibition = z.infer<typeof exhibitionSchema>
