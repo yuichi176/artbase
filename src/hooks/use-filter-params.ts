@@ -15,7 +15,6 @@ interface FilterParams {
   selectedAreas: Area[]
   selectedMuseumNames: string[]
   selectedOngoingStatus: OngoingStatusFilter
-  searchQuery: string
 }
 
 interface FilterActions {
@@ -23,7 +22,6 @@ interface FilterActions {
   setSelectedAreas: (value: Area[]) => void
   setSelectedMuseumNames: (value: string[]) => void
   setSelectedOngoingStatus: (value: OngoingStatusFilter) => void
-  setSearchQuery: (value: string) => void
   applyFilters: (filters: FilterValues) => void
   resetFilters: () => void
 }
@@ -77,50 +75,32 @@ export const useFilterParams = (): FilterParams & FilterActions => {
   const [selectedOngoingStatus, setSelectedOngoingStatus] = useState<OngoingStatusFilter>(() =>
     parseOngoingStatus(searchParams.get('status')),
   )
-  const [searchQuery, setSearchQuery] = useState<string>(() => searchParams.get('q') ?? '')
 
   // Sync state to URL with debounce to prevent excessive updates
   useEffect(() => {
-    const timeoutId = setTimeout(() => {
-      const params = new URLSearchParams()
+    const params = new URLSearchParams()
 
-      if (selectedVenueTypes.length > 0) {
-        params.set('venueTypes', selectedVenueTypes.join(','))
-      }
+    if (selectedVenueTypes.length > 0) {
+      params.set('venueTypes', selectedVenueTypes.join(','))
+    }
 
-      if (selectedAreas.length > 0) {
-        params.set('areas', selectedAreas.join(','))
-      }
+    if (selectedAreas.length > 0) {
+      params.set('areas', selectedAreas.join(','))
+    }
 
-      if (selectedMuseumNames.length > 0) {
-        params.set('museums', selectedMuseumNames.join(','))
-      }
+    if (selectedMuseumNames.length > 0) {
+      params.set('museums', selectedMuseumNames.join(','))
+    }
 
-      if (selectedOngoingStatus !== 'all') {
-        params.set('status', selectedOngoingStatus)
-      }
+    if (selectedOngoingStatus !== 'all') {
+      params.set('status', selectedOngoingStatus)
+    }
 
-      if (searchQuery.trim()) {
-        params.set('q', searchQuery.trim())
-      }
+    const paramsString = params.toString()
+    const newUrl = paramsString ? `?${paramsString}` : window.location.pathname
 
-      const paramsString = params.toString()
-      const newUrl = paramsString ? `?${paramsString}` : window.location.pathname
-
-      router.replace(newUrl, { scroll: false })
-      // Data refetching is not necessary when filters change, but we still want to keep the URL updated.
-      // However, to avoid excessive URL updates, a longer debounce (3 seconds in this case) is used.
-    }, 3000)
-
-    return () => clearTimeout(timeoutId)
-  }, [
-    selectedVenueTypes,
-    selectedAreas,
-    selectedMuseumNames,
-    selectedOngoingStatus,
-    searchQuery,
-    router,
-  ])
+    router.replace(newUrl, { scroll: false })
+  }, [selectedVenueTypes, selectedAreas, selectedMuseumNames, selectedOngoingStatus, router])
 
   const applyFilters = useCallback((filters: FilterValues) => {
     setSelectedVenueTypes(filters.venueTypes)
@@ -134,7 +114,6 @@ export const useFilterParams = (): FilterParams & FilterActions => {
     setSelectedAreas([])
     setSelectedMuseumNames([])
     setSelectedOngoingStatus('all')
-    setSearchQuery('')
   }, [])
 
   return {
@@ -142,12 +121,10 @@ export const useFilterParams = (): FilterParams & FilterActions => {
     selectedAreas,
     selectedMuseumNames,
     selectedOngoingStatus,
-    searchQuery,
     setSelectedVenueTypes,
     setSelectedAreas,
     setSelectedMuseumNames,
     setSelectedOngoingStatus,
-    setSearchQuery,
     applyFilters,
     resetFilters,
   }

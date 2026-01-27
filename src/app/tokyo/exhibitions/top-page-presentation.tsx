@@ -3,7 +3,7 @@
 import { Card } from '@/components/shadcn-ui/card'
 import { Museum } from '@/schema/ui/museum'
 import MuseumCard from '@/app/tokyo/exhibitions/_components/museum-card'
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { FilterDrawer } from '@/app/tokyo/exhibitions/_components/filter-drawer'
 import { SearchInput } from '@/app/tokyo/exhibitions/_components/search-input'
 import { useBookmarks } from '@/hooks/use-bookmarks'
@@ -22,11 +22,12 @@ export const TopPagePresentation = ({ museums }: TopPagePresentationProps) => {
     selectedAreas,
     selectedMuseumNames,
     selectedOngoingStatus,
-    searchQuery,
-    setSearchQuery,
     applyFilters,
     resetFilters,
   } = useFilterParams()
+
+  // Search query is local state (not synced to URL)
+  const [searchQuery, setSearchQuery] = useState('')
 
   const availableAreas = useMemo(() => {
     const uniqueAreas = [...new Set(museums.map((museum) => museum.area))]
