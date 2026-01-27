@@ -109,8 +109,8 @@ export const useFilterParams = (): FilterParams & FilterActions => {
 
       router.replace(newUrl, { scroll: false })
       // Data refetching is not necessary when filters change, but we still want to keep the URL updated.
-      // However, to avoid excessive URL updates, a longer debounce (5 seconds in this case) is used.
-    }, 5000)
+      // However, to avoid excessive URL updates, a longer debounce (3 seconds in this case) is used.
+    }, 3000)
 
     return () => clearTimeout(timeoutId)
   }, [
