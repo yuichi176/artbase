@@ -78,29 +78,31 @@ export const useFilterParams = (): FilterParams & FilterActions => {
 
   // Sync state to URL with debounce to prevent excessive updates
   useEffect(() => {
-    const params = new URLSearchParams()
+    const timeoutId = setTimeout(() => {
+      const params = new URLSearchParams()
 
-    if (selectedVenueTypes.length > 0) {
-      params.set('venueTypes', selectedVenueTypes.join(','))
-    }
+      if (selectedVenueTypes.length > 0) {
+        params.set('venueTypes', selectedVenueTypes.join(','))
+      }
 
-    if (selectedAreas.length > 0) {
-      params.set('areas', selectedAreas.join(','))
-    }
+      if (selectedAreas.length > 0) {
+        params.set('areas', selectedAreas.join(','))
+      }
 
-    if (selectedMuseumNames.length > 0) {
-      params.set('museums', selectedMuseumNames.join(','))
-    }
+      if (selectedMuseumNames.length > 0) {
+        params.set('museums', selectedMuseumNames.join(','))
+      }
 
-    if (selectedOngoingStatus !== 'all') {
-      params.set('status', selectedOngoingStatus)
-    }
+      if (selectedOngoingStatus !== 'all') {
+        params.set('status', selectedOngoingStatus)
+      }
 
-    const paramsString = params.toString()
-    const newUrl = paramsString ? `?${paramsString}` : window.location.pathname
+      const paramsString = params.toString()
+      const newUrl = paramsString ? `?${paramsString}` : window.location.pathname
 
-    router.replace(newUrl, { scroll: false })
-  }, [selectedVenueTypes, selectedAreas, selectedMuseumNames, selectedOngoingStatus, router])
+      router.replace(newUrl, { scroll: false })
+    }, 500) // 500ms debounce
+  }, [selectedVenueTypes, selectedAreas, selectedMuseumNames, selectedOngoingStatus])
 
   const applyFilters = useCallback((filters: FilterValues) => {
     setSelectedVenueTypes(filters.venueTypes)
