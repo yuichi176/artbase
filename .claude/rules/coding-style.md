@@ -95,6 +95,139 @@ _components/*.tsx (Server/Client Components)
 ## Firestore Authentication
 The application uses **Application Default Credentials (ADC)** for Google Cloud authentication. No explicit credentials are passed in code. See `src/lib/firestore.ts` for implementation details.
 
+## Client-Side Authentication
+
+The application uses Firebase Authentication for client-side authentication with a centralized initialization pattern.
+
+### Architecture Overview
+
+```
+Root Layout (app/layout.tsx)
+  └─ AuthInitializer (components/auth/auth-initializer.tsx)
+      └─ useAuth() hook
+          ├─ Sets up onAuthStateChanged listener (once)
+          ├─ Updates Jotai atoms (firebaseUserAtom, userAtom, etc.)
+          └─ Fetches user data from Firestore via API
+
+Protected Pages & Components
+  ├─ useRequireAuth() - For route protection with redirect
+  │   └─ Reads from atoms (isAuthenticatedAtom, authLoadingAtom)
+  │
+  └─ Direct atom access - For reading auth state
+      └─ useAtomValue(firebaseUserAtom | userAtom | isAuthenticatedAtom)
+```
+
+### Key Components and Hooks
+
+#### 1. **AuthInitializer** (`src/components/auth/auth-initializer.tsx`)
+- **Responsibility**: Initialize authentication state globally
+- **Location**: Mounted in root layout (`app/layout.tsx`)
+- **Behavior**:
+  - Calls `useAuth()` once to set up Firebase auth listener
+  - Runs on application mount
+  - Returns `null` (no UI rendering)
+
+#### 2. **useAuth** (`src/hooks/use-auth.ts`)
+- **Responsibility**: Set up Firebase authentication listener and sync state to Jotai atoms
+- **Usage**: Should ONLY be called by `AuthInitializer`
+- **Behavior**:
+  - Registers `onAuthStateChanged` listener
+  - Updates Jotai atoms: `firebaseUserAtom`, `userAtom`, `authLoadingAtom`, `authErrorAtom`
+  - Fetches user data from Firestore when authenticated
+  - Returns auth state for the caller (but external components should use atoms directly)
+
+**⚠️ DO NOT call `useAuth` in components or pages** - this would create duplicate auth listeners.
+
+#### 3. **useRequireAuth** (`src/hooks/use-require-auth.ts`)
+- **Responsibility**: Protect routes by redirecting unauthenticated users
+- **Usage**: Call in protected page components or layouts
+- **Behavior**:
+  - Reads authentication state from atoms (`isAuthenticatedAtom`, `authLoadingAtom`)
+  - Redirects to `/signin` if not authenticated
+  - Does NOT set up auth listeners
+- **Example**:
+  ```tsx
+  'use client'
+
+  export function AccountPagePresentation() {
+    const { loading, isAuthenticated } = useRequireAuth('/account')
+
+    if (loading) return <LoadingSpinner />
+    if (!isAuthenticated) return null // Redirect in progress
+
+    return <AccountContent />
+  }
+  ```
+
+#### 4. **Direct Atom Access**
+- **Responsibility**: Read authentication state in any client component
+- **Usage**: When you need auth state but don't need redirect logic
+- **Available Atoms**:
+  - `firebaseUserAtom` - Firebase Auth user object
+  - `userAtom` - Application user data from Firestore
+  - `isAuthenticatedAtom` - Boolean authentication status
+  - `authLoadingAtom` - Loading state during initial auth check
+  - `userDisplayNameAtom` - Computed display name
+  - `linkedProvidersAtom` - Linked authentication providers
+- **Example**:
+  ```tsx
+  'use client'
+
+  import { useAtomValue } from 'jotai'
+  import { userAtom } from '@/store/auth'
+
+  export function UserProfile() {
+    const user = useAtomValue(userAtom)
+
+    if (!user) return null
+    return <div>{user.displayName}</div>
+  }
+  ```
+
+### Authentication State Management Rules
+
+#### ✅ DO:
+- Use `AuthInitializer` in root layout to initialize auth state once
+- Use `useRequireAuth()` in protected pages/components for automatic redirect
+- Use `useAtomValue(authAtom)` to read auth state in any component
+- Keep auth listener registration centralized in `AuthInitializer`
+
+#### ❌ DO NOT:
+- Call `useAuth()` directly in components (except `AuthInitializer`)
+- Create additional `onAuthStateChanged` listeners
+- Duplicate auth initialization logic
+- Use `useAuth()` when you only need to read auth state
+
+### Authentication Flow
+
+#### Initial Load
+```
+1. App mounts
+2. AuthInitializer calls useAuth()
+3. useAuth() sets up onAuthStateChanged listener
+4. Firebase resolves auth state
+5. Atoms updated (firebaseUserAtom, userAtom, etc.)
+6. authLoadingAtom set to false
+7. All components receive updated auth state
+```
+
+#### Protected Route Access
+```
+1. User navigates to protected route
+2. Component calls useRequireAuth()
+3. useRequireAuth reads isAuthenticatedAtom
+4. If not authenticated → redirect to /signin
+5. If authenticated → render protected content
+```
+
+### Benefits of This Architecture
+
+- **Single Source of Truth**: One auth listener updates global state
+- **Performance**: No duplicate listeners or unnecessary re-renders
+- **Simplicity**: Components read from atoms, no complex auth logic
+- **Maintainability**: Auth initialization centralized in one place
+- **Type Safety**: All auth state is typed through Jotai atoms
+
 ## Schema Organization
 
 The project separates type definitions into **DB layer** and **UI layer** to maintain clear boundaries between Firestore types and application types.

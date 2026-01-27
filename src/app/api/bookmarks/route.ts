@@ -43,53 +43,45 @@ async function getExhibitionsByIds(exhibitionIds: string[]): Promise<Exhibition[
         .where(FieldPath.documentId(), 'in', chunk)
         .get()
 
-      return snapshot.docs
-        .map((doc) => {
-          const data = doc.data() as RawExhibition
-          const startDate = data.startDate ? new TZDate(data.startDate.toDate(), tz) : null
-          const endDate = data.endDate ? new TZDate(data.endDate.toDate(), tz) : null
+      return snapshot.docs.map((doc) => {
+        const data = doc.data() as RawExhibition
+        const startDate = data.startDate ? new TZDate(data.startDate.toDate(), tz) : null
+        const endDate = data.endDate ? new TZDate(data.endDate.toDate(), tz) : null
 
-          // Format dates as YYYY-MM-DD
-          const formatDate = (date: TZDate): string => {
-            const year = date.getFullYear()
-            const month = String(date.getMonth() + 1).padStart(2, '0')
-            const day = String(date.getDate()).padStart(2, '0')
-            return `${year}-${month}-${day}`
-          }
+        // Format dates as YYYY-MM-DD
+        const formatDate = (date: TZDate): string => {
+          const year = date.getFullYear()
+          const month = String(date.getMonth() + 1).padStart(2, '0')
+          const day = String(date.getDate()).padStart(2, '0')
+          return `${year}-${month}-${day}`
+        }
 
-          // Determine ongoing status
-          let ongoingStatus: 'ongoing' | 'upcoming' | 'end' = 'end'
-          if (startDate && endDate) {
-            if (now < startDate) {
-              ongoingStatus = 'upcoming'
-            } else if (now >= startDate && now <= endDate) {
-              ongoingStatus = 'ongoing'
-            } else {
-              ongoingStatus = 'end'
-            }
+        // Determine ongoing status
+        let ongoingStatus: 'ongoing' | 'upcoming' | 'end' = 'end'
+        if (startDate && endDate) {
+          if (now < startDate) {
+            ongoingStatus = 'upcoming'
+          } else if (now >= startDate && now <= endDate) {
+            ongoingStatus = 'ongoing'
+          } else {
+            ongoingStatus = 'end'
           }
+        }
 
-          return {
-            id: doc.id,
-            title: data.title,
-            venue: data.venue ?? '',
-            startDate: startDate ? formatDate(startDate) : '',
-            endDate: endDate ? formatDate(endDate) : '',
-            officialUrl: data.officialUrl ?? '',
-            imageUrl: data.imageUrl ?? '',
-            status: data.status,
-            createdAt: data.createdAt.toDate().toISOString(),
-            updatedAt: data.updatedAt.toDate().toISOString(),
-            ongoingStatus,
-            // Keep raw dates for filtering
-            _endDate: endDate,
-          }
-        })
-        .filter((exhibition) => {
-          // Filter by status and endDate on client side
-          return exhibition.status === 'active' && exhibition._endDate && exhibition._endDate >= now
-        })
-        .map(({ _endDate, ...exhibition }) => exhibition) // Remove temporary field
+        return {
+          id: doc.id,
+          title: data.title,
+          venue: data.venue ?? '',
+          startDate: startDate ? formatDate(startDate) : '',
+          endDate: endDate ? formatDate(endDate) : '',
+          officialUrl: data.officialUrl ?? '',
+          imageUrl: data.imageUrl ?? '',
+          status: data.status,
+          createdAt: data.createdAt.toDate().toISOString(),
+          updatedAt: data.updatedAt.toDate().toISOString(),
+          ongoingStatus,
+        }
+      })
     }),
   )
 
