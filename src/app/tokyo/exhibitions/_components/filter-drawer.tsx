@@ -25,13 +25,7 @@ import {
 } from '@/components/shadcn-ui/dialog'
 import { useMediaQuery } from '@/hooks/use-media-query'
 import { Button } from '@/components/shadcn-ui/button'
-
-export interface FilterValues {
-  venueTypes: VenueType[]
-  areas: Area[]
-  museumNames: string[]
-  ongoingStatus: OngoingStatusFilter
-}
+import { FilterValues } from '@/hooks/use-filter-params'
 
 interface FilterDrawerProps {
   selectedVenueTypes: VenueType[]
