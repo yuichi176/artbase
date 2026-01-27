@@ -1,15 +1,14 @@
 'use client'
 
 import { Card } from '@/components/shadcn-ui/card'
-import { VenueType, Area } from '@/schema/db/museum'
 import { Museum } from '@/schema/ui/museum'
 import MuseumCard from '@/app/tokyo/exhibitions/_components/museum-card'
 import { useMemo, useState } from 'react'
 import { FilterDrawer } from '@/app/tokyo/exhibitions/_components/filter-drawer'
-import { OngoingStatusFilter } from '@/schema/ui/exhibition'
 import { SearchInput } from '@/app/tokyo/exhibitions/_components/search-input'
 import { useBookmarks } from '@/hooks/use-bookmarks'
 import { useFavorites } from '@/hooks/use-favorites'
+import { useFilterParams } from '@/hooks/use-filter-params'
 
 interface TopPagePresentationProps {
   museums: Museum[]
@@ -18,49 +17,17 @@ interface TopPagePresentationProps {
 export const TopPagePresentation = ({ museums }: TopPagePresentationProps) => {
   const { bookmarkedExhibitionIds, toggleBookmark } = useBookmarks()
   const { favoriteMuseumIds, toggleFavorite } = useFavorites()
-  const [selectedVenueTypes, setSelectedVenueTypes] = useState<VenueType[]>([])
-  const [selectedAreas, setSelectedAreas] = useState<Area[]>([])
-  const [selectedMuseumNames, setSelectedMuseumNames] = useState<string[]>([])
-  const [selectedOngoingStatus, setSelectedOngoingStatus] = useState<OngoingStatusFilter>('all')
+  const {
+    selectedVenueTypes,
+    selectedAreas,
+    selectedMuseumNames,
+    selectedOngoingStatus,
+    applyFilters,
+    resetFilters,
+  } = useFilterParams()
+
+  // Search query is local state (not synced to URL)
   const [searchQuery, setSearchQuery] = useState('')
-
-  const handleClickVenueType = (value: VenueType) => {
-    setSelectedVenueTypes((prev) => {
-      if (prev.includes(value)) {
-        return prev.filter((v) => v !== value)
-      }
-      return [...prev, value]
-    })
-  }
-
-  const handleClickArea = (value: Area) => {
-    setSelectedAreas((prev) => {
-      if (prev.includes(value)) {
-        return prev.filter((v) => v !== value)
-      }
-      return [...prev, value]
-    })
-  }
-
-  const handleClickMuseumName = (value: string) => {
-    setSelectedMuseumNames((prev) => {
-      if (prev.includes(value)) {
-        return prev.filter((v) => v !== value)
-      }
-      return [...prev, value]
-    })
-  }
-
-  const handleClickOngoingStatus = (value: OngoingStatusFilter) => {
-    setSelectedOngoingStatus(value)
-  }
-
-  const handleResetFilters = () => {
-    setSelectedVenueTypes([])
-    setSelectedAreas([])
-    setSelectedMuseumNames([])
-    setSelectedOngoingStatus('all')
-  }
 
   const availableAreas = useMemo(() => {
     const uniqueAreas = [...new Set(museums.map((museum) => museum.area))]
@@ -138,16 +105,13 @@ export const TopPagePresentation = ({ museums }: TopPagePresentationProps) => {
 
       <FilterDrawer
         selectedVenueTypes={selectedVenueTypes}
-        handleClickVenueType={handleClickVenueType}
         selectedAreas={selectedAreas}
         availableAreas={availableAreas}
-        handleClickArea={handleClickArea}
         selectedMuseumNames={selectedMuseumNames}
         availableMuseumNames={availableMuseumNames}
-        handleClickMuseumName={handleClickMuseumName}
         selectedOngoingStatus={selectedOngoingStatus}
-        handleClickOngoingStatus={handleClickOngoingStatus}
-        onReset={handleResetFilters}
+        onApply={applyFilters}
+        onReset={resetFilters}
       />
 
       <Card className="p-2 md:p-4 rounded-lg gap-0 bg-background">

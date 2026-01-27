@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Filter } from '@/components/icon/filter'
 import { X } from '@/components/icon/x'
 import {
@@ -24,24 +24,27 @@ import {
   DialogTitle,
 } from '@/components/shadcn-ui/dialog'
 import { useMediaQuery } from '@/hooks/use-media-query'
+import { Button } from '@/components/shadcn-ui/button'
+import { FilterValues } from '@/hooks/use-filter-params'
 
 interface FilterDrawerProps {
-  selectedVenueTypes: string[]
-  handleClickVenueType: (type: VenueType) => void
+  selectedVenueTypes: VenueType[]
   selectedAreas: Area[]
   availableAreas: Area[]
-  handleClickArea: (area: Area) => void
   selectedMuseumNames: string[]
   availableMuseumNames: string[]
-  handleClickMuseumName: (name: string) => void
   selectedOngoingStatus: OngoingStatusFilter
-  handleClickOngoingStatus: (status: OngoingStatusFilter) => void
+  onApply: (filters: FilterValues) => void
   onReset: () => void
 }
 
 export const FilterDrawer = (props: FilterDrawerProps) => {
   const [isOpen, setIsOpen] = useState(false)
   const isDesktop = useMediaQuery('(min-width: 48rem)')
+
+  const handleClose = () => {
+    setIsOpen(false)
+  }
 
   if (isDesktop) {
     return (
@@ -60,7 +63,7 @@ export const FilterDrawer = (props: FilterDrawerProps) => {
         <DialogContent>
           <DialogHeader>
             <DialogTitle className="text-left">フィルター</DialogTitle>
-            <FilterContent {...props} />
+            <FilterContent {...props} isOpen={isOpen} onClose={handleClose} />
           </DialogHeader>
         </DialogContent>
       </Dialog>
@@ -95,7 +98,7 @@ export const FilterDrawer = (props: FilterDrawerProps) => {
             </DrawerClose>
           </div>
         </DrawerHeader>
-        <FilterContent {...props} />
+        <FilterContent {...props} isOpen={isOpen} onClose={handleClose} />
       </DrawerContent>
     </Drawer>
   )
@@ -103,17 +106,77 @@ export const FilterDrawer = (props: FilterDrawerProps) => {
 
 const FilterContent = ({
   selectedVenueTypes,
-  handleClickVenueType,
   selectedAreas,
   availableAreas,
-  handleClickArea,
   selectedMuseumNames,
   availableMuseumNames,
-  handleClickMuseumName,
   selectedOngoingStatus,
-  handleClickOngoingStatus,
+  onApply,
   onReset,
-}: FilterDrawerProps) => {
+  isOpen,
+  onClose,
+}: FilterDrawerProps & { isOpen: boolean; onClose: () => void }) => {
+  // Draft state (temporary state before applying)
+  const [draftVenueTypes, setDraftVenueTypes] = useState<VenueType[]>(selectedVenueTypes)
+  const [draftAreas, setDraftAreas] = useState<Area[]>(selectedAreas)
+  const [draftMuseumNames, setDraftMuseumNames] = useState<string[]>(selectedMuseumNames)
+  const [draftOngoingStatus, setDraftOngoingStatus] =
+    useState<OngoingStatusFilter>(selectedOngoingStatus)
+
+  // Reset draft state when drawer opens
+  useEffect(() => {
+    if (isOpen) {
+      setDraftVenueTypes(selectedVenueTypes)
+      setDraftAreas(selectedAreas)
+      setDraftMuseumNames(selectedMuseumNames)
+      setDraftOngoingStatus(selectedOngoingStatus)
+    }
+  }, [isOpen, selectedVenueTypes, selectedAreas, selectedMuseumNames, selectedOngoingStatus])
+
+  const handleClickVenueType = (value: VenueType) => {
+    setDraftVenueTypes((prev) =>
+      prev.includes(value) ? prev.filter((v) => v !== value) : [...prev, value],
+    )
+  }
+
+  const handleClickArea = (value: Area) => {
+    setDraftAreas((prev) =>
+      prev.includes(value) ? prev.filter((v) => v !== value) : [...prev, value],
+    )
+  }
+
+  const handleClickMuseumName = (value: string) => {
+    setDraftMuseumNames((prev) =>
+      prev.includes(value) ? prev.filter((v) => v !== value) : [...prev, value],
+    )
+  }
+
+  const handleClickOngoingStatus = (value: OngoingStatusFilter) => {
+    setDraftOngoingStatus(value)
+  }
+
+  const handleResetDraft = () => {
+    setDraftVenueTypes([])
+    setDraftAreas([])
+    setDraftMuseumNames([])
+    setDraftOngoingStatus('all')
+  }
+
+  const handleApply = () => {
+    onApply({
+      venueTypes: draftVenueTypes,
+      areas: draftAreas,
+      museumNames: draftMuseumNames,
+      ongoingStatus: draftOngoingStatus,
+    })
+    onClose()
+  }
+
+  const handleResetAndApply = () => {
+    onReset()
+    onClose()
+  }
+
   const availableAreaOptions = availableAreas.map((area) => ({
     label: area,
     value: area,
@@ -125,43 +188,51 @@ const FilterContent = ({
   }))
 
   return (
-    <div className="px-4 overflow-y-auto max-h-[80vh]">
-      <div className="divide-y divide-border">
-        <FilterFieldRadio
-          label="開催状況"
-          options={ongoingStatusOptions}
-          onValueChange={(value) => handleClickOngoingStatus(value as OngoingStatusFilter)}
-          value={selectedOngoingStatus}
-        />
-        <FilterFieldCheckbox
-          label="施設タイプ"
-          options={venueTypeOptions}
-          selected={selectedVenueTypes}
-          onValueChange={(value) => handleClickVenueType(value as VenueType)}
-        />
-        <FilterFieldCheckbox
-          label="エリア"
-          options={availableAreaOptions}
-          selected={selectedAreas}
-          onValueChange={(value) => handleClickArea(value as Area)}
-        />
-        <FilterFieldCheckbox
-          label="会場名"
-          options={availableMuseumNameOptions}
-          selected={selectedMuseumNames}
-          onValueChange={(value) => handleClickMuseumName(value)}
-        />
+    <>
+      <div className="px-4 overflow-y-auto max-h-[80vh]">
+        <div className="divide-y divide-border">
+          <FilterFieldRadio
+            label="開催状況"
+            options={ongoingStatusOptions}
+            onValueChange={(value) => handleClickOngoingStatus(value as OngoingStatusFilter)}
+            value={draftOngoingStatus}
+          />
+          <FilterFieldCheckbox
+            label="施設タイプ"
+            options={venueTypeOptions}
+            selected={draftVenueTypes}
+            onValueChange={(value) => handleClickVenueType(value as VenueType)}
+          />
+          <FilterFieldCheckbox
+            label="エリア"
+            options={availableAreaOptions}
+            selected={draftAreas}
+            onValueChange={(value) => handleClickArea(value as Area)}
+          />
+          <FilterFieldCheckbox
+            label="会場名"
+            options={availableMuseumNameOptions}
+            selected={draftMuseumNames}
+            onValueChange={(value) => handleClickMuseumName(value)}
+          />
+        </div>
       </div>
-      <div className="py-4">
-        <button
-          type="button"
-          onClick={onReset}
-          className="w-full rounded-md bg-secondary text-secondary-foreground hover:bg-secondary/80 h-10 px-4 py-2 font-medium transition-colors cursor-pointer"
-        >
-          すべてリセット
-        </button>
+      <div className="p-4 border-t border-border">
+        <div className="space-y-3">
+          <div className="w-full flex gap-3">
+            <Button onClick={handleResetDraft} className="w-1/2" variant="outline">
+              クリア
+            </Button>
+            <Button onClick={handleApply} className="w-1/2">
+              適用
+            </Button>
+          </div>
+          <Button onClick={handleResetAndApply} className="w-full" variant="outline">
+            リセット
+          </Button>
+        </div>
       </div>
-    </div>
+    </>
   )
 }
 
