@@ -8,7 +8,7 @@ import { RawExhibition } from '@/schema/db/exhibition'
 import { RawMuseum } from '@/schema/db/museum'
 import { Museum } from '@/schema/ui/museum'
 
-export async function getMuseumsWithCache(now: Date) {
+export async function getMuseumsWithCache(now: Date): Promise<Museum[]> {
   const nowJst = new TZDate(now, 'Asia/Tokyo')
 
   const exhibitionDocumentsSnapshot = await db
@@ -24,7 +24,17 @@ export async function getMuseumsWithCache(now: Date) {
     const start = data.startDate?.toDate()
     const end = data.endDate?.toDate()
 
-    const isOngoing = !!start && start <= nowJst && (!!end ? nowJst <= end : true)
+    // Determine ongoing status
+    let ongoingStatus: 'ongoing' | 'upcoming' | 'end' = 'end'
+    if (start && end) {
+      if (nowJst < start) {
+        ongoingStatus = 'upcoming'
+      } else if (nowJst >= start && nowJst <= end) {
+        ongoingStatus = 'ongoing'
+      } else {
+        ongoingStatus = 'end'
+      }
+    }
 
     return {
       id: doc.id,
@@ -35,7 +45,7 @@ export async function getMuseumsWithCache(now: Date) {
       officialUrl: data.officialUrl ?? '',
       imageUrl: data.imageUrl ?? '',
       status: data.status,
-      isOngoing,
+      ongoingStatus,
     }
   })
 

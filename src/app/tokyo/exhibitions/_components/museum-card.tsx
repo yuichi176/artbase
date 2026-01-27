@@ -83,7 +83,7 @@ export default function MuseumCard({
                     <p>
                       {exhibition.startDate} ~ {exhibition.endDate}
                     </p>
-                    {exhibition.isOngoing && (
+                    {exhibition.ongoingStatus === 'ongoing' && (
                       <Badge
                         variant="secondary"
                         className="bg-emerald-50 border-emerald-200 text-emerald-700 dark:bg-emerald-950/50 dark:border-emerald-800 dark:text-emerald-300 text-[0.625rem]"

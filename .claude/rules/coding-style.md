@@ -123,7 +123,7 @@ src/schema/
   - Uses ISO date strings or JavaScript `Date` objects instead of `Timestamp`
   - Fully serializable (can be passed through Server/Client boundary)
   - Used in Client Components and as props
-  - May include computed fields (e.g., `isOngoing`)
+  - May include computed fields (e.g., `ongoingStatus`)
 - **Naming Convention**: `Exhibition`, `User`, `Bookmark`, etc. (no "Raw" prefix)
 
 ### Type Conversion Responsibilities
@@ -184,7 +184,7 @@ Firestore (RawExhibition with Timestamp)
   ↓
 top-page-section.tsx
   ├─ Convert Timestamp → ISO string (YYYY-MM-DD)
-  ├─ Add computed fields (isOngoing)
+  ├─ Add computed fields (ongoingStatus)
   ├─ Group by museum
   ↓
 Exhibition[] / Museum[] (serializable)

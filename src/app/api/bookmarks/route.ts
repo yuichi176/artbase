@@ -56,7 +56,17 @@ async function getExhibitionsByIds(exhibitionIds: string[]): Promise<Exhibition[
           return `${year}-${month}-${day}`
         }
 
-        const isOngoing = startDate && endDate ? now >= startDate && now <= endDate : false
+        // Determine ongoing status
+        let ongoingStatus: 'ongoing' | 'upcoming' | 'end' = 'end'
+        if (startDate && endDate) {
+          if (now < startDate) {
+            ongoingStatus = 'upcoming'
+          } else if (now >= startDate && now <= endDate) {
+            ongoingStatus = 'ongoing'
+          } else {
+            ongoingStatus = 'end'
+          }
+        }
 
         return {
           id: doc.id,
@@ -67,7 +77,7 @@ async function getExhibitionsByIds(exhibitionIds: string[]): Promise<Exhibition[
           officialUrl: data.officialUrl ?? '',
           imageUrl: data.imageUrl ?? '',
           status: data.status,
-          isOngoing,
+          ongoingStatus,
         }
       })
     }),

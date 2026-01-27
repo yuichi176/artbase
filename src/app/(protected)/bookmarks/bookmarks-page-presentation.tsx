@@ -96,8 +96,7 @@ export function BookmarksPagePresentation() {
         <p className="text-sm pl-1 mb-3">{bookmarkedExhibitions.length}件の展覧会</p>
         <div className="space-y-2">
           {bookmarkedExhibitions.map((exhibition) => {
-            const now = new TZDate(new Date(), 'Asia/Tokyo')
-            const isExpired = !exhibition.isOngoing && new Date(exhibition.endDate) < now
+            const isExpired = exhibition.ongoingStatus === 'end'
             return (
               <div
                 key={exhibition.id}
@@ -133,7 +132,7 @@ export function BookmarksPagePresentation() {
                       <p>
                         {exhibition.startDate} ~ {exhibition.endDate}
                       </p>
-                      {exhibition.isOngoing && (
+                      {exhibition.ongoingStatus === 'ongoing' && (
                         <Badge
                           variant="secondary"
                           className="bg-emerald-50 border-emerald-200 text-emerald-700 dark:bg-emerald-950/50 dark:border-emerald-800 dark:text-emerald-300 text-[0.625rem]"

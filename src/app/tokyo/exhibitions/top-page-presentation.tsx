@@ -91,9 +91,7 @@ export const TopPagePresentation = ({ museums }: TopPagePresentationProps) => {
       .map((museum) => {
         const filteredExhibitions = museum.exhibitions.filter((exhibition) => {
           if (selectedOngoingStatus === 'all') return true
-          if (selectedOngoingStatus === 'ongoing') return exhibition.isOngoing
-          if (selectedOngoingStatus === 'upcoming') return !exhibition.isOngoing
-          return true
+          return exhibition.ongoingStatus === selectedOngoingStatus
         })
 
         return {
