@@ -70,7 +70,6 @@ export async function getMuseumsWithCache(): Promise<Museum[]> {
         exhibitions: relatedExhibitions,
       }
     })
-    .filter((museum) => museum.exhibitions.length > 0)
     .sort((a, b) => {
       // Get the latest createdAt from each museum's exhibitions
       const latestCreatedAtA = Math.max(

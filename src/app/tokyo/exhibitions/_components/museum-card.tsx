@@ -56,66 +56,72 @@ export default function MuseumCard({
         <MuseumAccess museumName={museum.name} access={museum.access} />
       </div>
 
-      <div className="p-2 space-y-2">
-        {museum.exhibitions.map((exhibition) => {
-          const isBookmarked = bookmarkedExhibitionIds.has(exhibition.id)
-          return (
-            <div key={exhibition.id} className="border border-border rounded-lg p-3  group">
-              <div className="flex items-start justify-between gap-4">
-                <div className="flex-1 min-w-0">
-                  {exhibition.officialUrl ? (
-                    <a
-                      href={exhibition.officialUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center gap-2 transition-colors mb-1 md:mb-2"
-                      title="展覧会公式ページ"
-                    >
-                      <ExternalLink className="w-4 h-4 flex-shrink-0" />
-                      <h3 className="text-sm md:text-base">{exhibition.title}</h3>
-                    </a>
-                  ) : (
-                    <h3 className="text-sm md:text-base mb-1 md:mb-2">{exhibition.title}</h3>
-                  )}
+      {museum.exhibitions.length === 0 ? (
+        <div className="p-4 text-center text-xs text-muted-foreground">
+          現在開催中または開催予定の展覧会はありません。
+        </div>
+      ) : (
+        <div className="p-2 space-y-2">
+          {museum.exhibitions.map((exhibition) => {
+            const isBookmarked = bookmarkedExhibitionIds.has(exhibition.id)
+            return (
+              <div key={exhibition.id} className="border border-border rounded-lg p-3  group">
+                <div className="flex items-start justify-between gap-4">
+                  <div className="flex-1 min-w-0">
+                    {exhibition.officialUrl ? (
+                      <a
+                        href={exhibition.officialUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-2 transition-colors mb-1 md:mb-2"
+                        title="展覧会公式ページ"
+                      >
+                        <ExternalLink className="w-4 h-4 flex-shrink-0" />
+                        <h3 className="text-sm md:text-base">{exhibition.title}</h3>
+                      </a>
+                    ) : (
+                      <h3 className="text-sm md:text-base mb-1 md:mb-2">{exhibition.title}</h3>
+                    )}
 
-                  <div className="text-sm text-muted-foreground flex items-center gap-2">
-                    <Calendar className="w-4 h-4 mt-0.5 flex-shrink-0" />
-                    <p>
-                      {exhibition.startDate} ~ {exhibition.endDate}
-                    </p>
-                    {exhibition.ongoingStatus === 'ongoing' && (
-                      <Badge
-                        variant="secondary"
-                        className="bg-emerald-50 border-emerald-200 text-emerald-700 dark:bg-emerald-950/50 dark:border-emerald-800 dark:text-emerald-300 text-[0.625rem]"
-                      >
-                        開催中
-                      </Badge>
-                    )}
-                    {exhibition.ongoingStatus === 'upcoming' && (
-                      <Badge
-                        variant="secondary"
-                        className="bg-slate-50 border-slate-200 text-slate-600 dark:bg-slate-900/50 dark:border-slate-700 dark:text-slate-400 text-[0.625rem]"
-                      >
-                        開催前
-                      </Badge>
-                    )}
+                    <div className="text-sm text-muted-foreground flex items-center gap-2">
+                      <Calendar className="w-4 h-4 mt-0.5 flex-shrink-0" />
+                      <p>
+                        {exhibition.startDate} ~ {exhibition.endDate}
+                      </p>
+                      {exhibition.ongoingStatus === 'ongoing' && (
+                        <Badge
+                          variant="secondary"
+                          className="bg-emerald-50 border-emerald-200 text-emerald-700 dark:bg-emerald-950/50 dark:border-emerald-800 dark:text-emerald-300 text-[0.625rem]"
+                        >
+                          開催中
+                        </Badge>
+                      )}
+                      {exhibition.ongoingStatus === 'upcoming' && (
+                        <Badge
+                          variant="secondary"
+                          className="bg-slate-50 border-slate-200 text-slate-600 dark:bg-slate-900/50 dark:border-slate-700 dark:text-slate-400 text-[0.625rem]"
+                        >
+                          開催前
+                        </Badge>
+                      )}
+                    </div>
                   </div>
+                  <BookmarkButton
+                    exhibitionId={exhibition.id}
+                    isBookmarked={isBookmarked}
+                    onToggle={
+                      onBookmarkToggle
+                        ? (bookmarked) => onBookmarkToggle(exhibition.id, bookmarked)
+                        : undefined
+                    }
+                    className="flex-shrink-0"
+                  />
                 </div>
-                <BookmarkButton
-                  exhibitionId={exhibition.id}
-                  isBookmarked={isBookmarked}
-                  onToggle={
-                    onBookmarkToggle
-                      ? (bookmarked) => onBookmarkToggle(exhibition.id, bookmarked)
-                      : undefined
-                  }
-                  className="flex-shrink-0"
-                />
               </div>
-            </div>
-          )
-        })}
-      </div>
+            )
+          })}
+        </div>
+      )}
     </div>
   )
 }

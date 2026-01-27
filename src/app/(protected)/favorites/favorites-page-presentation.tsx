@@ -23,8 +23,6 @@ export function FavoritesPagePresentation({ museums }: FavoritesPagePresentation
     return museums.filter((museum) => favoriteMuseumIds.has(museum.id))
   }, [favoriteMuseumIds, museums])
 
-  const count = favoriteMuseums.reduce((sum, museum) => sum + museum.exhibitions.length, 0)
-
   // Show loading state while checking authentication or fetching favorites
   if (authLoading || favoritesLoading) {
     return (
@@ -63,25 +61,21 @@ export function FavoritesPagePresentation({ museums }: FavoritesPagePresentation
         </p>
       </div>
 
-      {count !== 0 ? (
-        <div className="space-y-3">
-          <div className="space-y-4 md:columns-2 xl:columns-3 md:gap-4">
-            {favoriteMuseums.map((museum) => (
-              <div key={museum.name} className="break-inside-avoid">
-                <MuseumCard
-                  museum={museum}
-                  isFavorite={favoriteMuseumIds.has(museum.id)}
-                  bookmarkedExhibitionIds={bookmarkedExhibitionIds}
-                  onBookmarkToggle={toggleBookmark}
-                  onFavoriteToggle={toggleFavorite}
-                />
-              </div>
-            ))}
-          </div>
+      <div className="space-y-3">
+        <div className="space-y-4 md:columns-2 xl:columns-3 md:gap-4">
+          {favoriteMuseums.map((museum) => (
+            <div key={museum.name} className="break-inside-avoid">
+              <MuseumCard
+                museum={museum}
+                isFavorite={favoriteMuseumIds.has(museum.id)}
+                bookmarkedExhibitionIds={bookmarkedExhibitionIds}
+                onBookmarkToggle={toggleBookmark}
+                onFavoriteToggle={toggleFavorite}
+              />
+            </div>
+          ))}
         </div>
-      ) : (
-        <p className="text-sm py-1 pl-1">お気に入りの会場に開催中・開催予定の展覧会がありません</p>
-      )}
+      </div>
     </div>
   )
 }
