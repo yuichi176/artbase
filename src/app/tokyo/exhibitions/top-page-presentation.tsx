@@ -4,7 +4,7 @@ import { Card } from '@/components/shadcn-ui/card'
 import { Museum } from '@/schema/ui/museum'
 import MuseumCard from '@/app/tokyo/exhibitions/_components/museum-card'
 import { useMemo } from 'react'
-import { FilterDrawer, FilterValues } from '@/app/tokyo/exhibitions/_components/filter-drawer'
+import { FilterDrawer } from '@/app/tokyo/exhibitions/_components/filter-drawer'
 import { SearchInput } from '@/app/tokyo/exhibitions/_components/search-input'
 import { useBookmarks } from '@/hooks/use-bookmarks'
 import { useFavorites } from '@/hooks/use-favorites'
@@ -19,24 +19,14 @@ export const TopPagePresentation = ({ museums }: TopPagePresentationProps) => {
   const { favoriteMuseumIds, toggleFavorite } = useFavorites()
   const {
     selectedVenueTypes,
-    setSelectedVenueTypes,
     selectedAreas,
-    setSelectedAreas,
     selectedMuseumNames,
-    setSelectedMuseumNames,
     selectedOngoingStatus,
-    setSelectedOngoingStatus,
     searchQuery,
     setSearchQuery,
+    applyFilters,
     resetFilters,
   } = useFilterParams()
-
-  const handleApplyFilters = (filters: FilterValues) => {
-    setSelectedVenueTypes(filters.venueTypes)
-    setSelectedAreas(filters.areas)
-    setSelectedMuseumNames(filters.museumNames)
-    setSelectedOngoingStatus(filters.ongoingStatus)
-  }
 
   const availableAreas = useMemo(() => {
     const uniqueAreas = [...new Set(museums.map((museum) => museum.area))]
@@ -119,7 +109,7 @@ export const TopPagePresentation = ({ museums }: TopPagePresentationProps) => {
         selectedMuseumNames={selectedMuseumNames}
         availableMuseumNames={availableMuseumNames}
         selectedOngoingStatus={selectedOngoingStatus}
-        onApply={handleApplyFilters}
+        onApply={applyFilters}
         onReset={resetFilters}
       />
 

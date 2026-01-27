@@ -3,6 +3,13 @@ import { useEffect, useState, useCallback } from 'react'
 import { Area, VenueType, venueTypeSchema, areaSchema } from '@/schema/db/museum'
 import { OngoingStatusFilter } from '@/schema/ui/exhibition'
 
+export interface FilterValues {
+  venueTypes: VenueType[]
+  areas: Area[]
+  museumNames: string[]
+  ongoingStatus: OngoingStatusFilter
+}
+
 interface FilterParams {
   selectedVenueTypes: VenueType[]
   selectedAreas: Area[]
@@ -17,6 +24,7 @@ interface FilterActions {
   setSelectedMuseumNames: (value: string[]) => void
   setSelectedOngoingStatus: (value: OngoingStatusFilter) => void
   setSearchQuery: (value: string) => void
+  applyFilters: (filters: FilterValues) => void
   resetFilters: () => void
 }
 
@@ -114,6 +122,13 @@ export const useFilterParams = (): FilterParams & FilterActions => {
     router,
   ])
 
+  const applyFilters = useCallback((filters: FilterValues) => {
+    setSelectedVenueTypes(filters.venueTypes)
+    setSelectedAreas(filters.areas)
+    setSelectedMuseumNames(filters.museumNames)
+    setSelectedOngoingStatus(filters.ongoingStatus)
+  }, [])
+
   const resetFilters = useCallback(() => {
     setSelectedVenueTypes([])
     setSelectedAreas([])
@@ -133,6 +148,7 @@ export const useFilterParams = (): FilterParams & FilterActions => {
     setSelectedMuseumNames,
     setSelectedOngoingStatus,
     setSearchQuery,
+    applyFilters,
     resetFilters,
   }
 }
