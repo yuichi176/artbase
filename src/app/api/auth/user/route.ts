@@ -38,7 +38,6 @@ export async function GET(request: Request) {
       uid,
       email: firebaseUser.email ?? '',
       displayName: firebaseUser.displayName ?? null,
-      photoURL: firebaseUser.photoURL ?? null,
       subscriptionTier: 'free',
       createdAt: now,
       updatedAt: now,

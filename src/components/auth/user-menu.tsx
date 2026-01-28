@@ -43,12 +43,7 @@ export function UserMenu() {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <button className="rounded-full focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2">
-          <UserAvatar
-            uid={user.uid}
-            photoURL={user.photoURL}
-            displayName={user.displayName}
-            className="h-8 w-8"
-          />
+          <UserAvatar uid={user.uid} displayName={user.displayName} className="h-8 w-8" />
         </button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-56">

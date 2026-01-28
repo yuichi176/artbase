@@ -7,12 +7,11 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/shadcn-ui/avat
 
 interface UserAvatarProps {
   uid: string
-  photoURL?: string | null
   displayName?: string | null
   className?: string
 }
 
-export function UserAvatar({ uid, photoURL, displayName, className }: UserAvatarProps) {
+export function UserAvatar({ uid, displayName, className }: UserAvatarProps) {
   // Generate avatar from uid using DiceBear
   const generatedAvatar = useMemo(() => {
     const avatar = createAvatar(thumbs, {
@@ -22,7 +21,7 @@ export function UserAvatar({ uid, photoURL, displayName, className }: UserAvatar
     return avatar.toDataUri()
   }, [uid])
 
-  // Get initials from displayName or email as fallback
+  // Get initials from displayName as fallback
   const initials = useMemo(() => {
     if (displayName) {
       return displayName
@@ -37,11 +36,7 @@ export function UserAvatar({ uid, photoURL, displayName, className }: UserAvatar
 
   return (
     <Avatar className={className}>
-      {photoURL ? (
-        <AvatarImage src={photoURL} alt={displayName || 'User avatar'} />
-      ) : (
-        <AvatarImage src={generatedAvatar} alt="Generated avatar" />
-      )}
+      <AvatarImage src={generatedAvatar} alt="Generated avatar" />
       <AvatarFallback>{initials}</AvatarFallback>
     </Avatar>
   )

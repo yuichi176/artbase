@@ -5,7 +5,6 @@ export const userSchema = z.object({
   uid: z.string(),
   email: z.string(),
   displayName: z.string().nullable(),
-  photoURL: z.string().nullable(),
   subscriptionTier: subscriptionTierSchema,
   createdAt: z.string(),
   updatedAt: z.string(),
