@@ -52,22 +52,28 @@ export function UserMenu() {
         </button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-56">
-        <DropdownMenuLabel className="truncate">{displayName || 'ユーザー'}</DropdownMenuLabel>
+        <DropdownMenuLabel className="truncate py-2">{displayName || 'ユーザー'}</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
-          <Link href="/account">アカウント設定</Link>
+          <Link href="/account" className="py-2">
+            アカウント設定
+          </Link>
         </DropdownMenuItem>
         <DropdownMenuItem asChild>
-          <Link href="/favorites">お気に入り</Link>
+          <Link href="/favorites" className="py-2">
+            お気に入り
+          </Link>
         </DropdownMenuItem>
         {isProPlan ? (
           <DropdownMenuItem asChild>
-            <Link href="/bookmarks">ブックマーク</Link>
+            <Link href="/bookmarks" className="py-2">
+              ブックマーク
+            </Link>
           </DropdownMenuItem>
         ) : (
           <DropdownMenuItem
-            className={cn('cursor-pointer', 'opacity-60')}
             onClick={() => router.push('/pricing')}
+            className="cursor-pointer opacity-60 py-2"
           >
             <div className="flex items-center justify-between w-full">
               <span>ブックマーク</span>
@@ -76,7 +82,7 @@ export function UserMenu() {
           </DropdownMenuItem>
         )}
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={handleSignOut} disabled={isSigningOut}>
+        <DropdownMenuItem onClick={handleSignOut} disabled={isSigningOut} className="py-2">
           {isSigningOut ? 'ログアウト中...' : 'ログアウト'}
         </DropdownMenuItem>
       </DropdownMenuContent>
