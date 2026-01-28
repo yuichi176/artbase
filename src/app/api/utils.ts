@@ -13,7 +13,6 @@ export function convertRawUserToUser(rawUser: RawUser): User {
     uid: rawUser.uid,
     email: rawUser.email,
     displayName: rawUser.displayName,
-    photoURL: rawUser.photoURL,
     subscriptionTier: rawUser.subscriptionTier,
     createdAt: timestampToISOString(rawUser.createdAt),
     updatedAt: timestampToISOString(rawUser.updatedAt),
