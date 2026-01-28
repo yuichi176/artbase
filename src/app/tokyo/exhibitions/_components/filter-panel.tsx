@@ -1,16 +1,6 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Filter } from '@/components/icon/filter'
-import { X } from '@/components/icon/x'
-import {
-  Drawer,
-  DrawerClose,
-  DrawerContent,
-  DrawerHeader,
-  DrawerTitle,
-  DrawerTrigger,
-} from '@/components/shadcn-ui/drawer'
 import { VenueType, venueTypeOptions, Area } from '@/schema/db/museum'
 import { ongoingStatusOptions, OngoingStatusFilter } from '@/schema/ui/exhibition'
 import { Label } from '@radix-ui/react-label'
@@ -18,8 +8,9 @@ import { RadioGroup, RadioGroupItem } from '@/components/shadcn-ui/radio-group'
 import { Checkbox } from '@/components/shadcn-ui/checkbox'
 import { Button } from '@/components/shadcn-ui/button'
 import { FilterValues } from '@/hooks/use-filter-params'
+import { Card } from '@/components/shadcn-ui/card'
 
-interface FilterDrawerProps {
+interface FilterPanelProps {
   selectedVenueTypes: VenueType[]
   selectedAreas: Area[]
   availableAreas: Area[]
@@ -30,48 +21,7 @@ interface FilterDrawerProps {
   onReset: () => void
 }
 
-export const FilterDrawer = (props: FilterDrawerProps) => {
-  const [isOpen, setIsOpen] = useState(false)
-
-  const handleClose = () => {
-    setIsOpen(false)
-  }
-
-  return (
-    <Drawer direction="bottom" open={isOpen} onOpenChange={setIsOpen}>
-      <DrawerTrigger asChild>
-        <button
-          type="button"
-          className="w-full rounded-lg border bg-background py-3 px-2 md:px-4 text-left cursor-pointer"
-        >
-          <div className="flex items-center gap-2 text-foreground">
-            <Filter className="size-5" />
-            <p className="text-sm">フィルター</p>
-          </div>
-        </button>
-      </DrawerTrigger>
-      <DrawerContent>
-        <DrawerHeader className="border-b border-border">
-          <div className="flex items-center justify-between">
-            <DrawerTitle className="text-left">フィルター</DrawerTitle>
-            <DrawerClose asChild>
-              <button
-                type="button"
-                className="rounded-sm opacity-70 transition-opacity hover:opacity-100 focus:outline-none"
-                aria-label="閉じる"
-              >
-                <X className="size-5" />
-              </button>
-            </DrawerClose>
-          </div>
-        </DrawerHeader>
-        <FilterContent {...props} isOpen={isOpen} onClose={handleClose} />
-      </DrawerContent>
-    </Drawer>
-  )
-}
-
-const FilterContent = ({
+export const FilterPanel = ({
   selectedVenueTypes,
   selectedAreas,
   availableAreas,
@@ -80,9 +30,7 @@ const FilterContent = ({
   selectedOngoingStatus,
   onApply,
   onReset,
-  isOpen,
-  onClose,
-}: FilterDrawerProps & { isOpen: boolean; onClose: () => void }) => {
+}: FilterPanelProps) => {
   // Draft state (temporary state before applying)
   const [draftVenueTypes, setDraftVenueTypes] = useState<VenueType[]>(selectedVenueTypes)
   const [draftAreas, setDraftAreas] = useState<Area[]>(selectedAreas)
@@ -90,15 +38,13 @@ const FilterContent = ({
   const [draftOngoingStatus, setDraftOngoingStatus] =
     useState<OngoingStatusFilter>(selectedOngoingStatus)
 
-  // Reset draft state when drawer opens
+  // Sync draft state with props when they change
   useEffect(() => {
-    if (isOpen) {
-      setDraftVenueTypes(selectedVenueTypes)
-      setDraftAreas(selectedAreas)
-      setDraftMuseumNames(selectedMuseumNames)
-      setDraftOngoingStatus(selectedOngoingStatus)
-    }
-  }, [isOpen, selectedVenueTypes, selectedAreas, selectedMuseumNames, selectedOngoingStatus])
+    setDraftVenueTypes(selectedVenueTypes)
+    setDraftAreas(selectedAreas)
+    setDraftMuseumNames(selectedMuseumNames)
+    setDraftOngoingStatus(selectedOngoingStatus)
+  }, [selectedVenueTypes, selectedAreas, selectedMuseumNames, selectedOngoingStatus])
 
   const handleClickVenueType = (value: VenueType) => {
     setDraftVenueTypes((prev) =>
@@ -136,12 +82,10 @@ const FilterContent = ({
       museumNames: draftMuseumNames,
       ongoingStatus: draftOngoingStatus,
     })
-    onClose()
   }
 
   const handleResetAndApply = () => {
     onReset()
-    onClose()
   }
 
   const availableAreaOptions = availableAreas.map((area) => ({
@@ -155,8 +99,9 @@ const FilterContent = ({
   }))
 
   return (
-    <>
-      <div className="px-4 overflow-y-auto max-h-[80vh]">
+    <Card className="p-4 rounded-lg max-h-[calc(100vh-var(--height-header)-2rem)] flex flex-col gap-2">
+      <h2 className="text-lg font-semibold flex-shrink-0">フィルター</h2>
+      <div className="overflow-y-auto flex-1 min-h-0">
         <div className="divide-y divide-border">
           <FilterFieldRadio
             label="開催状況"
@@ -184,7 +129,7 @@ const FilterContent = ({
           />
         </div>
       </div>
-      <div className="p-4 border-t border-border">
+      <div className="pt-4 border-t border-border mt-4 flex-shrink-0">
         <div className="space-y-3">
           <div className="w-full flex gap-3">
             <Button onClick={handleResetDraft} className="w-1/2" variant="outline">
@@ -199,7 +144,7 @@ const FilterContent = ({
           </Button>
         </div>
       </div>
-    </>
+    </Card>
   )
 }
 
@@ -218,12 +163,12 @@ const FilterFieldRadio = ({
   value: string
 }) => (
   <div className="py-5">
-    <p className="mb-5">{label}</p>
+    <p className="mb-5 font-medium">{label}</p>
     <RadioGroup onValueChange={onValueChange} value={value} className="space-y-4">
       {options.map((option) => (
         <div key={option.value} className="flex items-center gap-3 w-full">
-          <RadioGroupItem value={option.value} id={option.value} />
-          <Label htmlFor={option.value} className="grow cursor-pointer">
+          <RadioGroupItem value={option.value} id={`panel-${option.value}`} />
+          <Label htmlFor={`panel-${option.value}`} className="grow cursor-pointer">
             {option.label}
           </Label>
         </div>
@@ -247,18 +192,18 @@ const FilterFieldCheckbox = ({
 
   return (
     <div className="py-5">
-      <p className="mb-5">{label}</p>
+      <p className="mb-5 font-medium">{label}</p>
       <div className="space-y-4">
         {displayedOptions.map((option) => {
           const isChecked = selected.includes(option.value)
           return (
             <div key={option.value} className="flex items-center gap-3 w-full">
               <Checkbox
-                id={option.value}
+                id={`panel-${option.value}`}
                 checked={isChecked}
                 onCheckedChange={() => onValueChange(option.value)}
               />
-              <Label htmlFor={option.value} className="cursor-pointer grow">
+              <Label htmlFor={`panel-${option.value}`} className="cursor-pointer grow">
                 {option.label}
               </Label>
             </div>
@@ -270,7 +215,7 @@ const FilterFieldCheckbox = ({
         <button
           type="button"
           onClick={() => setIsExpanded(!isExpanded)}
-          className="mt-3 text-sm text-foreground  flex items-center gap-1 cursor-pointer"
+          className="mt-3 text-sm text-foreground flex items-center gap-1 cursor-pointer"
         >
           {isExpanded ? '- 閉じる' : `+ もっとみる (${options.length - INITIAL_DISPLAY_COUNT})`}
         </button>

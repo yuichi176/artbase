@@ -4,7 +4,7 @@ export const dynamic = 'force-dynamic'
 
 export default function FavoritesPage() {
   return (
-    <div className="pt-5 px-2">
+    <div className="pt-5 px-2 md:pt-7">
       <FavoritesPageSection />
     </div>
   )

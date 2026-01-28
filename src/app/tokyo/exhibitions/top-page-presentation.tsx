@@ -5,10 +5,12 @@ import { Museum } from '@/schema/ui/museum'
 import MuseumCard from '@/app/tokyo/exhibitions/_components/museum-card'
 import { useMemo, useState } from 'react'
 import { FilterDrawer } from '@/app/tokyo/exhibitions/_components/filter-drawer'
+import { FilterPanel } from '@/app/tokyo/exhibitions/_components/filter-panel'
 import { SearchInput } from '@/app/tokyo/exhibitions/_components/search-input'
 import { useBookmarks } from '@/hooks/use-bookmarks'
 import { useFavorites } from '@/hooks/use-favorites'
 import { useFilterParams } from '@/hooks/use-filter-params'
+import { useMediaQuery } from '@/hooks/use-media-query'
 
 interface TopPagePresentationProps {
   museums: Museum[]
@@ -25,6 +27,7 @@ export const TopPagePresentation = ({ museums }: TopPagePresentationProps) => {
     applyFilters,
     resetFilters,
   } = useFilterParams()
+  const isDesktop = useMediaQuery('(min-width: 48rem)')
 
   // Search query is local state (not synced to URL)
   const [searchQuery, setSearchQuery] = useState('')
@@ -99,20 +102,58 @@ export const TopPagePresentation = ({ museums }: TopPagePresentationProps) => {
 
   const count = filteredMuseums.reduce((sum, museum) => sum + museum.exhibitions.length, 0)
 
+  const filterProps = {
+    selectedVenueTypes,
+    selectedAreas,
+    availableAreas,
+    selectedMuseumNames,
+    availableMuseumNames,
+    selectedOngoingStatus,
+    onApply: applyFilters,
+    onReset: resetFilters,
+  }
+
+  if (isDesktop) {
+    return (
+      <div className="flex gap-4 mx-auto py-4 max-w-[1200px]">
+        <aside className="w-80 flex-shrink-0 sticky top-[calc(var(--height-header)+1rem)] self-start">
+          <FilterPanel {...filterProps} />
+        </aside>
+
+        <div className="flex-1 min-w-0">
+          <div className="space-y-3">
+            <SearchInput value={searchQuery} onChange={setSearchQuery} />
+
+            <Card className="p-2 md:p-4 rounded-lg gap-0 bg-background">
+              {count !== 0 ? (
+                <p className="text-sm pl-1 mb-3">{count}件の展覧会が見つかりました</p>
+              ) : (
+                <p className="text-sm py-1 pl-1">条件に一致する展覧会が見つかりませんでした</p>
+              )}
+              <div className="space-y-4">
+                {filteredMuseums.map((museum) => (
+                  <MuseumCard
+                    key={museum.name}
+                    museum={museum}
+                    isFavorite={favoriteMuseumIds.has(museum.id)}
+                    bookmarkedExhibitionIds={bookmarkedExhibitionIds}
+                    onBookmarkToggle={toggleBookmark}
+                    onFavoriteToggle={toggleFavorite}
+                  />
+                ))}
+              </div>
+            </Card>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   return (
-    <div className="space-y-3">
+    <div className="space-y-3 pt-3">
       <SearchInput value={searchQuery} onChange={setSearchQuery} />
 
-      <FilterDrawer
-        selectedVenueTypes={selectedVenueTypes}
-        selectedAreas={selectedAreas}
-        availableAreas={availableAreas}
-        selectedMuseumNames={selectedMuseumNames}
-        availableMuseumNames={availableMuseumNames}
-        selectedOngoingStatus={selectedOngoingStatus}
-        onApply={applyFilters}
-        onReset={resetFilters}
-      />
+      <FilterDrawer {...filterProps} />
 
       <Card className="p-2 md:p-4 rounded-lg gap-0 bg-background">
         {count !== 0 ? (
@@ -120,17 +161,16 @@ export const TopPagePresentation = ({ museums }: TopPagePresentationProps) => {
         ) : (
           <p className="text-sm py-1 pl-1">条件に一致する展覧会が見つかりませんでした</p>
         )}
-        <div className="space-y-4 md:columns-2 xl:columns-3 md:gap-4">
+        <div className="space-y-4">
           {filteredMuseums.map((museum) => (
-            <div key={museum.name} className="break-inside-avoid">
-              <MuseumCard
-                museum={museum}
-                isFavorite={favoriteMuseumIds.has(museum.id)}
-                bookmarkedExhibitionIds={bookmarkedExhibitionIds}
-                onBookmarkToggle={toggleBookmark}
-                onFavoriteToggle={toggleFavorite}
-              />
-            </div>
+            <MuseumCard
+              key={museum.name}
+              museum={museum}
+              isFavorite={favoriteMuseumIds.has(museum.id)}
+              bookmarkedExhibitionIds={bookmarkedExhibitionIds}
+              onBookmarkToggle={toggleBookmark}
+              onFavoriteToggle={toggleFavorite}
+            />
           ))}
         </div>
       </Card>
