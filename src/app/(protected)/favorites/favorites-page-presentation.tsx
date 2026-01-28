@@ -26,7 +26,7 @@ export function FavoritesPagePresentation({ museums }: FavoritesPagePresentation
   // Show loading state while checking authentication or fetching favorites
   if (authLoading || favoritesLoading) {
     return (
-      <div className="container">
+      <div className="max-w-[800px] mx-auto">
         <Skeleton className="h-8 w-48 mb-3" />
         <MuseumListSkeleton />
       </div>
@@ -34,7 +34,7 @@ export function FavoritesPagePresentation({ museums }: FavoritesPagePresentation
   }
 
   return (
-    <div className="container">
+    <div className="max-w-[800px] mx-auto">
       <div className="pl-1 mb-5">
         <h1 className="text-xl font-bold mb-3">お気に入り</h1>
         <p className="text-sm text-muted-foreground">
@@ -43,17 +43,19 @@ export function FavoritesPagePresentation({ museums }: FavoritesPagePresentation
       </div>
 
       {favoriteMuseums.length === 0 ? (
-        <Card className="p-6 rounded-lg text-center gap-4">
-          <p className="text-sm text-muted-foreground">まだお気に入りの会場はありません。</p>
-          <p className="text-xs text-muted-foreground">
+        <Card className="p-6 rounded-lg text-center gap-4 md:p-8">
+          <p className="text-sm text-muted-foreground md:text-base">
+            まだお気に入りの会場はありません。
+          </p>
+          <p className="text-xs text-muted-foreground md:text-sm">
             気になる会場を見つけたら☆ボタンで登録して、自分だけのリストをつくりましょう。
           </p>
         </Card>
       ) : (
         <div className="space-y-3">
-          <div className="space-y-4 md:columns-2 xl:columns-3 md:gap-4">
+          <div className="space-y-4">
             {favoriteMuseums.map((museum) => (
-              <div key={museum.name} className="break-inside-avoid">
+              <div key={museum.name}>
                 <MuseumCard
                   museum={museum}
                   isFavorite={favoriteMuseumIds.has(museum.id)}

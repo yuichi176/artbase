@@ -58,7 +58,7 @@ export function BookmarksPagePresentation() {
   // Show loading state while checking authentication or fetching bookmarks
   if (authLoading || bookmarksLoading || !user) {
     return (
-      <div className="container">
+      <div className="max-w-[800px] mx-auto">
         <Skeleton className="h-8 w-64 mb-3" />
         <Skeleton className="h-8 max-w-96 mb-3" />
         <Card className="p-8 rounded-lg">
@@ -76,7 +76,7 @@ export function BookmarksPagePresentation() {
   }
 
   return (
-    <div className="container">
+    <div className="max-w-[800px] mx-auto">
       <div className="pl-1 mb-5">
         <h1 className="text-xl font-bold mb-3">ブックマーク</h1>
         <p className="text-sm text-muted-foreground">
@@ -85,9 +85,11 @@ export function BookmarksPagePresentation() {
       </div>
 
       {bookmarkedExhibitions.length === 0 ? (
-        <Card className="p-6 rounded-lg text-center gap-4">
-          <p className="text-sm text-muted-foreground">まだブックマークした展覧会がありません</p>
-          <p className="text-xs text-muted-foreground mt-2 text-center">
+        <Card className="p-6 rounded-lg text-center gap-4 md:p-8">
+          <p className="text-sm text-muted-foreground md:text-base">
+            まだブックマークした展覧会がありません
+          </p>
+          <p className="text-xs text-muted-foreground mt-2 text-center md:text-sm">
             <span className="inline-flex items-center">
               気になる展覧会を見つけたら、
               <span aria-hidden="true" className="inline-flex items-center">

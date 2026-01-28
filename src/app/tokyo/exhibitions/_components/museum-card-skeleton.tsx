@@ -49,9 +49,9 @@ export function MuseumCardSkeleton() {
 
 export function MuseumListSkeleton() {
   return (
-    <div className="space-y-4 md:columns-2 xl:columns-3 md:gap-4">
+    <div className="space-y-4">
       {[1, 2, 3, 4, 5, 6].map((i) => (
-        <div key={i} className="break-inside-avoid">
+        <div key={i}>
           <MuseumCardSkeleton />
         </div>
       ))}

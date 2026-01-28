@@ -102,7 +102,7 @@ export const useFilterParams = (): FilterParams & FilterActions => {
 
       router.replace(newUrl, { scroll: false })
     }, 500) // 500ms debounce
-  }, [selectedVenueTypes, selectedAreas, selectedMuseumNames, selectedOngoingStatus])
+  }, [selectedVenueTypes, selectedAreas, selectedMuseumNames, selectedOngoingStatus, router])
 
   const applyFilters = useCallback((filters: FilterValues) => {
     setSelectedVenueTypes(filters.venueTypes)
