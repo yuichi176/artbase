@@ -188,57 +188,6 @@ const bookmarksSnapshot = await db
   .get()
 ```
 
-### Security Rules Example
-
-```javascript
-rules_version = '2';
-service cloud.firestore {
-  match /databases/{database}/documents {
-    // Favorites collection rules
-    match /favorites/{favoriteId} {
-      // Allow read only for own favorites
-      allow read: if request.auth != null
-                  && resource.data.userId == request.auth.uid;
-
-      // Allow create only for own favorites with required fields
-      // Note: exists() validation adds a document read cost
-      allow create: if request.auth != null
-                    && request.resource.data.userId == request.auth.uid
-                    && request.resource.data.keys().hasAll(['userId', 'museumId', 'createdAt'])
-                    && exists(/databases/$(database)/documents/museum/$(request.resource.data.museumId));
-
-      // Allow delete only for own favorites
-      allow delete: if request.auth != null
-                    && resource.data.userId == request.auth.uid;
-
-      // Disallow updates (use delete → recreate instead)
-      allow update: if false;
-    }
-
-    // Bookmarks collection rules
-    match /bookmarks/{bookmarkId} {
-      // Allow read only for own bookmarks
-      allow read: if request.auth != null
-                  && resource.data.userId == request.auth.uid;
-
-      // Allow create only for own bookmarks with required fields
-      // Note: exists() validation adds a document read cost
-      allow create: if request.auth != null
-                    && request.resource.data.userId == request.auth.uid
-                    && request.resource.data.keys().hasAll(['userId', 'exhibitionId', 'createdAt'])
-                    && exists(/databases/$(database)/documents/exhibition/$(request.resource.data.exhibitionId));
-
-      // Allow delete only for own bookmarks
-      allow delete: if request.auth != null
-                    && resource.data.userId == request.auth.uid;
-
-      // Disallow updates (use delete → recreate instead)
-      allow update: if false;
-    }
-  }
-}
-```
-
 #### Referential Integrity Validation
 
 The security rules above include referential integrity checks using `exists()`:
