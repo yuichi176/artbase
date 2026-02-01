@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { EmailAuthProvider, reauthenticateWithCredential, updatePassword } from 'firebase/auth'
 import { auth } from '@/lib/firebase-client'
 import { getAuthErrorMessage } from '@/lib/auth/provider-utils'
+import { validatePasswordStrength } from '@/lib/auth/password-validation'
 import {
   Dialog,
   DialogContent,
@@ -55,6 +56,12 @@ export function ChangePasswordDialog({ open, onOpenChange, userEmail }: ChangePa
 
     if (!auth?.currentUser) {
       setError('ログインしていません')
+      return
+    }
+
+    const passwordValidation = await validatePasswordStrength(auth, newPassword)
+    if (!passwordValidation.isValid) {
+      setValidationError(passwordValidation.error)
       return
     }
 
@@ -145,6 +152,9 @@ export function ChangePasswordDialog({ open, onOpenChange, userEmail }: ChangePa
               disabled={isLoading || success}
               required
             />
+            <p className="text-xs text-muted-foreground">
+              8文字以上、大文字・小文字・数字を含む必要があります
+            </p>
           </div>
 
           <div className="space-y-2">

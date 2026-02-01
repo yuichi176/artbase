@@ -4,6 +4,7 @@ import { useState, FormEvent } from 'react'
 import { useRouter } from 'next/navigation'
 import { createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from 'firebase/auth'
 import { auth } from '@/lib/firebase-client'
+import { validatePasswordStrength } from '@/lib/auth/password-validation'
 import { Button } from '@/components/shadcn-ui/button'
 import { Input } from '@/components/shadcn-ui/input'
 import { Label } from '@/components/shadcn-ui/label'
@@ -30,18 +31,19 @@ export function SignUpForm({ redirectTo }: SignUpFormProps) {
       return
     }
 
-    if (password.length < 6) {
-      setError('パスワードは6文字以上で入力してください')
+    if (!auth) {
+      throw new Error('Firebase auth not initialized')
+    }
+
+    const passwordValidation = await validatePasswordStrength(auth, password)
+    if (!passwordValidation.isValid) {
+      setError(passwordValidation.error)
       return
     }
 
     setIsLoading(true)
 
     try {
-      if (!auth) {
-        throw new Error('Firebase auth not initialized')
-      }
-
       await createUserWithEmailAndPassword(auth, email, password)
       router.push(redirectTo)
     } catch (err) {
@@ -115,6 +117,9 @@ export function SignUpForm({ redirectTo }: SignUpFormProps) {
             required
             disabled={isLoading}
           />
+          <p className="text-xs text-muted-foreground">
+            8文字以上、大文字・小文字・数字を含む必要があります
+          </p>
         </div>
 
         <div className="space-y-2">
