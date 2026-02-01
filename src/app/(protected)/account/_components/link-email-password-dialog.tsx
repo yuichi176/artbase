@@ -15,7 +15,7 @@ import {
 import { Input } from '@/components/shadcn-ui/input'
 import { Label } from '@/components/shadcn-ui/label'
 import { Button } from '@/components/shadcn-ui/button'
-import { useAtomValue } from 'jotai'
+import { useAtomValue, useSetAtom } from 'jotai'
 import { firebaseUserAtom } from '@/store/auth'
 
 interface LinkEmailPasswordDialogProps {
@@ -25,6 +25,7 @@ interface LinkEmailPasswordDialogProps {
 
 export function LinkEmailPasswordDialog({ open, onOpenChange }: LinkEmailPasswordDialogProps) {
   const firebaseUser = useAtomValue(firebaseUserAtom)
+  const setFirebaseUser = useSetAtom(firebaseUserAtom)
   const [email, setEmail] = useState(firebaseUser?.email || '')
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
@@ -66,6 +67,8 @@ export function LinkEmailPasswordDialog({ open, onOpenChange }: LinkEmailPasswor
 
       // Reload user to get updated provider data
       await auth.currentUser.reload()
+
+      setFirebaseUser(auth.currentUser)
 
       // Close dialog and reset form
       onOpenChange(false)

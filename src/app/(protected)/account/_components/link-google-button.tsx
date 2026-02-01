@@ -2,8 +2,10 @@
 
 import { useState } from 'react'
 import { GoogleAuthProvider, linkWithPopup } from 'firebase/auth'
+import { useSetAtom } from 'jotai'
 import { auth } from '@/lib/firebase-client'
 import { getAuthErrorMessage } from '@/lib/auth/provider-utils'
+import { firebaseUserAtom } from '@/store/auth'
 import { Button } from '@/components/shadcn-ui/button'
 
 interface LinkGoogleButtonProps {
@@ -12,6 +14,7 @@ interface LinkGoogleButtonProps {
 }
 
 export function LinkGoogleButton({ onSuccess, onError }: LinkGoogleButtonProps) {
+  const setFirebaseUser = useSetAtom(firebaseUserAtom)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
@@ -33,6 +36,12 @@ export function LinkGoogleButton({ onSuccess, onError }: LinkGoogleButtonProps) 
 
       // Reload user to get updated provider data
       await auth.currentUser.reload()
+
+      const refreshedUser = auth.currentUser
+
+      // Clone the user object to ensure a new reference so Jotai detects the change and re-renders
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      setFirebaseUser(refreshedUser ? ({ ...refreshedUser } as any) : null)
 
       // Call success callback
       onSuccess?.()

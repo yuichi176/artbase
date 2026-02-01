@@ -2,8 +2,10 @@
 
 import { useState } from 'react'
 import { unlink } from 'firebase/auth'
+import { useSetAtom } from 'jotai'
 import { auth } from '@/lib/firebase-client'
 import { getAuthErrorMessage, getProviderDisplayName } from '@/lib/auth/provider-utils'
+import { firebaseUserAtom } from '@/store/auth'
 import {
   Dialog,
   DialogContent,
@@ -27,6 +29,7 @@ export function UnlinkProviderDialog({
   providerId,
   providerEmail,
 }: UnlinkProviderDialogProps) {
+  const setFirebaseUser = useSetAtom(firebaseUserAtom)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
@@ -45,6 +48,8 @@ export function UnlinkProviderDialog({
 
       // Reload user to get updated provider data
       await auth.currentUser.reload()
+
+      setFirebaseUser(auth.currentUser)
 
       // Close dialog
       onOpenChange(false)
